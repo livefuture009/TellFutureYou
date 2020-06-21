@@ -18,43 +18,6 @@ export const getGlobalInfo = () => {
 	  .then((res) => res.json());
 };
 
-export const getAvailabilities = () => {
-  const method = 'POST';
-  const request_url = `${url}/availability/get_all_availabilities`
-  const headers = {
-    'Content-Type': 'application/json',
-  }
-  const body = JSON.stringify({ 
-  });
-
-  return fetch(request_url, { method, body, headers})
-    .then((res) => res.json());
-};
-
-export const getRates = () => {
-  const method = 'POST';
-  const request_url = `${url}/rate/get_all_rates`
-  const headers = {
-    'Content-Type': 'application/json',
-  }
-  const body = JSON.stringify({ 
-  });
-
-  return fetch(request_url, { method, body, headers})
-    .then((res) => res.json());
-};
-
-export const getServices = () => {
-  const method = 'POST';
-  const request_url = `${url}/service/get_all_services`
-  const headers = {
-    'Content-Type': 'application/json',
-  }
-  const body = JSON.stringify({ 
-  });
-
-  return fetch(request_url, { method, body, headers}).then((res) => res.json());
-};
 
 export const getGeoData = (address) => {
 	var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&key=" + GOOGLE_API_KEY;

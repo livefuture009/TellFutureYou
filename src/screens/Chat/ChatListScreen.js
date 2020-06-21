@@ -151,7 +151,7 @@ class ChatScreen extends Component {
       currentUser = sb.currentUser;
     }
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.navColor}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
         <View style={styles.container}>
           <TopNavBar title="MESSAGES" align="left" onBack={() => this.onBack()}/>
           <View style={styles.contentView}>

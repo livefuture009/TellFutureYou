@@ -1,14 +1,11 @@
 import Images from './theme/Images'
 
-export const url = 'https://helpmeapp2.herokuapp.com';
-export const ONE_SIGNAL_APP_ID = 'b7016fe0-12fd-4502-bf73-e556b15a647a'
+export const url = 'https://tellfutureyou.herokuapp.com';
+export const ONE_SIGNAL_APP_ID = 'a17cbcdf-1034-43a3-ab3e-1b9e0ebe1de6'
 export const GOOGLE_API_KEY = 'AIzaSyCGJg6E9WkiiIbbOhAWw_A0wSMS3YKaNBs'
-export const STRIPE_KEY = 'pk_test_dLJ33IRW8RHlczyqwEYGH7G4'
-export const TWITTER_COMSUMER_KEY = 'qWPj1TXbreMX1SsDvdiQTaF7Y';
-export const TWITTER_CONSUMER_SECRET = '4t0cRfGWXZvySIa5sS0M38AnT8a8B8hwcX2lZiaStSWStD4B4Z';
 export const GOOGLE_SIGNIN_WEB_CLIENT_ID = '201328401243-k0mkvg80f3f3mgaav2mo39jq9kudusop.apps.googleusercontent.com';
 export const GOOGLE_SIGNIN_IOS_CLIENT_ID = '201328401243-vr6ulf2ekum6pesn1p03i5tgec77h0dc.apps.googleusercontent.com';
-export const SENDBIRD_APP_ID = '447ACCE3-F0A1-4FAB-8DE8-A40FBE2997BB';
+export const SENDBIRD_APP_ID = '93D0DF90-B1A0-4FEE-9665-6858DE2A0C3E';
 
 /**
  * Possible requests status

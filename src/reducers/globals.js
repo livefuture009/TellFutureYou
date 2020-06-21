@@ -3,9 +3,6 @@ import Types from '../actions/actionTypes';
 import { Status } from '../constants';
 
 export const initialState = {
-	availabilities: [],
-	rates: [],
-  services: [],
   fee: 0,  
   nearbyRadius: 0,  
 	geoData: {},
@@ -13,9 +10,6 @@ export const initialState = {
   uploadedMediaType: '',
 
   errorMessage: "",
-  getGlobalInfo: Status.NONE,
-	getAvailabilitiesStatus: Status.NONE,
-  getRatesStatus: Status.NONE,
   getServicesStatus: Status.NONE,
   getGeoDataStatus: Status.NONE,
   uploadFileStatus: Status.NONE,
@@ -41,67 +35,6 @@ const getGlobalInfoFailure = (state, action) => ({
   ...state,
   errorMessage: action.error,
   getGlobalInfo: Status.FAILURE,
-});
-
-/* 
-***** Get Availability *****
-*/
-const getAvailabilitiesRequest = (state) => ({
-  ...state,
-  getAvailabilitiesStatus: Status.REQUEST,
-});
-
-const getAvailabilitySuccess = (state, action) => ({
-  ...state,
-  availabilities: action.payload,
-  getAvailabilitiesStatus: Status.SUCCESS,
-});
-
-const getAvailabilityFailure = (state, action) => ({
-  ...state,
-  errorMessage: action.error,
- getAvailabilitiesStatus: Status.FAILURE,
-});
-
-
-/* 
-***** Get Rate *****
-*/
-const getRatesRequest = (state) => ({
-  ...state,
-  getRatesStatus: Status.REQUEST,
-});
-
-const getRatesSuccess = (state, action) => ({
-  ...state,
-  rates: action.payload,
-  getRatesStatus: Status.SUCCESS,
-});
-
-const getRatesFailure = (state, action) => ({
-  ...state,
-  errorMessage: action.error,
-  getRatesStatus: Status.FAILURE,
-});
-
-/* 
-***** Get Service *****
-*/
-const getServicesRequest = (state) => ({
-  ...state,
-  getServicesStatus: Status.REQUEST,
-});
-
-const getServicesSuccess = (state, action) => ({
-  ...state,
-  services: action.payload,
-  getServicesStatus: Status.SUCCESS,
-});
-
-const getServicesFailure = (state, action) => ({
-  ...state,
-  errorMessage: action.error,
- getServicesStatus: Status.FAILURE,
 });
 
 /* 
@@ -153,18 +86,6 @@ const actionHandlers = {
   [Types.GET_GLOBAL_INFO_SUCCESS]: getGlobalInfoSuccess,
   [Types.GET_GLOBAL_INFO_FAILURE]: getGlobalInfoFailure,
   
-  [Types.GET_AVAILABILITIES_REQUEST]: getAvailabilitiesRequest,
-  [Types.GET_AVAILABILITIES_SUCCESS]: getAvailabilitySuccess,
-  [Types.GET_AVAILABILITIES_FAILURE]: getAvailabilityFailure,
-
-  [Types.GET_RATES_REQUEST]: getRatesRequest,
-  [Types.GET_RATES_SUCCESS]: getRatesSuccess,
-  [Types.GET_RATES_FAILURE]: getRatesFailure,
-
-  [Types.GET_SERVICES_REQUEST]: getServicesRequest,
-  [Types.GET_SERVICES_SUCCESS]: getServicesSuccess,
-  [Types.GET_SERVICES_FAILURE]: getServicesFailure,
-
   [Types.GET_GEODATA_REQUEST]: getGeoDataRequest,
   [Types.GET_GEODATA_SUCCESS]: getGeoDataSuccess,
   [Types.GET_GEODATA_FAILURE]: getGeoDataFailure,

@@ -99,7 +99,7 @@ class ResetNewPasswordScreen extends Component {
 
   render() {
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.navColor}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
         <View style={styles.container}>
           <TopNavBar title="Reset Password" onBack={() => this.onBack()}/>
           <View style={styles.contentView}>
@@ -107,6 +107,7 @@ class ResetNewPasswordScreen extends Component {
               autoFocus={true}
               label="New Password" 
               type="password"
+              placeholder="***********"
               placeholderTextColor="#939393"
               errorMessage={this.state.passwordError}
               value={this.state.newPassword} 
@@ -117,6 +118,7 @@ class ResetNewPasswordScreen extends Component {
             <LabelFormInput
               label="Confirm New Password" 
               type="password"
+              placeholder="***********"
               placeholderTextColor="#939393"
               errorMessage={this.state.passwordConfirmError}
               value={this.state.newPasswordConfirm} 

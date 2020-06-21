@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 
 import {connect} from 'react-redux';
-import MultiSelect from 'react-native-multiple-select';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import ImagePicker from 'react-native-image-picker';
 import Toast from 'react-native-easy-toast'
@@ -42,11 +41,6 @@ class EditProfile extends Component {
       location: '',
       locationText: '',
       zipcode: '',
-      availabilityFrom: '',
-      availabilityTo: '',
-      rate: '',
-      services: [],
-      aboutService: '',
       currentLat: 0,
       currentLng: 0,
 
@@ -55,10 +49,6 @@ class EditProfile extends Component {
       emailError: '',
       phoneError: '',
       locationError: '',
-      availabilityFromError: '',
-      availabilityToError: '',
-      rateError: '',
-      servicesError: '',
       isLoading: false,
     }
   }
@@ -78,18 +68,6 @@ class EditProfile extends Component {
         currentLat: currentUser.geolocation.coordinates[1],
         currentLng: currentUser.geolocation.coordinates[0],
       });
-
-      if (currentUser.type == "provider") {
-        this.setState({
-          availabilityFrom: currentUser.availabilityFrom,
-          availabilityTo: currentUser.availabilityTo,
-          rate: currentUser.rate,
-          services: currentUser.services,
-          aboutService: currentUser.aboutService,
-          currentLat: currentUser.geolocation.coordinates[1],
-          currentLng: currentUser.geolocation.coordinates[0],
-        });
-      }
     }      
   }
 
@@ -117,15 +95,6 @@ class EditProfile extends Component {
         this.onFailure(this.props.errorMessage);
       }      
     }    
-    
-    if (prevProps.updateProviderStatus != this.props.updateProviderStatus) {
-      if (this.props.updateProviderStatus == Status.SUCCESS) {
-        this.setState({isLoading: false});
-        this.showMessage("Profile has been updated successfully!", true);
-      } else if (this.props.updateProviderStatus == Status.FAILURE) {
-        this.onFailure(this.props.errorMessage);
-      }      
-    }
   }
 
   showMessage(message, isBack) {
@@ -172,11 +141,6 @@ class EditProfile extends Component {
       phone, 
       location, 
       locationText,
-      availabilityFrom, 
-      availabilityTo, 
-      rate, 
-      services,
-      aboutService,
       avatarFile
     } = this.state;
 
@@ -205,35 +169,6 @@ class EditProfile extends Component {
       isValid = false;
     }
 
-    if (currentUser.type == "provider") {
-      if (availabilityFrom == null || availabilityFrom.length == 0) {
-        this.setState({availabilityFromError: Messages.InvalidAvailabilityFrom});
-        isValid = false;
-      }
-  
-      if (availabilityTo == null || availabilityTo.length == 0) {
-        this.setState({availabilityToError: Messages.InvalidAvailabilityTo});
-        isValid = false;
-      }
-  
-      var timeStart = new Date("01/01/2007 " + availabilityFrom);
-      var timeEnd = new Date("01/01/2007 " + availabilityTo);
-      if (timeStart >= timeEnd) {
-        this.setState({availabilityFromError: Messages.InvalidAvailabilityFrom});
-        isValid = false;
-      }
-  
-      if (rate == null || rate.length == 0) {
-        this.setState({rateError: Messages.InvalidRate});
-        isValid = false;
-      }
-  
-      if (services == null || services.length <= 0) {
-        this.setState({servicesError: Messages.InvalidService});
-        isValid = false;
-      }
-    }
-
     if (isValid) {
       this.setState({isLoading: true}, () => { 
         this.props.dispatch({
@@ -252,11 +187,6 @@ class EditProfile extends Component {
       email,
       phone,
       location,
-      availabilityFrom,
-      availabilityTo,
-      rate,
-      services,
-      aboutService,
       avatarFile,
       currentLat,
       currentLng
@@ -279,19 +209,11 @@ class EditProfile extends Component {
       currentLng
     };
 
-    const { currentUser } = this.props;
-    if (currentUser.type == "provider") {
-      this.props.dispatch({
-        type: actionTypes.UPDATE_PROVIDER,
-        user: user,
-      });
-    } else {
-      this.props.dispatch({
-        type: actionTypes.UPDATE_CUSTOMER,
-        user: user,
-      });
-    }
-    
+
+    this.props.dispatch({
+      type: actionTypes.UPDATE_CUSTOMER,
+      user: user,
+    });
   }
   
   onTakePicture() {
@@ -420,89 +342,6 @@ class EditProfile extends Component {
                   onSelectAddress={(address) => this.onChangeLocation(address)}     
                   onChangeText={(text) => this.setState({locationText: text, locationError: null})} 
                 />
-
-                {
-                  currentUser.type == "provider" &&
-                  <View>
-                    <View style={styles.rowView}>
-                      <LabelFormInput
-                            label="Availability from" 
-                            type="dropdown"
-                            data={this.filterData(this.props.availabilities)}
-                            value={this.state.availabilityFrom} 
-                            errorMessage={this.state.availabilityFromError}
-                            style={{width: '45%'}}
-                            onChangeText={(text) => this.setState({availabilityFrom: text, availabilityFromError: null})} />
-
-                          <LabelFormInput
-                            label="To" 
-                            type="dropdown"
-                            data={this.filterData(this.props.availabilities)}
-                            value={this.state.availabilityTo} 
-                            errorMessage={this.state.availabilityToError}
-                            style={{width: '45%'}}
-                            onChangeText={(text) => this.setState({availabilityTo: text, availabilityToError: null})} />
-                    </View>
-
-                    <LabelFormInput
-                    label="Rate" 
-                    type="dropdown"
-                    data={this.filterData(this.props.rates)} 
-                    value={this.state.rate} 
-                    errorMessage={this.state.rateError}
-                    onChangeText={(text) => this.setState({rate: text, rateError: null})} />
-
-                    <MultiSelect
-                      hideTags
-                      items={this.props.services}
-                      uniqueKey="_id"
-                      ref={(component) => { this.multiSelect = component }}
-                      onSelectedItemsChange={this.onSelectedItemsChange}
-                      selectedItems={this.state.services}
-                      selectText="Pick Services"
-                      searchInputPlaceholderText="Search Services..."
-                      tagRemoveIconColor={Colors.appColor}
-                      tagBorderColor={Colors.appColor}
-                      tagTextColor={Colors.appColor}
-                      selectedItemTextColor={Colors.appColor}
-                      selectedItemIconColor={Colors.appColor}
-                      itemTextColor="#000"
-                      displayKey="name"
-                      searchInputStyle={{ fontFamily: "OpenSans", fontSize: 16, padding: 5, color: '#CCC' }}
-                      submitButtonColor={Colors.appColor}
-                      submitButtonText="Select"
-                      itemFontSize={16}
-                      fontFamily="OpenSans"
-                      selectedItemFontFamily="OpenSans"
-                      itemFontFamily="OpenSans"             
-                      altFontFamily="OpenSans"
-                      fontSize={16}
-                      hideDropdown={true}
-                      styleDropdownMenu={{backgroundColor: 'red'}}
-                      styleInputGroup={{ paddingVertical: 5}}
-                      styleItemsContainer={{paddingVertical: 10}}
-                      styleRowList={{paddingVertical: 5}}
-                    />
-                    {
-                      this.multiSelect &&
-                      <View>
-                          {this.multiSelect.getSelectedItemsExt(this.state.services)}
-                      </View> 
-                    }
-                    { (this.state.servicesError && this.state.servicesError.length > 0)
-                      ? <Text style={Styles.errorText}>{this.state.servicesError}</Text>
-                      : null
-                    }
-
-                    <LabelFormInput
-                    label="About Service" 
-                    type="textview"
-                    style={{marginTop: 25}}
-                    value={this.state.aboutService} 
-                    onChangeText={(text) => this.setState({aboutService: text})} 
-                    />              
-                  </View>
-                }
               </View>
 
               <View style={styles.centerView}>

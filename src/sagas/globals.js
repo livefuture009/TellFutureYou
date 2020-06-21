@@ -112,9 +112,6 @@ function* LogOut() {
 
 export default [
   takeLatest(Types.GET_GLOBAL_INFO, GetGlobalInfo),
-  takeLatest(Types.GET_AVAILABILITIES, GetAvailabilities),
-  takeLatest(Types.GET_RATES, GetRates),
-  takeLatest(Types.GET_SERVICES, GetServices),
   takeLatest(Types.GET_GEODATA, GetGeoData),
   takeLatest(Types.UPLOAD_ATTACH_FILE, UploadFile),
   takeLatest(Types.LOG_OUT, LogOut),

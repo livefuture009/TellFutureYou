@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "TellFutureYou.app"
+               BuildableName = "Tell Future You.app"
                BlueprintName = "TellFutureYou"
                ReferencedContainer = "container:TellFutureYou.xcodeproj">
             </BuildableReference>
@@ -55,7 +55,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "TellFutureYou.app"
+            BuildableName = "Tell Future You.app"
             BlueprintName = "TellFutureYou"
             ReferencedContainer = "container:TellFutureYou.xcodeproj">
          </BuildableReference>
@@ -72,7 +72,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "TellFutureYou.app"
+            BuildableName = "Tell Future You.app"
             BlueprintName = "TellFutureYou"
             ReferencedContainer = "container:TellFutureYou.xcodeproj">
          </BuildableReference>

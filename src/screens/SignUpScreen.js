@@ -3,102 +3,88 @@ import {
   View,
   StyleSheet,
   SafeAreaView,
-  Keyboard
+  Keyboard,
+  Dimensions
 } from 'react-native';
 
 import {connect} from 'react-redux';
 import Toast from 'react-native-easy-toast'
-import SendBird from 'sendbird';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import TopNavBar from '../components/TopNavBar'
-import BackgroundImage from '../components/BackgroundImage'
-import StepIndicator from '../components/StepIndicator'
-import CustomerPage from '../components/SignUp/CustomerPage'
-import Messages from '../theme/Messages'
-import CheckBox from '../components/CheckBox'
+import PageLabel from '../components/PageLabel'
+import FormInput from '../components/FormInput'
 import Button from '../components/Button'
+import CheckBox from '../components/CheckBox'
 import Label from '../components/Label'
 import RoundButton from '../components/RoundButton'
+import Messages from '../theme/Messages'
 import LoadingOverlay from '../components/LoadingOverlay'
 import { TOAST_SHOW_TIME, Status, PASSWORD_MIN_LENGTH } from '../constants.js'
-import { validateEmail, getOnlyAlphabetLetters } from '../functions'
 import actionTypes from '../actions/actionTypes';
 import * as Storage from '../services/Storage'
+import { isValidEmail } from '../functions'
+import Colors from '../theme/Colors'
 
-var sb = null;
+const screenHeight = Math.round(Dimensions.get('window').height);
 
 class SignUpScreen extends Component {
   static navigationOptions = {
-    headerShown: false,
+    header: null,
   };
 
   constructor(props) {
     super(props)
     this.state = {
-      currentPage: 0,
-      agreeTerms: false,
       isLoading: false,
-      user: {
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        location: '',
-        locationText: '',
-        password: '',
-        confirmPassword: '',
-        currentLat: 0,
-        currentLng: 0,
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      location: '',
+      password: '',
+      confirmPassword: '',
+      agreeTerms: false,
 
-        firstNameError: null,
-        lastNameError: null,
-        emailError: null,
-        phoneError: null,
-        locationError: null,
-        passwordError: null,
-        confirmPasswordError: null
-      }
+      socialId: null,
+      socialType: '',
+      avatar: '',
+
+      firstNameError: '',
+      lastNameError: '',
+      emailError: '',
+      phoneError: '',
+      passwordError: '',
+      confirmPasswordError: '',
     }
   }
 
   componentDidMount() {
-    sb = SendBird.getInstance();
-
-    const { type, user } = this.props.route.params;
-    if (user) {
-      type = user.type;
-      const existingUser = this.state.user;      
-      if (user.socialId) {
-        existingUser.socialId = user.socialId;
+    if (this.props.route.params) {
+      const { user } = this.props.route.params;  
+      if (user) {
+        if (user.socialId) {
+          this.setState({socialId: user.socialId});
+        }
+  
+        if (user.socialType) {
+          this.setState({socialType: user.socialType});
+        }
+  
+        if (user.firstName) {
+          this.setState({firstName: user.firstName});
+        }
+  
+        if (user.lastName) {
+          this.setState({lastName: user.lastName});
+        }
+  
+        if (user.email) {
+          this.setState({email: user.email});
+        }
+  
+        if (user.avatar) {
+          this.setState({avatar: user.avatar});
+        }
       }
-
-      if (user.socialType) {
-        existingUser.socialType = user.socialType;
-      }
-
-      if (user.firstName) {
-        existingUser.firstName = user.firstName;
-      }
-
-      if (user.lastName) {
-        existingUser.lastName = user.lastName;
-      }
-
-      if (user.email) {
-        existingUser.email = user.email;
-      }
-
-      if (user.avatar) {
-        existingUser.avatar = user.avatar;
-      }
-
-      this.setState({user: existingUser});
-    }
-
-    if (type === "customer") {
-      this.setState({currentPage: 1})
-    } else {
-      this.setState({currentPage: 0})
     }
   }
 
@@ -107,310 +93,283 @@ class SignUpScreen extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // Get Geo Data.
-    if (prevProps.getGeoDataStatus != this.props.getGeoDataStatus) {
-      if (this.props.getGeoDataStatus == Status.SUCCESS) {
-        const { user } = this.state;
-        user.currentLat = this.props.geoData.lat;
-        user.currentLng = this.props.geoData.lng;
-
-        this.setState({
-          user: user, 
-        }, () => {
-          this.registerCustomer();
-        });        
-      } else if (this.props.getGeoDataStatus == Status.FAILURE) {
-        this.onFailure(this.props.errorGlobalMessage);
+    if (prevProps.registerUserStatus != this.props.registerUserStatus) {
+      if (this.props.registerUserStatus == Status.SUCCESS) {
+        this.registerUserSuccess();
+      } else if (this.props.registerUserStatus == Status.FAILURE) {
+        this.onFailure();
       }      
     }
-
-    // Register Customer.
-    if (prevProps.registerCustomerStatus != this.props.registerCustomerStatus) {
-      if (this.props.registerCustomerStatus == Status.SUCCESS) {
-        this.registerCustomerSuccess();
-      } else if (this.props.registerCustomerStatus == Status.FAILURE) {
-        this.onFailure(this.props.errorMessage);
-      }      
-    }
-
-    // Check Email.
-    if (prevProps.checkEmailStatus != this.props.checkEmailStatus) {
-      if (this.props.checkEmailStatus == Status.SUCCESS) {
-        const user = this.state.user;
-        this.setState({isLoading: false});
-        this.moveSignUp2();
-      } else if (this.props.checkEmailStatus == Status.FAILURE) {
-        this.onFailure(this.props.errorMessage);
-      }
-    }
   }
 
-
-  onBack() {
-    this.props.navigation.goBack();
-  }
-
-  onSelectPage(index) {
-    this.setState({currentPage: index});
-  }
-
-  onTerms() {
-    Keyboard.dismiss();
+  onTerms=()=> {
     this.props.navigation.navigate('Terms');
   }
 
-  connectSendBird() {
-    const currentUser = this.props.currentUser;
-    console.log("currentUser: ", currentUser);
-    if (sb && currentUser._id != "undefined" && currentUser._id?.length > 0) {
-      const userId = currentUser._id;
-      const username = currentUser.firstName + " " + currentUser.lastName;
-
-      if (userId) {
-        var _SELF = this;
-        sb.connect(userId, function (user, error) {
-          if (_SELF.props.pushToken && _SELF.props.pushToken.length > 0) {
-            if (Platform.OS === 'ios') {
-              sb.registerAPNSPushTokenForCurrentUser(_SELF.props.pushToken, function(result, error) {
-              });
-            } else {
-              sb.registerGCMPushTokenForCurrentUser(_SELF.props.pushToken, function(result, error) {
-              });
-            }
-          }     
-          
-          var profileUrl = '';
-          if (currentUser.avatar && currentUser.avatar.length > 0) {
-            profileUrl = currentUser.avatar;
-          }
-
-          sb.updateCurrentUserInfo(username, profileUrl, function(response, error) {
-          });
-        });
-      }    
-    }
-  }
-
   onMoveHome() {
-    this.connectSendBird();
-    this.props.navigation.navigate("CustomerTab");
+    this.props.navigation.navigate("MainTab");
   }
 
-  convertTime12to24(time12h){
-    const [time, modifier] = time12h.split(' ');
-    let [hours, minutes] = time.split(':');
-    if (hours === '12') {
-      hours = '00';
-    }
-    if (modifier === 'PM') {
-      hours = parseInt(hours, 10) + 12;
-    }
-
-    if (hours.length == 1) {
-      hours = "0" + hours;
-    }
-    return `${hours}:${minutes}`;
-  }
-
-  onChangeLocation(address) {
-    var user = this.state.user;
-    user.location = address;
-    user.locationText = address;
-    user.locationError = null;
-    this.setState({user});
-  }
-
-
-  onChangeUser(key, value) {
-    var user = this.state.user;
-    if (key == "firstName") {
-      user.firstName = getOnlyAlphabetLetters(value);
-      user.firstNameError = "";
-    } else if (key == "lastName") {
-      user.lastName = getOnlyAlphabetLetters(value);
-      user.lastNameError = "";
-    } else if (key == "email") {
-      user.email = value;
-      if (value && value != "" && validateEmail(value)) {
-        user.emailError = "";
-      }      
-    } else if (key == "phone") {
-      user.phone = value;
-      user.phoneError = "";
-    } else if (key == "location") {
-      user.locationText = value;
-      user.locationError = "";
-    } else if (key == "password") {
-      user.password = value;
-      user.passwordError = "";
-    } else if (key == "confirmPassword") {
-      user.confirmPassword = value;
-      user.confirmPasswordError = "";
-    }
-
-    this.setState({user: user});
+  onLogin() {
+    this.props.navigation.goBack();
   }
 
   onRegister() {
     Keyboard.dismiss();
 
     var isValid = true;
-    const user = this.state.user;
-    if (user.firstName == null || user.firstName.length == 0) {
-      user.firstNameError = Messages.InvalidFirstname;
+    const {
+      firstName, 
+      lastName,
+      email,
+      phone,
+      location,
+      socialId, 
+      socialType,
+      password,
+      confirmPassword,
+      avatar,
+      agreeTerms,
+    } = this.state;
+
+    if (firstName == null || firstName.length == 0) {
+      this.setState({firstNameError: Messages.InvalidFirstname});
       isValid = false;
     }
 
-    if (user.lastName == null || user.lastName.length == 0) {
-      user.lastNameError = Messages.InvalidLastname;
+    if (lastName == null || lastName.length == 0) {
+      this.setState({lastNameError: Messages.InvalidLastname});
       isValid = false;
     }
 
-    if (user.email == null || user.email.length == 0 || !validateEmail(user.email)) {
-      user.emailError = Messages.InvalidEmail;
+    if (email == null || email.length <= 0 || !isValidEmail(email)) {
+      this.setState({emailError: Messages.InvalidEmail});
       isValid = false;
     }
 
-    if (user.phone == null || user.phone.length == 0) {
-      user.phoneError = Messages.InvalidPhone;
+    if (phone == null || phone.length == 0) {
+      this.setState({phoneError: Messages.InvalidPhone});
       isValid = false;
     }
 
-    if (user.location == null || user.location.length == 0 || user.location != user.locationText) {
-      user.locationError = Messages.InvalidLocation;
+    if (location == null || location.length == 0) {
+      this.setState({locationError: Messages.InvalidLocation});
       isValid = false;
     }
 
-    if (user.socialId == null) {
-      if (user.password == null || user.password.length == 0) {
-        user.passwordError = Messages.InvalidPassword;
+    if (socialId === null || socialId === "") {
+      if (password == null || password.length == 0) {
+        this.setState({passwordError: Messages.InvalidPassword});
         isValid = false;
       } 
-      else if (user.password.length < PASSWORD_MIN_LENGTH) {
-        user.passwordError = Messages.ShortPasswordError;
+      else if (password.length < PASSWORD_MIN_LENGTH) {
+        this.setState({passwordError: Messages.ShortPasswordError});
         isValid = false;
       }
 
-      if (user.confirmPassword == null || user.confirmPassword.length == 0) {
-        user.confirmPasswordError = Messages.InvalidConfirmPassword;
+      if (confirmPassword == null || confirmPassword.length == 0) {
+        this.setState({confirmPasswordError: Messages.InvalidConfirmPassword});
         isValid = false;
-      } else if (user.confirmPassword != user.password) {
-        user.confirmPasswordError = Messages.InvalidPasswordNotMatch;
+      } else if (confirmPassword != password) {
+        this.setState({confirmPasswordError: Messages.InvalidPasswordNotMatch});
         isValid = false;
       }
     }
 
-    if (!this.state.agreeTerms) {
-      this.refs.toast.show(Messages.InvalidTerms, TOAST_SHOW_TIME);
+    if (!agreeTerms) {
+      this.refs.toast.show(Messages.InvalidTerms, TOAST_SHOW_TIME);    
       isValid = false;
     }
 
     if (isValid) {
-      if (this.state.currentPage == 1) {
-
-        // Customer Register.
-        this.setState({isLoading: true}, () => { 
-          this.props.dispatch({
-            type: actionTypes.GET_GEODATA,
-            address: user.location,
-          });
-        });      
-      } else {
-        // Checking Email.
-        this.setState({isLoading: true}, () => { 
-          this.props.dispatch({
-            type: actionTypes.CHECK_EMAIL,
-            email: user.email,
-          });
-        }); 
-      }     
-    } else {
-      this.setState({user: user});
+      this.setState({isLoading: true}, () => { 
+        this.props.dispatch({
+          type: actionTypes.REGISTER_USER,
+          user: {
+            firstName,
+            lastName,
+            email,
+            phone,
+            location,
+            password,
+            confirmPassword,
+            avatar,
+            socialId,
+            socialType,
+            playerId: this.props.playerId,
+          }
+        });
+      });      
     }    
   }
 
-  registerCustomer() {
-    const { user } = this.state;
-    if (this.state.currentPage == 1) {
-      this.props.dispatch({
-        type: actionTypes.REGISTER_CUSTOMER,
-        user: user,
-        player_id: this.props.playerId,
-      });
-    }
-  }
-
-  async registerCustomerSuccess() {
+  async registerUserSuccess() {
     this.setState({isLoading: false});
     Storage.USERID.set(this.props.currentUser._id);
     this.onMoveHome();
   }
 
-  onFailure(message) {
+  onFailure() {
     this.setState({isLoading: false});
-    if (message == null) {
-      this.refs.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);      
-    } else {
-      this.refs.toast.show(message, TOAST_SHOW_TIME);    
-    }
-  }
-
-  moveSignUp2() {
-    this.setState({isLoading: false});
-    const user = this.state.user;
-    this.props.navigation.navigate("SignUp2", {user: user});
+    this.refs.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);    
   }
 
   render() {
+    const { 
+      firstName,
+      lastName,
+      email,
+      phone,
+      location,
+      password,
+      confirmPassword,
+      socialId,
+
+      firstNameError,
+      lastNameError,
+      emailError,
+      phoneError,
+      locationError,
+      passwordError,
+      confirmPasswordError,
+
+    } = this.state;
+
+    var editable = true;
+    if (socialId && socialId.length > 0) {
+      editable = false;
+    }
+    
+
     return (
-      <View style={{flex: 1}}>
-        <BackgroundImage />
-        <SafeAreaView style={{flex: 1}}>
-          <View style={styles.container}>
-            <TopNavBar title="Sign Up" theme="empty" onBack={() => this.onBack()}/>
-            <StepIndicator steps={this.state.currentPage===0 ? 4 : 2} current={2} style={{marginTop: 20, marginBottom: 30}}/>
-            <KeyboardAwareScrollView>
-              <View style={{flex: 1}}>
-                <CustomerPage 
-                  user={this.state.user} 
-                  type={this.state.currentPage}
-                  agreeTerms={this.state.agreeTerms}
-                  onChangeAgree={(select) => this.setState({agreeTerms: select})}
-                  onChangeUser={(key, value) => this.onChangeUser(key, value)} 
-                  onChangeLocation={(address) => this.onChangeLocation(address)}
-                  onTerms={() => this.onTerms()}
-                  onRegister={() => this.onRegister()}
-                />
-                <View style={styles.viewBottom}>
-                  <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                    <CheckBox 
-                      value={this.state.agreeTerms} 
-                      onChange={(selected) => this.setState({agreeTerms: selected})} 
-                    />
+      <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
+        <View style={styles.container}>
+          <KeyboardAwareScrollView>          
+            <PageLabel text="Register" style={{paddingHorizontal: 30}} />
+            <View style={styles.formView}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                  <FormInput
+                    label="First Name"
+                    placeholder="David" 
+                    type="text"
+                    value={firstName} 
+                    errorMessage={firstNameError}
+                    returnKeyType="next"           
+                    style={{width: '46%'}}                            
+                    onSubmitEditing={() => { this.lastNameInput.focus() }}
+                    onChangeText={(text) => this.setState({firstName: text, firstNameError: null})} />
 
-                    <Label title="I agree to the " style={{marginLeft: 10}}/>
-                    <Button title="Terms of Service" bold={true} onPress={() => this.onTerms()}/>
+                  <FormInput
+                  label="Last Name"
+                  placeholder="Lois" 
+                  type="text"
+                  value={lastName} 
+                  errorMessage={lastNameError}
+                  returnKeyType="next"                     
+                  style={{width: '46%'}}                  
+                  onRefInput={(input) => { this.lastNameInput = input }}
+                  onSubmitEditing={() => { this.emailInput.focus() }}
+                  onChangeText={(text) => this.setState({lastName: text, lastNameError: null})} />
+                </View>
 
-                  </View>          
+                <FormInput
+                  label="Your Email"
+                  placeholder="David@email.com" 
+                  type="email"
+                  editable={editable}
+                  value={email} 
+                  errorMessage={emailError}
+                  returnKeyType="next"          
+                  onRefInput={(input) => { this.emailInput = input }}
+                  onSubmitEditing={() => { this.phoneInput.focus() }}                             
+                  onChangeText={(text) => this.setState({email: text, emailError: null})} />
 
+                <FormInput
+                  label="Mobile Number"
+                  placeholder="644 631-5465" 
+                  type="phone"
+                  value={phone} 
+                  errorMessage={phoneError}
+                  returnKeyType="next"           
+                  onRefInput={(input) => { this.phoneInput = input }}                                            
+                  onSubmitEditing={() => this.locationInput.focus()}
+                  onChangeText={(text) => this.setState({phone: text, phoneError: null})} />
+                
+                <FormInput
+                  label="Location" 
+                  placeholder="No. 212"
+                  type="address"
+                  placeholderTextColor={Colors.placeholderColor}
+                  value={location} 
+                  errorMessage={locationError}
+                  returnKeyType="next"
+                  onFocus={() => {this.scroll.props.scrollToPosition(0, 110)}}
+                  onRefInput={(input) => { this.locationInput = input }}                                            
+                  onSubmitEditing={() => { 
+                    if (socialId === null) {
+                     this.passwordInput.focus()
+                    } else {
+                     Keyboard.dismiss()
+                    }
+                  }}
+                  onChangeText={(text) => this.setState({location: text, locationError: null})} />
+                {
+	            	  socialId == null
+	            	  ? <View>
+                    <FormInput
+                      label="Password"
+                      placeholder="**********" 
+                      type="password"
+                      value={password} 
+                      errorMessage={passwordError}
+                      returnKeyType="next"           
+                      onRefInput={(input) => { this.passwordInput = input }}                                                                        
+                      onSubmitEditing={() => { this.confirmPasswordInput.focus() }}
+                      onChangeText={(text) => this.setState({password: text, passwordError: null})} />
+
+                    <FormInput
+                      label="Confirm Password"
+                      placeholder="**********" 
+                      type="password"
+                      value={confirmPassword} 
+                      errorMessage={confirmPasswordError}
+                      returnKeyType="done"               
+                      onRefInput={(input) => { this.confirmPasswordInput = input }}                             
+                      onChangeText={(text) => this.setState({confirmPassword: text, confirmPasswordError: null})} />
+                  </View>
+                  : null
+                }
+
+                <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: 5, marginTop: 5}}>
+	                <CheckBox 
+	                  value={this.state.agreeTerms} 
+	                  onChange={(value) => {this.setState({agreeTerms: value})}} 
+	                />
+	                <Label title="I agree to the " style={{marginLeft: 10}}/>
+	                <Button title="Terms of Service" bold={true} onPress={this.onTerms}/>
+	              </View>          
+
+                <View>
                   <RoundButton 
-                    title="Register" 
-                    theme="blue" 
-                    style={styles.registerButton} 
+                    title="Sign Up" 
+                    theme="blue"
+                    style={styles.signupButton} 
                     onPress={() => this.onRegister()} />
                 </View>
+                <View style={[styles.centerView, styles.bottomView]}>
+                  <Label title="Already have an account?"></Label>
+                  <Button title="Login" style={{marginLeft: 5}} bold={true} onPress={() => this.onLogin()}/>
+                </View>    
               </View>
-            </KeyboardAwareScrollView>
-            <Toast ref="toast"/>
-            {
-              this.state.isLoading
-              ? <LoadingOverlay />
-              : null
-            }
-
-          </View>
-        </SafeAreaView>
-      </View>
+            </KeyboardAwareScrollView>        
+        </View>
+        <Toast ref="toast"/>
+        {
+          this.state.isLoading
+          ? <LoadingOverlay />
+          : null
+        }
+      </SafeAreaView>
     );
   }
 }
@@ -418,19 +377,30 @@ class SignUpScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: screenHeight < 800 ? 15 : 30,
+    justifyContent: 'center',
   },
 
-  viewBottom: {
-    width: '100%',
+  formView: {
+    padding: 30,
+  },
+
+  centerView: {
+    flex: 1,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 20,
   },
 
-  registerButton: {
+  signupButton: {
     marginTop: 20,
-    width: '90%'
+    width: '100%',
   },
+
+  bottomView: {
+    marginTop: 30,
+    width: '100%'
+  }
 })
 
 function mapDispatchToProps(dispatch) {
@@ -441,18 +411,10 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
   return {
-    availabilities: state.globals.availabilities,
-    rates: state.globals.rates,
-    services: state.globals.services,    
-    geoData: state.globals.geoData,
-    errorGlobalMessage: state.globals.errorMessage,
-    getGeoDataStatus: state.globals.getGeoDataStatus,
-
     currentUser: state.user.currentUser,
-    playerId: state.user.playerId,    
     errorMessage: state.user.errorMessage,
-    registerCustomerStatus: state.user.registerCustomerStatus,
-    checkEmailStatus: state.user.checkEmailStatus,
+    playerId: state.user.playerId,
+    registerUserStatus: state.user.registerUserStatus,
   };  
 }
 

@@ -94,7 +94,7 @@ class ForgotPasswordScreen extends Component {
 
   render() {
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.navColor}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
         <View style={styles.container}>
           <TopNavBar title="Forgot Password" onBack={() => this.onBack()}/>
           <BlueBar title="Enter your email address and we will send you a verification code to reset your password." />
@@ -102,6 +102,7 @@ class ForgotPasswordScreen extends Component {
             <LabelFormInput
               label="Email Address" 
               type="email"
+              placeholder="David@email.com" 
               autoFocus={true}
               placeholderTextColor="#939393"
               errorMessage={this.state.emailError}

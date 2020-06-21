@@ -57,9 +57,7 @@ export default class TopNavBar extends React.Component {
 }
 
 const styles = StyleSheet.create({
-
 	container: {
-		backgroundColor: Colors.navColor,
 		zIndex: 3,
 		...ifIphoneX({
 			paddingVertical: 20
@@ -91,9 +89,9 @@ const styles = StyleSheet.create({
 
 	titleText: {
 		textAlign: 'center',
-		fontFamily: Fonts.regular,
+		fontFamily: Fonts.bold,
 		fontSize: 20,
-		color: 'white',
+		color: 'black',
 	},
 
 	leftTitleText: {
@@ -102,7 +100,7 @@ const styles = StyleSheet.create({
 		fontSize: 24,
 		marginLeft: 60,
 		paddingRight: 20,
-		color: 'white',
+		color: 'black',
 	},
 
 	rightValueText: {

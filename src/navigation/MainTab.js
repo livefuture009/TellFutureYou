@@ -1,44 +1,42 @@
 import React from 'react';
-import { Platform, Image, StyleSheet } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-
 import Images from '../theme/Images'
 import Colors from '../theme/Colors'
 
-import ProviderHome from '../screens/Provider/ProviderHomeScreen';
-import ProviderSettings from '../screens/Provider/ProviderSettingsScreen';
-import ProviderHistory from '../screens/Provider/ProviderHistoryScreen';
-
+import ContactListScreen from '../screens/Contact/ContactListScreen';
+import ChatListScreen from '../screens/Chat/ChatListScreen';
+import MyAccountScreen from '../screens/MyAccount/MyAccountScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-function HomeStack() {
+function ChatStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="ProviderHome" component={ProviderHome} options={{ headerShown: false, gestureEnabled: false }}/>
+      <Stack.Screen name="ChatList" component={ChatListScreen} options={{ headerShown: false, gestureEnabled: false }}/>
     </Stack.Navigator>
   );
 }
 
-function HistoryStack() {
+function ContactStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="ProviderHistory" component={ProviderHistory} options={{ headerShown: false, gestureEnabled: false }}/>
+      <Stack.Screen name="ContactList" component={ContactListScreen} options={{ headerShown: false, gestureEnabled: false }}/>
     </Stack.Navigator>
   );
 }
 
-function SettingsStack() {
+function MyAccountStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="ProviderSettings" component={ProviderSettings} options={{ headerShown: false, gestureEnabled: false }}/>
+      <Stack.Screen name="MyAccount" component={MyAccountScreen} options={{ headerShown: false, gestureEnabled: false }}/>
     </Stack.Navigator>
   );
 }
 
-class ProviderTab extends React.Component {
+class CustomerTab extends React.Component {
   render() {
       return (
             <Tab.Navigator
@@ -47,15 +45,15 @@ class ProviderTab extends React.Component {
                   var icon;
                   var selectedIcon;
 
-                  if (route.name === 'HomeStack') {
+                  if (route.name === 'ChatStack') {
                     icon = Images.tab_home;
                     selectedIcon = Images.tab_home_selected;
                   }
-                  else if (route.name === 'HistoryStack') {
+                  else if (route.name === 'ContactStack') {
                     icon = Images.tab_history;
                     selectedIcon = Images.tab_history_selected;
                   } 
-                  else if (route.name === 'SettingsStack') {
+                  else if (route.name === 'MyAccountStack') {
                     icon = Images.tab_settings;
                     selectedIcon = Images.tab_settings_selected;
                   }
@@ -70,9 +68,9 @@ class ProviderTab extends React.Component {
                 showLabel: false,
               }}
             >
-              <Tab.Screen name="HomeStack" component={HomeStack} />
-              <Tab.Screen name="HistoryStack" component={HistoryStack} />
-              <Tab.Screen name="SettingsStack" component={SettingsStack} />
+              <Tab.Screen name="ChatStack" component={ChatStack} />
+              <Tab.Screen name="ContactStack" component={ContactStack} />
+              <Tab.Screen name="MyAccountStack" component={MyAccountStack} />
             </Tab.Navigator>
       );      
   }
@@ -89,5 +87,4 @@ const styles = StyleSheet.create({
   },
 })
 
-
-export default ProviderTab;
+export default CustomerTab;

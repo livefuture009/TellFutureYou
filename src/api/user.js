@@ -1,5 +1,4 @@
 import { url } from '../constants';
-import { makeRandomText } from '../functions';
 import { Platform } from 'react-native';
 import { filterFileUri, filterFileName } from '../functions';
 
@@ -53,125 +52,27 @@ export const loginWithSocial = (user, player_id, lat, lng) => {
     );
 };
 
-export const registerCustomer = (user, player_id) => {
+export const registerUser = (user) => {
   const method = 'POST';
-  const request_url = `${url}/user/register_customer`
+  const request_url = `${url}/user/register_user`
   const headers = {
     'Content-Type': 'application/json',
   }
-
-  var socialId = '';
-  var socialType = '';
-  var avatar = '';
-
-  if (user.socialId) {
-      socialId = user.socialId; 
-  }
-
-  if (user.socialType) {
-      socialType = user.socialType; 
-  }
-
-  if (user.avatar) {
-      avatar = user.avatar; 
-  }
-
   const body = JSON.stringify({ 
     firstName: user.firstName,
-    lastName: user.lastName,                
+    lastName: user.lastName,
     email: user.email,
-    password: user.password,
     phone: user.phone,
     location: user.location,
-    socialId: socialId,
-    socialType: socialType,
-    avatar: avatar,
-    device_token: player_id,
-    lat: user.currentLat,
-    lng: user.currentLng,
-    os: Platform.OS,    
-  });
-
-  return fetch(request_url, { method, body, headers})
-    .then((res) => res.json());
-};
-
-export const registerProvider = (user, player_id) => {
-  const formData = new FormData();
-  // ID Card Images.
-  for (var i = 0; i < user.idCards.length; i++) {
-    var card = user.idCards[i];
-
-    var filename = filterFileName(card, Platform.OS);
-    var filetype = card.type ? card.type : 'image/jpeg';
-    const fileUri = filterFileUri(card.uri, Platform.OS);
-    
-    formData.append("id_card_" + i, {
-        name: filename,
-        type: filetype,
-        uri: fileUri
-    });    
-  }
-
-  var socialId = '';
-  var socialType = '';
-  var avatar = '';
-
-  if (user.socialId) {
-      socialId = user.socialId; 
-  }
-
-  if (user.socialType) {
-      socialType = user.socialType; 
-  }
-
-  if (user.avatar) {
-      avatar = user.avatar; 
-  }
-
-  formData.append("firstName", user.firstName);
-  formData.append("lastName", user.lastName);
-  formData.append("email", user.email);
-  formData.append("phone", user.phone);
-  formData.append("location", user.location);
-  formData.append("socialId", socialId);
-  formData.append("socialType", socialType);
-  formData.append("avatar", avatar);
-  formData.append("password", user.password);
-  formData.append("availabilityFrom", user.availabilityFrom);
-  formData.append("availabilityTo", user.availabilityTo);
-  formData.append("rate", user.rate);
-  formData.append("services", user.services.join());  
-  formData.append("idType", user.idType);
-  formData.append("idNumber", user.idNumber);
-  formData.append("idOtherInformation", user.idOtherInformation);
-  formData.append("device_token", player_id);
-  formData.append("os", Platform.OS);
-  formData.append("lat", user.currentLat);
-  formData.append("lng", user.currentLng);
-
-  const request_url = `${url}/user/register_provider`
-  return fetch(request_url, {
-      method: "POST",
-      body: formData
-  })
-  .then(response => response.json())
-};
-
-export const createUser = (user, player_id) => {
-  const method = 'POST';
-  const request_url = `${url}/user/create_account`
-  const headers = {
-    'Content-Type': 'application/json',
-  }
-  const body = JSON.stringify({ 
-    accessCode: user.accessCode,
-    email: user.email,
+    socialId: user.socialId,
+    socialType: user.socialType,
+    avatar: user.avatar,
     password: user.password,
-    player_id: player_id,
+    device_token: user.playerId,
     os: Platform.OS,
   });
 
+  
   return fetch(request_url, { method, body, headers})
     .then((res) => res.json());
 };
@@ -246,104 +147,7 @@ export const getUser = (user_id, is_update) => {
     .then((res) => res.json());
 };
 
-export const getTransactions = (user_id) => {
-  const method = 'POST';
-  const request_url = `${url}/payment/get_transactions`
-  const headers = {
-    'Content-Type': 'application/json',
-  }
-  const body = JSON.stringify({ 
-    user_id: user_id,
-  });
-  return fetch(request_url, { method, body, headers})
-    .then((res) => res.json());
-};
-
-export const withdrawWithPaypal = (user_id, paypal, amount) => {
-  const method = 'POST';
-  const request_url = `${url}/withdraw/request_withdraw`
-  const headers = {
-    'Content-Type': 'application/json',
-  }
-  const body = JSON.stringify({ 
-    user_id: user_id,
-    amount: amount,
-    payment_type: 'paypal',
-    paypal: paypal
-  });
-  return fetch(request_url, { method, body, headers})
-    .then((res) => res.json());
-};
-
-export const withdrawWithBank = (user_id, routing_number, account_number, card_number, expire_date, cvc, amount) => {
-  const method = 'POST';
-  const request_url = `${url}/withdraw/request_withdraw`
-  const headers = {
-    'Content-Type': 'application/json',
-  }
-  const body = JSON.stringify({ 
-    user_id: user_id,
-    amount: amount,
-    payment_type: 'bank',
-    routing_number: routing_number,
-    account_number: account_number,
-    card_number: card_number,
-    expire_date: expire_date,
-    cvc: cvc,
-  });
-  return fetch(request_url, { method, body, headers})
-    .then((res) => res.json());
-};
-
-export const getNearbyProviders = (lat, lng, service_id) => {
-  const method = 'POST';
-  const request_url = `${url}/user/get_nearby_providers`
-  const headers = {
-    'Content-Type': 'application/json',
-  }
-  const body = JSON.stringify({ 
-    lat: lat,
-    lng: lng,
-    service_id: service_id,
-  });
-  return fetch(request_url, { method, body, headers})
-    .then((res) => res.json());
-};
-
-export const deposit = (data) => {
-  const method = 'POST';
-  const request_url = `${url}/deposit/create_deposit`
-  const headers = {
-    'Content-Type': 'application/json',
-  }
-  const body = JSON.stringify(data);
-  return fetch(request_url, { method, body, headers})
-    .then((res) => res.json());
-};
-
-export const getPaypalClientToken = (data) => {
-  const method = 'POST';
-  const request_url = `${url}/deposit/get_paypal_client_token`
-  const headers = {
-    'Content-Type': 'application/json',
-  }
-  const body = JSON.stringify(data);
-  return fetch(request_url, { method, body, headers})
-    .then((res) => res.text());
-};
-
-export const processPaypalDeposit = (data) => {
-  const method = 'POST';
-  const request_url = `${url}/deposit/paypal_deposit`
-  const headers = {
-    'Content-Type': 'application/json',
-  }
-  const body = JSON.stringify(data);
-  return fetch(request_url, { method, body, headers})
-    .then((res) => res.json());
-};
-
-export const updateCustomer = (user) => {
+export const updateProfile = (user) => {
   const formData = new FormData();
   if (user.avatarFile) {
     var filename = filterFileName(user.avatarFile, Platform.OS);
@@ -363,67 +167,11 @@ export const updateCustomer = (user) => {
   formData.append("email", user.email);
   formData.append("phone", user.phone);
   formData.append("location", user.location);
-  formData.append("lat", user.currentLat);
-  formData.append("lng", user.currentLng);
 
-  const request_url = `${url}/user/update_customer`
+  const request_url = `${url}/user/update_profile`
   return fetch(request_url, {
       method: "POST",
       body: formData
   })
   .then(response => response.json())
-};
-
-export const updateProvider = (user) => {
-  const formData = new FormData();
-  if (user.avatarFile && user.avatarFile.uri) {
-    var filename = filterFileName(user.avatarFile, Platform.OS);
-    var filetype = user.avatarFile.type ? user.avatarFile.type : 'image/jpeg';
-    const fileUri = filterFileUri(user.avatarFile.uri, Platform.OS);
-    formData.append("avatar", {
-        name: filename,
-        type: filetype,
-        uri: fileUri
-    });        
-  }
-
-  formData.append("id", user.id);
-  formData.append("firstName", user.firstName);
-  formData.append("lastName", user.lastName);
-  formData.append("email", user.email);
-  formData.append("phone", user.phone);
-  formData.append("location", user.location);
-  formData.append("zipcode", user.zipcode);
-  formData.append("availabilityFrom", user.availabilityFrom);
-  formData.append("availabilityTo", user.availabilityTo);
-  formData.append("rate", user.rate);
-  formData.append("services", user.services.join());
-  formData.append("aboutService", user.aboutService ? user.aboutService : '');
-  formData.append("lat", user.currentLat);
-  formData.append("lng", user.currentLng);
-
-  const request_url = `${url}/user/update_provider`
-  return fetch(request_url, {
-      method: "POST",
-      body: formData
-  })
-  .then(response => response.json())
-};
-
-export const checkEmail = (email) => {
-  const method = 'POST';
-  const request_url = `${url}/user/check_email`
-  const headers = {
-    'Content-Type': 'application/json',
-  }
-  const body = JSON.stringify({ 
-    email: email,
-  });
-
-  return fetch(request_url, { method, body, headers})
-    .then(res => res.json())
-    .then(res => {
-        return res;
-      }
-    );
 };

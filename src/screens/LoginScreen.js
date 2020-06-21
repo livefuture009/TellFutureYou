@@ -73,7 +73,6 @@ class LoginScreen extends Component {
   }
 
   componentDidMount() {
-    this.loadGlobalData();
     this.initPush();
 
     GoogleSignin.configure({
@@ -141,24 +140,6 @@ class LoginScreen extends Component {
         SplashScreen.hide();
       }
     }
-  }
-
-  loadGlobalData() {
-    this.props.dispatch({
-      type: actionTypes.GET_GLOBAL_INFO,
-    });
-
-    this.props.dispatch({
-      type: actionTypes.GET_AVAILABILITIES,
-    });
-
-    this.props.dispatch({
-      type: actionTypes.GET_RATES,
-    });
-
-    this.props.dispatch({
-      type: actionTypes.GET_SERVICES,
-    });
   }
 
   initPush() {
@@ -326,21 +307,13 @@ class LoginScreen extends Component {
     this.setState({isLoading: false, email: '', password: ''});    
 
     // Move Next Page.
-    var nextScreen = ""
-    if (currentUser.type == "customer") {
-      nextScreen = "CustomerTab";
-    } else {
-      nextScreen = "ProviderTab";
-    }
-
+    var nextScreen = "MainTab"
     this.props.navigation.navigate(nextScreen);
     setInterval(() => {
       SplashScreen.hide();    
 
       // Get Unread Messages and Notification Count.
       this.getUnreadMessageCount();
-      this.getUnreadNotificationCount();
-
     }, 1000);
 
     this.connectSendBird();
@@ -637,7 +610,7 @@ class LoginScreen extends Component {
   
   onRegister() {
     Keyboard.dismiss();
-    this.props.navigation.navigate('SelectUserType');
+    this.props.navigation.navigate('SignUp');
   }
 
   getJobSuccess() {
@@ -687,29 +660,27 @@ class LoginScreen extends Component {
 
               <View style={styles.formView}>
                 <FormInput
-                   placeholder="Email Address" 
-                   type="email"
-                   prefixIcon="email"
-                   placeholderTextColor="#939393"
-                   value={this.state.email} 
-                   errorMessage={this.state.emailError}
-                   returnKeyType="next"                                       
-                   onSubmitEditing={() => { this.passwordInput.focus() }}
-                   onChangeText={this.onChangeEmail} />
+                  label="Your Email"
+                  placeholder="David@email.com" 
+                  type="email"
+                  value={this.state.email} 
+                  errorMessage={this.state.emailError}
+                  returnKeyType="next"                                       
+                  onSubmitEditing={() => { this.passwordInput.focus() }}
+                  onChangeText={(text) => this.setState({email: text, emailError: null})} />
 
                 <FormInput
-                   placeholder="Password" 
-                   type="password"
-                   prefixIcon="password"
-                   placeholderTextColor="#939393"
-                   returnKeyType="done"
-                   showPassword={true}
-                   value={this.state.password} 
-                    errorMessage={this.state.passwordError}
-                    onRefInput={(input) => { this.passwordInput = input }}
-                    onChangeText={(text) => this.setState({password: text, passwordError: null})} 
-                    onSubmitEditing={() => { this.onLogin() }}
-                 />
+                  label="Password"
+                  placeholder="***********" 
+                  type="password"
+                  returnKeyType="done"
+                  showPassword={true}
+                  value={this.state.password} 
+                  errorMessage={this.state.passwordError}
+                  onRefInput={(input) => { this.passwordInput = input }}
+                  onChangeText={(text) => this.setState({password: text, passwordError: null})} 
+                  onSubmitEditing={() => { this.onLogin() }}
+                />
 
                 <View style={{alignItems: 'flex-end'}}>
                   <Button title="Forgot Password?" underline={true} onPress={() => this.onForgotPassword()}/>
@@ -778,15 +749,15 @@ const styles = StyleSheet.create({
     paddingLeft: 25,
     paddingRight: 25,
     ...ifIphoneX({
-      marginTop: 80,
+      marginTop: 20,
     }, {
       marginTop: 0,
     }),
   },
 
   logoImage: {
-    width: 200,
-    height: 200,
+    width: 270,
+    height: 225,
     resizeMode: 'contain',
   },
 

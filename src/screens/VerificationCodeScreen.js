@@ -87,7 +87,7 @@ class VerificationCodeScreen extends Component {
 
   render() {
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.navColor}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
         <View style={styles.container}>
           <TopNavBar title="Verify Code" onBack={() => this.onBack()}/>
           <BlueBar title="We have sent you an access code via Email for email address verification." />
@@ -96,6 +96,7 @@ class VerificationCodeScreen extends Component {
               label="Verification Code" 
               type="text"
               autoFocus={true}
+              placeholder="******" 
               placeholderTextColor="#939393"
               errorMessage={this.state.codeError}
               value={this.state.code} 

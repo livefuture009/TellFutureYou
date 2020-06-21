@@ -5,22 +5,19 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import LoginScreen from '../screens/LoginScreen';
-// import SignUpScreen from '../screens/SignUpScreen';
-// import SignUp2Screen from '../screens/SignUp2Screen';
-// import SelectUserTypeScreen from '../screens/SelectUserTypeScreen';
-// import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
-// import TermsScreen from '../screens/TermsScreen';
-// import IDVerificationScreen from '../screens/IDVerificationScreen';
-// import VerificationCodeScreen from '../screens/VerificationCodeScreen';
-// import ResetNewPasswordScreen from '../screens/ResetNewPasswordScreen';
-// import ChangePasswordScreen from '../screens/ChangePasswordScreen';
-// import MapScreen from '../screens/MapScreen';
+import SignUpScreen from '../screens/SignUpScreen';
+import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
+import TermsScreen from '../screens/TermsScreen';
+import VerificationCodeScreen from '../screens/VerificationCodeScreen';
+import ResetNewPasswordScreen from '../screens/ResetNewPasswordScreen';
+import ChangePasswordScreen from '../screens/ChangePasswordScreen';
+
+import EditProfileScreen from '../screens/EditProfileScreen';
 
 // import ProviderProfileScreen from '../screens/Customer/ProviderProfileScreen';
 // import CustomerJobDetailScreen from '../screens/Customer/CustomerJobDetailScreen';
-// import PayScreen from '../screens/Customer/PayScreen';
 
-// import EditProfileScreen from '../screens/EditProfileScreen';
+
 // import DepositPaymentMethodScreen from '../screens/Customer/DepositPaymentMethodScreen';
 // import BankDepositScreen from '../screens/Customer/BankDepositScreen';
 // import CardDepositScreen from '../screens/Customer/CardDepositScreen';
@@ -40,7 +37,7 @@ import LoginScreen from '../screens/LoginScreen';
 // import ChatListScreen from '../screens/Chat/ChatListScreen';
 // import ChatSceen from '../screens/Chat/ChatSceen';
 
-// import ProviderTab from './ProviderTab';
+import MainTab from './MainTab';
 // import CustomerTab from './CustomerTab';
 
 
@@ -51,15 +48,15 @@ function AppNavigator() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false, gestureEnabled: false }}/>
-        {/* <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false, gestureEnabled: false }}/>
-        <Stack.Screen name="SignUp2" component={SignUp2Screen} options={{ headerShown: false, gestureEnabled: false }}/>
-        <Stack.Screen name="SelectUserType" component={SelectUserTypeScreen} options={{ headerShown: false, gestureEnabled: false }}/>        
-        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ headerShown: false, gestureEnabled: false }}/>        
+        <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false, gestureEnabled: false }}/>
+        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ headerShown: false, gestureEnabled: false }}/>
         <Stack.Screen name="Terms" component={TermsScreen} options={{ headerShown: false, gestureEnabled: false }}/>
-        <Stack.Screen name="IDVerification" component={IDVerificationScreen} options={{ headerShown: false, gestureEnabled: false }}/>
         <Stack.Screen name="VerificationCode" component={VerificationCodeScreen} options={{ headerShown: false, gestureEnabled: false }}/>
         <Stack.Screen name="ResetNewPassword" component={ResetNewPasswordScreen} options={{ headerShown: false, gestureEnabled: false }}/>        
         <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} options={{ headerShown: false, gestureEnabled: false }}/>
+        <Stack.Screen name="MainTab" component={MainTab} options={{ headerShown: false, gestureEnabled: false }}/>
+        
+        {/* 
         <Stack.Screen name="Map" component={MapScreen} options={{ headerShown: false, gestureEnabled: false }}/>
         <Stack.Screen name="ProviderProfile" component={ProviderProfileScreen} options={{ headerShown: false, gestureEnabled: false }}/>
         <Stack.Screen name="CustomerJobDetail" component={CustomerJobDetailScreen} options={{ headerShown: false, gestureEnabled: false }}/>
