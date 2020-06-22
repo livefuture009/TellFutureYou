@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   View,
   StyleSheet,
+  Text,
   SafeAreaView
 } from 'react-native';
 
@@ -12,7 +13,10 @@ import { TOAST_SHOW_TIME, Status } from '../../constants.js'
 import actionTypes from '../../actions/actionTypes';
 import * as Storage from '../../services/Storage'
 import Colors from '../../theme/Colors'
+import Images from '../../theme/Images'
 import AsyncStorage from '@react-native-community/async-storage';
+import FastImage from 'react-native-fast-image'
+import Fonts from '../../theme/Fonts';
 
 class MyAccountScreen extends Component {
   onMoveEditProfile() {
@@ -60,26 +64,27 @@ class MyAccountScreen extends Component {
   }
   
   render() {
-    const { unreadMessages, unreadNumber } = this.props; 
+    const { currentUser } = this.props;
+    const avatar = (currentUser && currentUser.avatar)  ? currentUser.avatar : '';
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.navColor}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
         <View style={styles.container}>
           <HeaderInfoBar 
-            title="SETTINGS" 
-            user={this.props.currentUser} 
-            isSearch={false}
-            unReadMessageCount={unreadMessages}
-            unReadNotificationCount={unreadNumber}
-            onNotification={() => this.onNotification()}
-            onProfile={() => this.onProfile()}
-            onChat={() => this.onChat()}
+            title="MY ACCOUNT" 
           />
 
-          <View style={styles.boxView}>
+          <View style={styles.contentView}>
+            <View style={styles.profileBox}>
+              <View style={styles.avatarContainer}>
+                <FastImage source={avatar ? {uri: avatar} : Images.account_icon} style={styles.avatarImage}/>
+              </View>              
+              <Text style={styles.nameText}>{currentUser.firstName} {currentUser.lastName}</Text>
+              <Text style={styles.emailText}>{currentUser.email}</Text>
+            </View>
+
             <SettingsInfoCell label="Edit Profile" type="submenu" onPress={() => this.onMoveEditProfile()}/>
             <SettingsInfoCell label="Change Password" type="submenu" onPress={() => this.onMoveChangePassword()}/>
-            <SettingsInfoCell label="Payment" type="submenu" onPress={() => this.onMovePayment()}/>
-            <SettingsInfoCell label="Logout" type="red" onPress={() => this.onLogout()}/>
+            <SettingsInfoCell label="My Subscription" type="submenu" onPress={() => this.onMovePayment()}/>
           </View>
         </View>
       </SafeAreaView>
@@ -90,18 +95,49 @@ class MyAccountScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9f9fc',
   },
 
-  boxView: {
-    backgroundColor: 'white',    
-    borderWidth: 1,
-    borderColor: '#f3f3f3',
-    borderRadius: 10,
-    marginLeft: 10,
-    marginRight: 10,
-    marginTop: 20,
-    overflow: 'hidden',
+  contentView: {
+    flex: 1,
+    backgroundColor: '#f2f2f5',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    marginTop: 60,
+  },
+
+  profileBox: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: -60,
+    marginBottom: 30,
+  },
+
+  nameText: {
+    fontFamily: Fonts.bold,
+    fontSize: 20,
+    color: '#454545',
+    marginTop: 10,
+  },
+
+  emailText: {
+    fontFamily: Fonts.regular,
+    fontSize: 16,
+  },
+
+  avatarContainer: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.03)',
+  },
+
+  avatarImage: {
+    width: 105,
+    height: 105,
+    borderRadius: 52,
+    backgroundColor: 'lightgray',
   },
 })
 
@@ -114,8 +150,6 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
   return {
     currentUser: state.user.currentUser,
-    unreadMessages: state.user.unreadMessages,
-    unreadNumber: state.notifications.unreadNumber,
     errorMessage: state.jobs.errorMessage,
   };  
 }

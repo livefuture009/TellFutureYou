@@ -9,7 +9,8 @@ import {
 import {connect} from 'react-redux';
 import SendBird from 'sendbird';
 import Toast from 'react-native-easy-toast'
-import TopNavBar from '../../components/TopNavBar'
+import HeaderInfoBar from '../../components/HeaderInfoBar'
+import SearchBox from '../../components/SearchBox'
 import LoadingOverlay from '../../components/LoadingOverlay'
 import EmptyView from '../../components/EmptyView'
 import Colors from '../../theme/Colors'
@@ -29,6 +30,7 @@ class ChatScreen extends Component {
     this.state = {
       isLoading: false,
       channelList: [],
+      keyword: '',
     }
   }
 
@@ -146,15 +148,24 @@ class ChatScreen extends Component {
   }
 
   render() {
+    const { keyword } = this.state;
     var currentUser = null;
     if (sb) {
       currentUser = sb.currentUser;
     }
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
         <View style={styles.container}>
-          <TopNavBar title="MESSAGES" align="left" onBack={() => this.onBack()}/>
+          <HeaderInfoBar 
+            title="MESSAGES" 
+          />
           <View style={styles.contentView}>
+            <SearchBox 
+              style={{marginTop: 10, marginBottom: 10}} 
+              value={keyword} 
+              placeholder="Search ..." 
+              onChangeText={(text) => this.searchService(text)}
+            />
             {
               (this.state.channelList && this.state.channelList.length > 0)
               ? <FlatList
@@ -189,6 +200,8 @@ const styles = StyleSheet.create({
   contentView: {
     flex: 1,
     backgroundColor: '#f2f2f5',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
   },
 
   listView: {

@@ -8,9 +8,8 @@ import {
 
 import {connect} from 'react-redux';
 import Toast from 'react-native-easy-toast'
-import TopNavBar from '../../components/TopNavBar'
-import RoundButton from '../../components/RoundButton'
-import BlueInfoBar from '../../components/Provider/BlueInfoBar'
+import HeaderInfoBar from '../../components/HeaderInfoBar'
+import SearchBox from '../../components/SearchBox'
 import EarningCell from '../../components/Provider/EarningCell'
 import LoadingOverlay from '../../components/LoadingOverlay'
 import actionTypes from '../../actions/actionTypes';
@@ -61,28 +60,33 @@ class ContactListScreen extends Component {
   }
 
   render() {
-    const { transactions, isFirst } = this.props;
+    const { contacts, keyword, isFirst } = this.props;
 
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.navColor}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
         <View style={styles.container}>
-          <TopNavBar 
-            title="My Contacts" 
-            align="left" 
-            onBack={() => this.onBack()}/>
+          <HeaderInfoBar 
+            title="MY CONTACTS" 
+          />
           <View style={{flex: 1}}>
-            <View style={styles.listView}>
+            <View style={styles.contentView}>
+              <SearchBox 
+                style={{marginTop: 10, marginBottom: 10}} 
+                value={keyword} 
+                placeholder="Search ..." 
+                onChangeText={(text) => this.searchService(text)}
+              />
               {
-                (transactions && transactions.length > 0)
+                (contacts && contacts.length > 0)
                 ?  <FlatList
-                    data={transactions}
+                    data={contacts}
                     keyExtractor={(item, index) => index.toString()}
                     ListFooterComponent={() => (<View style={{height: 70}}/>)}
                     renderItem={({ item, index }) => (
                       <EarningCell data={item} key={index} userType="customer"/>
                     )}
                   />
-                : !isFirst && <EmptyView title="No transactions."/>
+                : !isFirst && <EmptyView title="No contacts."/>
 
               }
             </View>
@@ -96,35 +100,15 @@ class ContactListScreen extends Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+
   contentView: {
-    backgroundColor: 'white',
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 20,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 5,
-  },
-
-  footer: {
-    position: 'absolute',
-    left: 0,
-    width: '100%',
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    bottom: 20,
-  },
-
-  blueButton: {
-    width: '90%'
-  },
-
-  listView: {
-    flex: 1,
+    backgroundColor: '#f2f2f5',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
   },
 })
 

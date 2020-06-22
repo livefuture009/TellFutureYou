@@ -21,7 +21,7 @@ export default class HeaderInfoBar extends React.Component {
 	    <View style={styles.container}>
 	    	<Text style={styles.titleText}>{title}</Text>
 	    	<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-				<TouchableOpacity style={styles.notificationButton} onPress={() => onChat()}>
+				{/* <TouchableOpacity style={styles.notificationButton} onPress={() => onChat()}>
 	    			<Image
 			          style={styles.notificationImage}
 			          source={Images.chat_icon}
@@ -33,28 +33,7 @@ export default class HeaderInfoBar extends React.Component {
 						  </View>				    
 				    	: null				    	
 				    }	
-	    		</TouchableOpacity>
-
-	    		<TouchableOpacity style={styles.notificationButton} onPress={() => onNotification()}>
-	    			<Image
-			          style={styles.notificationImage}
-			          source={Images.notification_icon}
-				    />
-				    {
-				    	unReadNotificationCount
-				    	? <View style={styles.badgeView}>
-						  	<Text style={styles.badgeText}>{unReadNotificationCount}</Text>
-						  </View>				    
-				    	: null				    	
-				    }				    
-	    		</TouchableOpacity>
-
-	    		<TouchableOpacity style={styles.avatar} onPress={() => onProfile()}>
-	    			<FastImage
-			          style={styles.image}
-			          source={user && user.avatar ? {uri: user.avatar} : Images.account_icon}
-				    />
-	    		</TouchableOpacity>
+	    		</TouchableOpacity> */}
 	    	</View>
 	    </View>
     );
@@ -70,14 +49,13 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		backgroundColor: Colors.navColor,
 	},
 
 	titleText: {
 		textAlign: 'left',
 		fontFamily: Fonts.bold,
-		fontSize: 26,
-		color: 'white',
+		fontSize: 28,
+		color: 'black',
 	},
 
 	badgeView: {

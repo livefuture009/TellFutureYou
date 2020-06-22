@@ -15,12 +15,6 @@ class LabelFormInput extends Component {
         return (
             <View style={[this.props.style, styles.container]}>
                 <View style={styles.content}>
-                    <TouchableOpacity style={styles.searchButton}>
-                        <Image
-                          style={styles.searchIcon}
-                          source={Images.search_icon}
-                        />
-                    </TouchableOpacity>
                     <TextInput
                         style={styles.textInput}
                         placeholderTextColor="#acacac"
@@ -29,6 +23,12 @@ class LabelFormInput extends Component {
                         value={this.props.value}
                         placeholder={this.props.placeholder}
                     />
+                    <TouchableOpacity style={styles.searchButton}>
+                        <Image
+                          style={styles.searchIcon}
+                          source={Images.search_icon}
+                        />
+                    </TouchableOpacity>
                 </View>
             </View>
         );
@@ -39,13 +39,12 @@ export default LabelFormInput;
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Colors.navColor,
         paddingBottom: 10,
         paddingHorizontal: 10,
     },
 
     content: {
-        backgroundColor: '#1f1e60',        
+        backgroundColor: 'white',        
         height: 42,
         borderRadius: 21,
         paddingLeft: 15,
@@ -64,7 +63,7 @@ const styles = StyleSheet.create({
     searchButton: {
         width: 20,
         height: 20,
-        marginRight: 10,
+        marginLeft: 10,
     },
 
     searchIcon: {

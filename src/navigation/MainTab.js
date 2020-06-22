@@ -46,16 +46,16 @@ class CustomerTab extends React.Component {
                   var selectedIcon;
 
                   if (route.name === 'ChatStack') {
-                    icon = Images.tab_home;
-                    selectedIcon = Images.tab_home_selected;
+                    icon = Images.tab_message;
+                    selectedIcon = Images.tab_message_selected;
                   }
                   else if (route.name === 'ContactStack') {
-                    icon = Images.tab_history;
-                    selectedIcon = Images.tab_history_selected;
+                    icon = Images.tab_contacts;
+                    selectedIcon = Images.tab_contacts_selected;
                   } 
                   else if (route.name === 'MyAccountStack') {
-                    icon = Images.tab_settings;
-                    selectedIcon = Images.tab_settings_selected;
+                    icon = Images.tab_profile;
+                    selectedIcon = Images.tab_profile_selected;
                   }
 
                   return <Image
@@ -78,8 +78,8 @@ class CustomerTab extends React.Component {
 
 const styles = StyleSheet.create({
   iconImage: {
-    width: 32,
-    height: 32
+    width: 40,
+    height: 40
   },
 
   inactiveIcon: {
