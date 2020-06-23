@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import Colors from '../../theme/Colors'
-import Images from '../../theme/Images';
+import Colors from '../theme/Colors'
+import Images from '../theme/Images';
 import FastImage from 'react-native-fast-image';
 
 class EditAvatar extends Component {

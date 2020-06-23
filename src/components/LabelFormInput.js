@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, TextInput, Image, Platform, Dimensions, ScrollView } from 'react-native';
-import RNPickerSelect from './react-native-picker-select';
+import RNPickerSelect from 'react-native-picker-select';
 import DatePicker from 'react-native-datepicker'
 import { GoogleAutoComplete } from 'react-native-google-autocomplete';
 import Colors from '../theme/Colors'

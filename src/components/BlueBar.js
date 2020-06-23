@@ -1,13 +1,8 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, Text } from 'react-native';
-import PropTypes from "prop-types"
-import Colors from '../../theme/Colors'
+import Colors from '../theme/Colors'
 
 export default class BlueBar extends React.Component {
-	static propTypes = {
-	    title: PropTypes.string,
-	}
-
   	render() {
     	return (
 	   		<Text style={[this.props.style, styles.textLabel]}>{this.props.title}</Text>

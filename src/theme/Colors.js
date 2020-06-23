@@ -1,5 +1,6 @@
 const Colors = {
-	appColor: '#38baf6',
+  appColor: '#38baf6',
+  appColor2: '#fbc200',
   navColor: '#0f0d3c',
 	redColor: '#f12121',
   pageColor: '#fcfcfc',

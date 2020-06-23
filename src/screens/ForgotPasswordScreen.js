@@ -10,7 +10,7 @@ import {
 import {connect} from 'react-redux';
 import TopNavBar from '../components/TopNavBar'
 import RoundButton from '../components/RoundButton'
-import BlueBar from '../components/SignUp/BlueBar'
+import BlueBar from '../components/BlueBar'
 import LabelFormInput from '../components/LabelFormInput'
 import { TOAST_SHOW_TIME, Status } from '../constants.js'
 import LoadingOverlay from '../components/LoadingOverlay'

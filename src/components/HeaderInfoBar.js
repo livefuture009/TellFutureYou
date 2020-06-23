@@ -24,6 +24,13 @@ export default class HeaderInfoBar extends React.Component {
 					  </TouchableOpacity>
 					: null
 				}
+				{
+					rightButton == "plus"
+					? <TouchableOpacity onPress={() => onRight()}>
+						<Image source={Images.icon_plus} style={styles.plusIcon}/>
+					  </TouchableOpacity>
+					: null
+				}
 	    	</View>
 	    </View>
     );
@@ -53,5 +60,17 @@ const styles = StyleSheet.create({
 		fontFamily: Fonts.regular,
 		fontSize: 16,
 		color: 'rgba(0, 0 ,0, 0.7)',
+	},
+
+	plusButtonText :{
+		fontFamily: Fonts.bold,
+		color: Colors.appColor2,
+		fontSize: 40,
+	},
+
+	plusIcon: {
+		width: 40,
+		height: 40,
+		resizeMode: 'contain',
 	},
 });

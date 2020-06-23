@@ -10,10 +10,9 @@ import {connect} from 'react-redux';
 import Toast from 'react-native-easy-toast'
 import HeaderInfoBar from '../../components/HeaderInfoBar'
 import SearchBox from '../../components/SearchBox'
-import EarningCell from '../../components/Provider/EarningCell'
 import LoadingOverlay from '../../components/LoadingOverlay'
+import AddContactDialog from '../../components/AddContactDialog'
 import actionTypes from '../../actions/actionTypes';
-import {kFormatter, truncateToDecimals} from '../../functions'
 import EmptyView from '../../components/EmptyView'
 import { TOAST_SHOW_TIME, Status } from '../../constants.js'
 import Colors from '../../theme/Colors'
@@ -25,6 +24,7 @@ class ContactListScreen extends Component {
       isLoading: false,
       isFirst: true,
       contacts: [],
+      isShowAddContactDialog: false,
     }    
   }
 
@@ -59,14 +59,24 @@ class ContactListScreen extends Component {
     this.props.navigation.goBack();
   }
 
+  onAddContact=()=> {
+    this.setState({isShowAddContactDialog: true});
+  }
+
+  onSelectAddContact=(type)=> {
+    this.setState({isShowAddContactDialog: false});
+  }
+
   render() {
-    const { contacts, keyword, isFirst } = this.props;
+    const { contacts, keyword, isFirst, isShowAddContactDialog } = this.state;
 
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
         <View style={styles.container}>
           <HeaderInfoBar 
             title="MY CONTACTS" 
+            rightButton="plus"
+            onRight={this.onAddContact}
           />
           <View style={{flex: 1}}>
             <View style={styles.contentView}>
@@ -83,7 +93,7 @@ class ContactListScreen extends Component {
                     keyExtractor={(item, index) => index.toString()}
                     ListFooterComponent={() => (<View style={{height: 70}}/>)}
                     renderItem={({ item, index }) => (
-                      <EarningCell data={item} key={index} userType="customer"/>
+                      <EarningCell/>
                     )}
                   />
                 : !isFirst && <EmptyView title="No contacts."/>
@@ -92,6 +102,11 @@ class ContactListScreen extends Component {
             </View>
           </View>
         </View>
+        <AddContactDialog 
+          isVisible={isShowAddContactDialog} 
+          onClose={() => this.setState({isShowAddContactDialog: false})}
+          onSelect={this.onSelectAddContact}
+        />
         <Toast ref="toast"/>
         { this.state.isLoading && <LoadingOverlay /> } 
       </SafeAreaView>

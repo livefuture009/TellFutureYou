@@ -23,14 +23,15 @@ const Images = {
     icon_password: require('../../assets/images/icon_password.png'),
     icon_profile: require('../../assets/images/icon_profile.png'),
     icon_subscription: require('../../assets/images/icon_subscription.png'),
-
+    icon_plus: require('../../assets/images/icon_plus.png'),
+    close_icon: require('../../assets/images/close_icon.png'),        
+    sad: require('../../assets/images/sad.png'),        
+    
     // 
     // bank_icon: require('../../assets/images/bank_icon.png'),
     // red_close_button: require('../../assets/images/red_close_button.png'),
     // tick: require('../../assets/images/tick.png'),    
     // tick_white: require('../../assets/images/tick_white.png'),    
-    // close_icon: require('../../assets/images/close_icon.png'),        
-    // sad: require('../../assets/images/sad.png'),        
     // notification_icon: require('../../assets/images/notification_icon.png'),        
 
     // paypal: require('../../assets/images/paypal.png'),
