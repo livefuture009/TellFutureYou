@@ -27,6 +27,10 @@ class MyAccountScreen extends Component {
     this.props.navigation.navigate('ChangePassword');
   }
 
+  onSubscription() {
+    this.props.navigation.navigate('Subscription');
+  }
+
   onLogout=()=> {
     AsyncStorage.clear();
     this.props.navigation.popToTop();
@@ -97,7 +101,7 @@ class MyAccountScreen extends Component {
                 label="My Subscription" 
                 type="submenu" 
                 icon={Images.icon_subscription}
-                onPress={() => this.onMovePayment()}
+                onPress={() => this.onSubscription()}
               />
             </View>
           </View>

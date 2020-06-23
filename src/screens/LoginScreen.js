@@ -54,10 +54,6 @@ import appleAuth, {
 var sb = new SendBird({ appId: SENDBIRD_APP_ID });
 
 class LoginScreen extends Component {
-  static navigationOptions = {
-    headerShown: false,
-  };
-
   notification_type = -1;
   constructor(props) {
     super(props)

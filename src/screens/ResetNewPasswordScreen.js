@@ -19,10 +19,6 @@ import Toast from 'react-native-easy-toast'
 import actionTypes from '../actions/actionTypes';
 
 class ResetNewPasswordScreen extends Component {
-  static navigationOptions = {
-    headerShown: false,
-  };
-
   constructor(props) {
     super(props)
     this.state = {

@@ -25,10 +25,6 @@ import actionTypes from '../actions/actionTypes';
 import {validateEmail, getOnlyAlphabetLetters} from '../functions'
 
 class EditProfile extends Component {
-  static navigationOptions = {
-    headerShown: false,
-  };
-
   constructor(props) {
     super(props)
     this.state = {

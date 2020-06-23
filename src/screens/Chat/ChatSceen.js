@@ -44,10 +44,6 @@ const ChatView = Platform.select({
 var sb = null;
 
 class ChatScreen extends Component {
-  static navigationOptions = {
-    headerShown: false,
-  };
-
   constructor(props) {
     super(props)
     sb = SendBird.getInstance();

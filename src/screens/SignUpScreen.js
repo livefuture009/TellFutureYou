@@ -27,10 +27,6 @@ import Colors from '../theme/Colors'
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 class SignUpScreen extends Component {
-  static navigationOptions = {
-    header: null,
-  };
-
   constructor(props) {
     super(props)
     this.state = {

@@ -21,10 +21,6 @@ import actionTypes from '../../actions/actionTypes';
 var sb = null;
 
 class ChatScreen extends Component {
-  static navigationOptions = {
-    headerShown: false,
-  };
-
   constructor(props) {
     super(props)
     this.state = {

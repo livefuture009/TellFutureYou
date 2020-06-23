@@ -19,10 +19,6 @@ import { TOAST_SHOW_TIME, Status, PASSWORD_MIN_LENGTH } from '../constants.js'
 import actionTypes from '../actions/actionTypes';
 
 class ChangePasswordScreen extends Component {
-  static navigationOptions = {
-    headerShown: false,
-  };
-
   constructor(props) {
     super(props)
     this.state = {

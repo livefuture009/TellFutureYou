@@ -12,10 +12,6 @@ import { WebView } from 'react-native-webview';
 import Colors from '../theme/Colors'
 
 class TermsScreen extends Component {
-  static navigationOptions = {
-    headerShown: false,
-  };
-
   constructor(props) {
     super(props)
     this.state = {

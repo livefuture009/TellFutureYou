@@ -20,10 +20,6 @@ import { TOAST_SHOW_TIME, Status } from '../constants.js'
 import Colors from '../theme/Colors'
 
 class VerificationCodeScreen extends Component {
-  static navigationOptions = {
-    headerShown: false,
-  };
-
   constructor(props) {
     super(props)
     this.state = {
