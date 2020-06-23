@@ -4,10 +4,13 @@ import {
   StyleSheet,
   FlatList,
   SafeAreaView,
+  PermissionsAndroid,
+  Platform,
 } from 'react-native';
 
 import {connect} from 'react-redux';
 import Toast from 'react-native-easy-toast'
+import Contacts from 'react-native-contacts';
 import HeaderInfoBar from '../../components/HeaderInfoBar'
 import SearchBox from '../../components/SearchBox'
 import LoadingOverlay from '../../components/LoadingOverlay'
@@ -65,6 +68,44 @@ class ContactListScreen extends Component {
 
   onSelectAddContact=(type)=> {
     this.setState({isShowAddContactDialog: false});
+    if (type == 0) {
+      this.importContacts();
+    } else {
+      this.props.navigation.navigate('AddNewContact');
+    }
+  }
+
+  importContacts() {
+    if (Platform.OS == 'android') {
+      PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+        {
+          'title': 'Contacts',
+          'message': 'This app would like to view your contacts.',
+          'buttonPositive': 'Please accept bare mortal'
+        }
+      ).then(() => {
+        Contacts.getAll((err, contacts) => {
+          if (err === 'denied'){
+            // error
+          } else {
+            this.parseContacts(contacts);
+          }
+        })
+      })
+    } else {
+      Contacts.getAll((err, contacts) => {
+        if (err === 'denied'){
+          // error
+        } else {
+          this.parseContacts(contacts);
+        }
+      })
+    }
+  }
+
+  parseContacts(contacts) {
+    console.log(contacts);
   }
 
   render() {

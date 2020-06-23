@@ -59,15 +59,15 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>TellFutureYou requires to access camera for taking profile picture.</string>
+	<string>$(PRODUCT_NAME) requires to access camera for taking profile picture.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>TellFutureYou required to access your geo location for push notification.</string>
+	<string>$(PRODUCT_NAME) required to access your geo location for push notification.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>TellFutureYou required to access your geo location for push notification.</string>
+	<string>$(PRODUCT_NAME) required to access your geo location for push notification.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>TellFutureYou required to access your geo location for push notification.</string>
+	<string>$(PRODUCT_NAME) required to access your geo location for push notification.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>TellFutureYou requires to access photo library for selecting profile picture.</string>
+	<string>$(PRODUCT_NAME) requires to access photo library for selecting profile picture.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>OpenSans-Bold.ttf</string>
@@ -95,5 +95,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSContactsUsageDescription</key>
+	<string>$(PRODUCT_NAME) allow contact access</string>
 </dict>
 </plist>
