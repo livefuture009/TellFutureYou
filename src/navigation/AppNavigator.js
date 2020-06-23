@@ -54,10 +54,11 @@ function AppNavigator() {
         <Stack.Screen name="VerificationCode" component={VerificationCodeScreen} options={{ headerShown: false, gestureEnabled: false }}/>
         <Stack.Screen name="ResetNewPassword" component={ResetNewPasswordScreen} options={{ headerShown: false, gestureEnabled: false }}/>        
         <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} options={{ headerShown: false, gestureEnabled: false }}/>
+        <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ headerShown: false, gestureEnabled: false }}/>
         <Stack.Screen name="MainTab" component={MainTab} options={{ headerShown: false, gestureEnabled: false }}/>
         
         {/* 
-        <Stack.Screen name="Map" component={MapScreen} options={{ headerShown: false, gestureEnabled: false }}/>
+        
         <Stack.Screen name="ProviderProfile" component={ProviderProfileScreen} options={{ headerShown: false, gestureEnabled: false }}/>
         <Stack.Screen name="CustomerJobDetail" component={CustomerJobDetailScreen} options={{ headerShown: false, gestureEnabled: false }}/>
         <Stack.Screen name="Pay" component={PayScreen} options={{ headerShown: false, gestureEnabled: false }}/>

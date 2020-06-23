@@ -19,8 +19,12 @@ const Images = {
     tab_profile_selected: require('../../assets/images/tab_profile_selected.png'),    
     search_icon: require('../../assets/images/search_icon.png'),  
     arrow_right: require('../../assets/images/arrow_right.png'),    
-    
-    // photo_icon: require('../../assets/images/photo_icon.png'),
+    icon_notification: require('../../assets/images/icon_notification.png'),
+    icon_password: require('../../assets/images/icon_password.png'),
+    icon_profile: require('../../assets/images/icon_profile.png'),
+    icon_subscription: require('../../assets/images/icon_subscription.png'),
+
+    // 
     // bank_icon: require('../../assets/images/bank_icon.png'),
     // red_close_button: require('../../assets/images/red_close_button.png'),
     // tick: require('../../assets/images/tick.png'),    

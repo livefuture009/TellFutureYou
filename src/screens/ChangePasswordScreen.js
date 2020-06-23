@@ -126,7 +126,7 @@ class ChangePasswordScreen extends Component {
       confirmPasswordError 
     } = this.state;
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.navColor}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
 
         <View style={styles.container}>
           <TopNavBar title="CHANGE PASSWORD" align="left" onBack={() => this.onBack()}/>

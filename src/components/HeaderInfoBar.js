@@ -9,31 +9,21 @@ export default class HeaderInfoBar extends React.Component {
   render() {
 	const { 
 		title, 
-		user, 
-		unReadMessageCount, 
-		unReadNotificationCount, 
-		onChat, 
-		onNotification, 
-		onProfile
+		rightButton,
+		onRight, 
 	} = this.props;
 
     return (
 	    <View style={styles.container}>
 	    	<Text style={styles.titleText}>{title}</Text>
 	    	<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-				{/* <TouchableOpacity style={styles.notificationButton} onPress={() => onChat()}>
-	    			<Image
-			          style={styles.notificationImage}
-			          source={Images.chat_icon}
-				    />
-					{
-				    	unReadMessageCount
-				    	? <View style={styles.badgeView}>
-						  	<Text style={styles.badgeText}>{unReadMessageCount}</Text>
-						  </View>				    
-				    	: null				    	
-				    }	
-	    		</TouchableOpacity> */}
+				{
+					rightButton == "logout"
+					? <TouchableOpacity onPress={() => onRight()}>
+						<Text style={styles.buttonText}>Logout</Text>
+					  </TouchableOpacity>
+					: null
+				}
 	    	</View>
 	    </View>
     );
@@ -58,50 +48,10 @@ const styles = StyleSheet.create({
 		color: 'black',
 	},
 
-	badgeView: {
-		width: 16,
-		height: 16,
-		borderRadius: 8,
-		backgroundColor: '#f12105',
-		justifyContent: 'center',
-		alignItems: 'center',		
-		position: 'absolute',
-		right: -5,
-		top: -3,
-	},
-
-	badgeText: {
-		fontSize: 10,
-		fontFamily: Fonts.bold,
-		textAlign: 'center',
-		color: 'white',
-	},
-
-	notificationButton: {
-		width: 24,
-		height: 24,
-		marginLeft: 15,
-	},
-
-	notificationImage: {
-		width: '100%',
-		height: '100%',
-		resizeMode: 'cover',
-	},
-
-	avatar: {
-		marginLeft: 15,
-		width: 30,
-		height: 30,
-		borderRadius: 15,
-		overflow: 'hidden',
-		backgroundColor: 'lightgray',
-	},
-
-	image: {
-		width: 30,
-		height: 30,
-		borderRadius: 15,
-		resizeMode: 'cover',
+	buttonText: {
+		textAlign: 'right',
+		fontFamily: Fonts.regular,
+		fontSize: 16,
+		color: 'rgba(0, 0 ,0, 0.7)',
 	},
 });

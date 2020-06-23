@@ -27,11 +27,7 @@ class MyAccountScreen extends Component {
     this.props.navigation.navigate('ChangePassword');
   }
 
-  onMovePayment() {
-    this.props.navigation.navigate('TransactionHistory');
-  }
-
-  onLogout() {
+  onLogout=()=> {
     AsyncStorage.clear();
     this.props.navigation.popToTop();
     
@@ -71,6 +67,8 @@ class MyAccountScreen extends Component {
         <View style={styles.container}>
           <HeaderInfoBar 
             title="MY ACCOUNT" 
+            rightButton="logout"
+            onRight={this.onLogout}
           />
 
           <View style={styles.contentView}>
@@ -82,9 +80,26 @@ class MyAccountScreen extends Component {
               <Text style={styles.emailText}>{currentUser.email}</Text>
             </View>
 
-            <SettingsInfoCell label="Edit Profile" type="submenu" onPress={() => this.onMoveEditProfile()}/>
-            <SettingsInfoCell label="Change Password" type="submenu" onPress={() => this.onMoveChangePassword()}/>
-            <SettingsInfoCell label="My Subscription" type="submenu" onPress={() => this.onMovePayment()}/>
+            <View style={{paddingHorizontal: 20}}>
+              <SettingsInfoCell 
+                label="Edit Profile" 
+                type="submenu" 
+                icon={Images.icon_profile}
+                onPress={() => this.onMoveEditProfile()}
+              />
+              <SettingsInfoCell 
+                label="Change Password" 
+                type="submenu" 
+                icon={Images.icon_password}
+                onPress={() => this.onMoveChangePassword()}
+              />
+              <SettingsInfoCell 
+                label="My Subscription" 
+                type="submenu" 
+                icon={Images.icon_subscription}
+                onPress={() => this.onMovePayment()}
+              />
+            </View>
           </View>
         </View>
       </SafeAreaView>
@@ -122,21 +137,22 @@ const styles = StyleSheet.create({
   emailText: {
     fontFamily: Fonts.regular,
     fontSize: 16,
+    opacity: 0.7,
   },
 
   avatarContainer: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 150,
+    height: 150,
+    borderRadius: 75,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.03)',
   },
 
   avatarImage: {
-    width: 105,
-    height: 105,
-    borderRadius: 52,
+    width: 130,
+    height: 130,
+    borderRadius: 65,
     backgroundColor: 'lightgray',
   },
 })

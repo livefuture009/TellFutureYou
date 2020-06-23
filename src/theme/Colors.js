@@ -5,7 +5,7 @@ const Colors = {
   pageColor: '#fcfcfc',
   roundTextInputPlaceColor: '#7e7db8',
   placeholderColor: '#939393',
-  borderColor: '#8687a3',
+  borderColor: 'rgba(0, 0, 0, 0.3)',
   textViewBackgroundColor: '#fdfdfd',
   ticketColor: '#989898',
   subTextColor: '#4f4f4f',

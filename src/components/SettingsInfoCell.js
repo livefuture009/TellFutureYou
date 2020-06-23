@@ -6,12 +6,16 @@ import Fonts from '../theme/Fonts';
 
 class SettingsInfoCell extends Component {
     render() {
+        const { icon, label, value, onPress } = this.props;
         return (
             <View style={[this.props.style]}>
                 {
                     this.props.type == "submenu" 
-                    ? <TouchableOpacity style={styles.container} onPress={() => this.props.onPress()}>
-                        <Text style={styles.labelText}>{this.props.label}</Text>
+                    ? <TouchableOpacity style={styles.container} onPress={() => onPress()}>
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <Image source={icon} style={styles.iconImage} />
+                            <Text style={styles.labelText}>{label}</Text>
+                        </View>
                         <Image
                            style={styles.arrowIcon}
                            source={Images.arrow_right}
@@ -24,16 +28,16 @@ class SettingsInfoCell extends Component {
                 {
                     this.props.type == "switch"
                     ? <View style={styles.container}>
-                        <Text style={styles.labelText}>{this.props.label}</Text>
-                        <Switch trackColor={{true: Colors.appColor, false: null}} value={this.props.value} onValueChange={(value) => this.props.onChange(value)}/>
+                        <Text style={styles.labelText}>{label}</Text>
+                        <Switch trackColor={{true: Colors.appColor, false: null}} value={value} onValueChange={(value) => this.props.onChange(value)}/>
                       </View>
                     : null
                 }
 
                 {
                     this.props.type == "red"
-                    ? <TouchableOpacity style={styles.container} onPress={() => this.props.onPress()}>
-                        <Text style={styles.redText}>{this.props.label}</Text>
+                    ? <TouchableOpacity style={styles.container} onPress={() => onPress()}>
+                        <Text style={styles.redText}>{label}</Text>
                       </TouchableOpacity>
                     : null
                 }
@@ -48,19 +52,19 @@ export default SettingsInfoCell;
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        paddingLeft: 14,
-        paddingRight: 14,
+        paddingLeft: 20,
+        paddingRight: 20,
         paddingTop: 17,
         paddingBottom: 17,
         backgroundColor: 'white',
         alignItems: 'center',
         justifyContent: 'space-between',
-        borderTopWidth: 1,
-        borderTopColor: '#f3f3f3',        
+        marginBottom: 15, 
+        borderRadius: 35,
     },
 
     labelText: {
-        fontFamily: Fonts.regular,
+        fontFamily: Fonts.bold,
         color: 'black',
         fontSize: 18
     },
@@ -76,5 +80,13 @@ const styles = StyleSheet.create({
     arrowIcon: {
         width: 10,
         height: 20,
-    }
+        resizeMode: 'contain',
+    },
+
+    iconImage: {
+        width: 40,
+        height: 40,
+        marginRight: 5,
+        resizeMode: 'contain',
+    },
 });

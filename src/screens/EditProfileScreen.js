@@ -40,9 +40,6 @@ class EditProfile extends Component {
       phone: '',
       location: '',
       locationText: '',
-      zipcode: '',
-      currentLat: 0,
-      currentLng: 0,
 
       firstNameError: '',
       lastNameError: '',
@@ -65,33 +62,16 @@ class EditProfile extends Component {
         phone: currentUser.phone,
         location: currentUser.location,
         locationText: currentUser.location,
-        currentLat: currentUser.geolocation.coordinates[1],
-        currentLng: currentUser.geolocation.coordinates[0],
       });
     }      
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // Get Geo Data.
-    if (prevProps.getGeoDataStatus != this.props.getGeoDataStatus) {
-      if (this.props.getGeoDataStatus == Status.SUCCESS) {
-        this.setState({
-          zipcode: this.props.geoData.zipcode,
-          currentLat: this.props.geoData.lat, 
-          currentLng: this.props.geoData.lng
-        }, () => {
-          this.updateProfileData();
-        });        
-      } else if (this.props.getGeoDataStatus == Status.FAILURE) {
-        this.onFailure(this.props.errorGlobalMessage);
-      }      
-    }
-
-    if (prevProps.updateCustomerStatus != this.props.updateCustomerStatus) {
-      if (this.props.updateCustomerStatus == Status.SUCCESS) {
+    if (prevProps.updateProfileStatus != this.props.updateProfileStatus) {
+      if (this.props.updateProfileStatus == Status.SUCCESS) {
         this.setState({isLoading: false});
         this.showMessage("Profile has been updated successfully!", true);
-      } else if (this.props.updateCustomerStatus == Status.FAILURE) {
+      } else if (this.props.updateProfileStatus == Status.FAILURE) {
         this.onFailure(this.props.errorMessage);
       }      
     }    
@@ -171,10 +151,7 @@ class EditProfile extends Component {
 
     if (isValid) {
       this.setState({isLoading: true}, () => { 
-        this.props.dispatch({
-          type: actionTypes.GET_GEODATA,
-          address: location,
-        });
+        this.updateProfileData();
       });  
     }
   }
@@ -188,8 +165,6 @@ class EditProfile extends Component {
       phone,
       location,
       avatarFile,
-      currentLat,
-      currentLng
     } = this.state;
 
     let user = {
@@ -199,19 +174,11 @@ class EditProfile extends Component {
       email,
       phone,
       location,
-      availabilityFrom,
-      availabilityTo,
-      rate,
-      services,
-      aboutService,
       avatarFile,
-      currentLat,
-      currentLng
     };
 
-
     this.props.dispatch({
-      type: actionTypes.UPDATE_CUSTOMER,
+      type: actionTypes.UPDATE_PROFILE,
       user: user,
     });
   }
@@ -274,10 +241,9 @@ class EditProfile extends Component {
   render() {
     const { currentUser } = this.props;
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.navColor}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
+        <TopNavBar title="EDIT PROFILE" align="left" onBack={() => this.onBack()}/>
         <View style={styles.container}>
-          <TopNavBar title="EDIT PROFILE" align="left" onBack={() => this.onBack()}/>
-
           <KeyboardAwareScrollView>
             <View>
               <View style={styles.profileBox}>
@@ -286,27 +252,29 @@ class EditProfile extends Component {
                 </View>              
                 <View style={styles.rowView}>
                   <LabelFormInput
-                          label="First name" 
-                          type="text"
-                          placeholderTextColor={Colors.placeholderTextColor}
-                          value={this.state.firstName} 
-                          errorMessage={this.state.firstNameError}
-                          style={{width: '45%'}}
-                          returnKeyType="next"                                       
-                          onSubmitEditing={() => { this.lastNameInput.focus() }}
-                          onChangeText={this.onChangeFirstName} />
+                    label="First name" 
+                    type="text"
+                    placeholderTextColor={Colors.placeholderTextColor}
+                    value={this.state.firstName} 
+                    errorMessage={this.state.firstNameError}
+                    style={{width: '45%'}}
+                    returnKeyType="next"                                       
+                    onSubmitEditing={() => { this.lastNameInput.focus() }}
+                    onChangeText={this.onChangeFirstName} 
+                  />
 
-                      <LabelFormInput
-                          label="Last name" 
-                          type="text"
-                          placeholderTextColor={Colors.placeholderTextColor}
-                          value={this.state.lastName} 
-                          errorMessage={this.state.lastNameError}
-                          style={{width: '45%'}}
-                          returnKeyType="next"                                       
-                          onRefInput={(input) => { this.lastNameInput = input }}
-                          onSubmitEditing={() => { this.emailInput.focus() }}
-                          onChangeText={this.onChangeLastName} />
+                  <LabelFormInput
+                    label="Last name" 
+                    type="text"
+                    placeholderTextColor={Colors.placeholderTextColor}
+                    value={this.state.lastName} 
+                    errorMessage={this.state.lastNameError}
+                    style={{width: '45%'}}
+                    returnKeyType="next"                                       
+                    onRefInput={(input) => { this.lastNameInput = input }}
+                    onSubmitEditing={() => { this.emailInput.focus() }}
+                    onChangeText={this.onChangeLastName} 
+                  />
                 </View>
 
                 <LabelFormInput
@@ -318,7 +286,8 @@ class EditProfile extends Component {
                   returnKeyType="next"                                       
                   onRefInput={(input) => { this.emailInput = input }}
                   onSubmitEditing={() => { this.phoneInput.focus() }}
-                  onChangeText={this.onChangeEmail} />
+                  onChangeText={this.onChangeEmail} 
+                />
 
                 <LabelFormInput
                   label="Phone" 
@@ -342,14 +311,14 @@ class EditProfile extends Component {
                   onSelectAddress={(address) => this.onChangeLocation(address)}     
                   onChangeText={(text) => this.setState({locationText: text, locationError: null})} 
                 />
-              </View>
 
-              <View style={styles.centerView}>
-                <RoundButton 
-                  title="Save Changes" 
-                  theme="blue" 
-                  style={styles.blueButton} 
-                  onPress={() => this.onMakeChanges()} />
+                <View style={styles.centerView}>
+                  <RoundButton 
+                    title="Save Changes" 
+                    theme="blue" 
+                    style={styles.blueButton} 
+                    onPress={() => this.onMakeChanges()} />
+                </View>
               </View>
             </View>
           </KeyboardAwareScrollView>
@@ -364,15 +333,12 @@ class EditProfile extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ededf1',
   },
 
   centerView: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 30,
     paddingBottom: 30,
   },
 
@@ -381,17 +347,15 @@ const styles = StyleSheet.create({
   },
 
   profileBox: {
-    marginLeft: 8,
-    marginRight: 8,
-    marginTop: 86,
+    flex: 1,
+    marginTop: 76,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
     paddingLeft: 22,
     paddingRight: 22,
     paddingTop: 10,
     paddingBottom: 10,
-    backgroundColor: 'white',
     borderRadius: 10,
-    borderWidth: 1,
-    borderColor: Colors.borderColor,
   },
 
   rowView: {
@@ -409,16 +373,8 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
   return {
-    availabilities: state.globals.availabilities,
-    rates: state.globals.rates,
-    services: state.globals.services,
-    geoData: state.globals.geoData,
-    getGeoDataStatus: state.globals.getGeoDataStatus,
-    errorGlobalMessage: state.globals.errorMessage,
-      
     currentUser: state.user.currentUser,
-    updateProviderStatus: state.user.updateProviderStatus,
-    updateCustomerStatus: state.user.updateCustomerStatus,
+    updateProfileStatus: state.user.updateProfileStatus,
     errorMessage: state.user.errorMessage,    
   };  
 }
