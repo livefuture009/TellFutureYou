@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: 16,
         fontFamily: 'OpenSans', 
-        color: 'white',
+        color: 'black',
     },
 
     searchButton: {

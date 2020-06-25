@@ -1,10 +1,10 @@
 import { url } from '../constants';
 import { Platform } from 'react-native';
-import { filterFileUri, filterFileName } from '../functions';
+import { filterFileUri, filterFileName, makeRandomText } from '../functions';
 
-////////////////////////////////////////////////////////////////////////////
-//////////////////////////// Login User ////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+////////////////////////// Login /////////////////////////////////
+//////////////////////////////////////////////////////////////////
 
 export const loginUser = (email, password, player_id, lat, lng) => {
   const method = 'POST';
@@ -25,6 +25,9 @@ export const loginUser = (email, password, player_id, lat, lng) => {
     .then((res) => res.json());
 };
 
+//////////////////////////////////////////////////////////////////
+/////////////////////// Login with Social ////////////////////////
+//////////////////////////////////////////////////////////////////
 export const loginWithSocial = (user, player_id, lat, lng) => {
   const method = 'POST';
   const request_url = `${url}/user/login_with_social`
@@ -52,6 +55,9 @@ export const loginWithSocial = (user, player_id, lat, lng) => {
     );
 };
 
+//////////////////////////////////////////////////////////////////
+///////////////////////// Register User //////////////////////////
+//////////////////////////////////////////////////////////////////
 export const registerUser = (user) => {
   const method = 'POST';
   const request_url = `${url}/user/register_user`
@@ -77,6 +83,9 @@ export const registerUser = (user) => {
     .then((res) => res.json());
 };
 
+//////////////////////////////////////////////////////////////////
+///////////////////////// Forgot Password ////////////////////////
+//////////////////////////////////////////////////////////////////
 export const forgotPassword = (email) => {
   const method = 'POST';
   const request_url = `${url}/user/forgot_password`
@@ -90,6 +99,9 @@ export const forgotPassword = (email) => {
     .then((res) => res.json());
 };
 
+//////////////////////////////////////////////////////////////////
+///////////////////////// Verify Code ////////////////////////////
+//////////////////////////////////////////////////////////////////
 export const verifyCodePassword = (email, code) => {
   const method = 'POST';
   const request_url = `${url}/user/verify_resetcode`
@@ -104,6 +116,9 @@ export const verifyCodePassword = (email, code) => {
     .then((res) => res.json());
 };
 
+//////////////////////////////////////////////////////////////////
+//////////////////////// Reset Password //////////////////////////
+//////////////////////////////////////////////////////////////////
 export const resetPassword = (email, password) => {
   const method = 'POST';
   const request_url = `${url}/user/reset_newpassword`
@@ -118,6 +133,9 @@ export const resetPassword = (email, password) => {
     .then((res) => res.json());
 };
 
+//////////////////////////////////////////////////////////////////
+//////////////////////// Change Password /////////////////////////
+//////////////////////////////////////////////////////////////////
 export const changePassword = (user_id, old_password, new_password) => {
   const method = 'POST';
   const request_url = `${url}/user/change_password`
@@ -133,6 +151,9 @@ export const changePassword = (user_id, old_password, new_password) => {
     .then((res) => res.json());
 };
 
+//////////////////////////////////////////////////////////////////
+////////////////////////// Get User //////////////////////////////
+//////////////////////////////////////////////////////////////////
 export const getUser = (user_id, is_update) => {
   const method = 'POST';
   const request_url = `${url}/user/get_user`
@@ -147,11 +168,14 @@ export const getUser = (user_id, is_update) => {
     .then((res) => res.json());
 };
 
+//////////////////////////////////////////////////////////////////
+//////////////////////// Update Profile //////////////////////////
+//////////////////////////////////////////////////////////////////
 export const updateProfile = (user) => {
   const formData = new FormData();
   if (user.avatarFile) {
     var filename = filterFileName(user.avatarFile, Platform.OS);
-    var filetype = user.avatarFile.typeㅁ ? user.avatarFile.type : 'image/jpeg';
+    var filetype = user.avatarFile.type ? user.avatarFile.type : 'image/jpeg';
     const fileUri = filterFileUri(user.avatarFile.uri, Platform.OS);
     const params = {
       name: filename,
@@ -174,4 +198,67 @@ export const updateProfile = (user) => {
       body: formData
   })
   .then(response => response.json())
+};
+
+//////////////////////////////////////////////////////////////////
+/////////////////////// Import Contacts //////////////////////////
+//////////////////////////////////////////////////////////////////
+export const importContacts = (userId, contacts) => {
+  const formData = new FormData();
+
+  formData.append("userId", userId);
+  if (contacts && contacts.length > 0) {
+    formData.append("count", contacts.length);
+    var index = 0;
+    contacts.forEach(c => {
+      formData.append("name" + index, c.name);
+      formData.append("phone" + index, c.phone);
+      formData.append("email" + index, c.email);
+
+      if (c.avatar && c.avatar.length > 0) {
+        // Get extension from name.
+        var extension = c.avatar.split('.').pop().toLowerCase();
+        var filename = makeRandomText(20) + "." + extension;
+        var filetype = "image/jpeg";
+        if (extension == "png") {
+          filetype = "image/png";
+        }
+        const fileUri = filterFileUri(c.avatar, Platform.OS);
+        const params = {
+          name: filename,
+          type: filetype,
+          uri: fileUri
+        };
+        formData.append("avatar" + index, params);
+      }
+
+      index ++;
+    });
+  }
+
+  const request_url = `${url}/user/import_contacts`
+  return fetch(request_url, {
+      method: "POST",
+      body: formData
+  })
+  .then(response => response.json())
+};
+
+//////////////////////////////////////////////////////////////////
+////////////////////////// Send Invite ///////////////////////////
+//////////////////////////////////////////////////////////////////
+export const sendInvite = (email, receiver, sender) => {
+  const method = 'POST';
+  const request_url = `${url}/user/send_invite`
+  const headers = {
+    'Content-Type': 'application/json',
+  }
+  const body = JSON.stringify({ 
+    email: email,   
+    receiver: receiver,             
+    sender: sender,
+  });
+
+  return fetch(request_url, { method, body, headers})
+    .then((res) => res.json());
 };

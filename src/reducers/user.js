@@ -23,11 +23,13 @@ export const initialState = {
   getUserStatus: Status.NONE,
   restoreUserStatus: Status.NONE,
   updateProfileStatus: Status.NONE,
+  importContactsStatus: Status.NONE,
+  sendInviteStatus: Status.NONE,
 };
 
-/* 
-***** Login *****
-*/
+//////////////////////////////////////////////////////////////////
+/////////////////////////// Login //// ///////////////////////////
+//////////////////////////////////////////////////////////////////
 const loginUserRequest = (state) => ({
   ...state,
   loginUserStatus: Status.REQUEST,
@@ -45,9 +47,9 @@ const loginUserFailure = (state, action) => ({
  loginUserStatus: Status.FAILURE,
 });
 
-/* 
-***** Login With Social *****
-*/
+//////////////////////////////////////////////////////////////////
+/////////////////////// Login With Social ////////////////////////
+//////////////////////////////////////////////////////////////////
 const loginWithSocialRequest = (state) => ({
   ...state,
   loginWithSocialStatus: Status.REQUEST,
@@ -66,9 +68,9 @@ const loginWithSocialFailure = (state, action) => ({
  loginWithSocialStatus: Status.FAILURE,
 });
 
-/* 
-***** Restore User *****
-*/
+//////////////////////////////////////////////////////////////////
+///////////////////////// Restore User ///////////////////////////
+//////////////////////////////////////////////////////////////////
 const restoreUserRequest = (state) => ({
   ...state,
   restoreUserStatus: Status.REQUEST,
@@ -86,10 +88,9 @@ const restoreUserFailure = (state, action) => ({
   restoreUserStatus: Status.FAILURE,
 });
 
-/* 
-***** Register User *****
-*/
-
+//////////////////////////////////////////////////////////////////
+//////////////////////// Register User ///////////////////////////
+//////////////////////////////////////////////////////////////////
 const registerUserRequest = (state) => ({
   ...state,
   registerUserStatus: Status.REQUEST,
@@ -107,9 +108,9 @@ const registerUserFailure = (state, action) => ({
   registerUserStatus: Status.FAILURE,
 });
 
-/* 
-***** Forgot Password *****
-*/
+//////////////////////////////////////////////////////////////////
+/////////////////////// Forgot Password //////////////////////////
+//////////////////////////////////////////////////////////////////
 const forgotPasswordRequest = (state) => ({
   ...state,
   forgotPasswordStatus: Status.REQUEST,
@@ -127,9 +128,9 @@ const forgotPasswordFailure = (state, action) => ({
   forgotPasswordStatus: Status.FAILURE,
 });
 
-/* 
-***** Verify Code Password *****
-*/
+//////////////////////////////////////////////////////////////////
+///////////////////// Verify Code Password ///////////////////////
+//////////////////////////////////////////////////////////////////
 const verifyCodePasswordRequest = (state) => ({
   ...state,
   verifyCodePasswordStatus: Status.REQUEST,
@@ -147,10 +148,9 @@ const verifyCodePasswordFailure = (state, action) => ({
   verifyCodePasswordStatus: Status.FAILURE,
 });
 
-/* 
-***** Reset Password *****
-*/
-
+//////////////////////////////////////////////////////////////////
+////////////////////// Reset Password ////////////////////////////
+//////////////////////////////////////////////////////////////////
 const resetPasswordRequest = (state) => ({
   ...state,
   resetPasswordStatus: Status.REQUEST,
@@ -168,10 +168,9 @@ const resetPasswordFailure = (state, action) => ({
   resetPasswordStatus: Status.FAILURE,
 });
 
-/* 
-***** Reset Password *****
-*/
-
+//////////////////////////////////////////////////////////////////
+////////////////////// Change Password ///////////////////////////
+//////////////////////////////////////////////////////////////////
 const changePasswordRequest = (state) => ({
   ...state,
   changePasswordStatus: Status.REQUEST,
@@ -189,10 +188,9 @@ const changePasswordFailure = (state, action) => ({
   changePasswordStatus: Status.FAILURE,
 });
 
-/* 
-***** Get User *****
-*/
-
+//////////////////////////////////////////////////////////////////
+//////////////////////// Get User ////////////////////////////////
+//////////////////////////////////////////////////////////////////
 const getUserRequest = (state) => ({
   ...state,
   getUserStatus: Status.REQUEST,
@@ -217,10 +215,9 @@ const getUserFailure = (state, action) => ({
   getUserStatus: Status.FAILURE,
 });
 
-/* 
-***** Update Profile. *****
-*/
-
+//////////////////////////////////////////////////////////////////
+////////////////////// Update Profile ////////////////////////////
+//////////////////////////////////////////////////////////////////
 const updateProfileRequest = (state) => ({
   ...state,
   updateProfileStatus: Status.REQUEST,
@@ -238,27 +235,64 @@ const updateProfileFailure = (state, action) => ({
   updateProfileStatus: Status.FAILURE,
 });
 
-/* 
-***** Set Current User. *****
-*/
+//////////////////////////////////////////////////////////////////
+///////////////////// Import Contacts ////////////////////////////
+//////////////////////////////////////////////////////////////////
+const importContactsRequest = (state) => ({
+  ...state,
+  importContactsStatus: Status.REQUEST,
+});
 
+const importContactsSuccess = (state, action) => ({
+  ...state,
+  currentUser: action.payload,
+  importContactsStatus: Status.SUCCESS,
+});
+
+const importContactsFailure = (state, action) => ({
+  ...state,
+  errorMessage: action.error,
+  importContactsStatus: Status.FAILURE,
+});
+
+//////////////////////////////////////////////////////////////////
+///////////////////////// Send Invite ////////////////////////////
+//////////////////////////////////////////////////////////////////
+const sendInviteRequest = (state) => ({
+  ...state,
+  sendInviteStatus: Status.REQUEST,
+});
+
+const sendInviteSuccess = (state, action) => ({
+  ...state,
+  sendInviteStatus: Status.SUCCESS,
+});
+
+const sendInviteFailure = (state, action) => ({
+  ...state,
+  errorMessage: action.error,
+  sendInviteStatus: Status.FAILURE,
+});
+
+//////////////////////////////////////////////////////////////////
+///////////////////// Set Current User ///////////////////////////
+//////////////////////////////////////////////////////////////////
 const setCurrentUser = (state, action) => ({
   ...state,
   currentUser: action.user,
 });
 
-/* 
-***** Set Onesignal Player Id. *****
-*/
-
+//////////////////////////////////////////////////////////////////
+/////////////////// Set Onesignal Player Id //////////////////////
+//////////////////////////////////////////////////////////////////
 const setPlayerId = (state, action) => ({
   ...state,
   playerId: action.payload,
 });
 
-///////////////////////////////////////////////////////
-/////////////// Set Unread Message ////////////////////
-///////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+//////////////////// Set Unread Message //////////////////////////
+//////////////////////////////////////////////////////////////////
 
 const setUnreadMessage = (state, action) => {
   state.unreadMessages = action.number;
@@ -267,10 +301,9 @@ const setUnreadMessage = (state, action) => {
   };
 };
 
-/***************************************
-**************** RESET *****************
-***************************************/
-
+//////////////////////////////////////////////////////////////////
+////////////////////// RESET /////////////////////////////////////
+//////////////////////////////////////////////////////////////////
 const resetUser = (state, action) => {
   state.id = null;
   state.currentUser = null;
@@ -325,6 +358,14 @@ const actionHandlers = {
   [Types.UPDATE_PROFILE_REQUEST]: updateProfileRequest,
   [Types.UPDATE_PROFILE_SUCCESS]: updateProfileSuccess,
   [Types.UPDATE_PROFILE_FAILURE]: updateProfileFailure,
+
+  [Types.IMPORT_CONTACTS_REQUEST]: importContactsRequest,
+  [Types.IMPORT_CONTACTS_SUCCESS]: importContactsSuccess,
+  [Types.IMPORT_CONTACTS_FAILURE]: importContactsFailure,
+
+  [Types.SEND_INVITE_REQUEST]: sendInviteRequest,
+  [Types.SEND_INVITE_SUCCESS]: sendInviteSuccess,
+  [Types.SEND_INVITE_FAILURE]: sendInviteFailure,
 
   [Types.SET_CURRENT_USER]: setCurrentUser,
   [Types.SET_PLAYER_ID]: setPlayerId, 

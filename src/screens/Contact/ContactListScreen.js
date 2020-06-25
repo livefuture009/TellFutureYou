@@ -4,6 +4,7 @@ import {
   StyleSheet,
   FlatList,
   SafeAreaView,
+  Alert,
   PermissionsAndroid,
   Platform,
 } from 'react-native';
@@ -15,39 +16,43 @@ import HeaderInfoBar from '../../components/HeaderInfoBar'
 import SearchBox from '../../components/SearchBox'
 import LoadingOverlay from '../../components/LoadingOverlay'
 import AddContactDialog from '../../components/AddContactDialog'
+import ContactCell from '../../components/Cells/ContactCell'
 import actionTypes from '../../actions/actionTypes';
 import EmptyView from '../../components/EmptyView'
 import { TOAST_SHOW_TIME, Status } from '../../constants.js'
 import Colors from '../../theme/Colors'
+import Messages from '../../theme/Messages'
 
 class ContactListScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
       isLoading: false,
-      isFirst: true,
       contacts: [],
       isShowAddContactDialog: false,
     }    
   }
 
   componentDidMount() {
-    // this.setState({isLoading: true});
-    // let currentUser = this.props.currentUser;
-    // if (currentUser) {
-    //   this.props.dispatch({
-    //     type: actionTypes.GET_TRANSACTIONS,
-    //     user_id: currentUser._id,
-    //   });
-    // }    
+    const { currentUser } = this.props;
+    if (currentUser && currentUser.contacts && currentUser.contacts.length > 0) {
+      this.setState({contacts: currentUser.contacts});
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.getTransactionsStatus != this.props.getTransactionsStatus) {
-      if (this.props.getTransactionsStatus == Status.SUCCESS) {
-        this.setState({isLoading: false, isFirst: false});
+    if (prevProps.currentUser != this.props.currentUser) {
+      if (this.props.currentUser.contacts && this.props.currentUser.contacts.length > 0) {
+        this.setState({contacts: this.props.currentUser.contacts});
+      }  
+    }
+
+    if (prevProps.sendInviteStatus != this.props.sendInviteStatus) {
+      if (this.props.sendInviteStatus == Status.SUCCESS) {
+        this.setState({isLoading: false});
+        this.showResultMessage(Messages.SuccessInvite, false);
       } 
-      else if (this.props.getTransactionsStatus == Status.FAILURE) {
+      else if (this.props.sendInviteStatus == Status.FAILURE) {
         this.onFailure();
       }      
     }
@@ -105,7 +110,38 @@ class ContactListScreen extends Component {
   }
 
   parseContacts(contacts) {
-    console.log(contacts);
+    this.props.navigation.navigate('ImportContact', {contacts: contacts});
+  }
+
+  onSendInvite=(data)=> {
+    const { currentUser } = this.props;
+    const sender = currentUser.firstName + " " + currentUser.lastName;
+
+    this.setState({isLoading: true});
+    this.props.dispatch({
+      type: actionTypes.SEND_INVITE,
+      email: data.email,
+      sender: sender,
+      receiver: data.name
+    });
+  }
+
+  onSendMessage=(data)=> {
+
+  }
+
+  showResultMessage(message, isBack) {
+    Alert.alert(
+      '',
+      message,
+      [
+        {text: 'OK', onPress: () => {
+          if (isBack) {
+            this.onBack();
+          }
+        }},
+      ]
+    );  
   }
 
   render() {
@@ -134,10 +170,14 @@ class ContactListScreen extends Component {
                     keyExtractor={(item, index) => index.toString()}
                     ListFooterComponent={() => (<View style={{height: 70}}/>)}
                     renderItem={({ item, index }) => (
-                      <EarningCell/>
+                      <ContactCell 
+                        data={item}
+                        onSendInvite={this.onSendInvite}
+                        onSendMessage={this.onSendMessage}
+                      />
                     )}
                   />
-                : !isFirst && <EmptyView title="No contacts."/>
+                : <EmptyView title="No contacts."/>
 
               }
             </View>
@@ -177,12 +217,8 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
   return {
     currentUser: state.user.currentUser,
-    jobCount: state.user.jobCount,
-    avgHourlyRate: state.user.avgHourlyRate,
-    totalPaid: state.user.totalPaid,
-    transactions: state.user.transactions,
     errorMessage: state.user.errorMessage,
-    getTransactionsStatus: state.user.getTransactionsStatus,
+    sendInviteStatus: state.user.sendInviteStatus,
   };  
 }
 

@@ -5,11 +5,16 @@ import Fonts from '../theme/Fonts'
 
 export default class CheckBox extends React.Component {
   	render() {
+		const { title, value, onChange } = this.props;
     	return (
 		   	<View style={this.props.title ? styles.containerWithText: styles.container}>
-		   		<TouchableOpacity style={styles.checkboxButton} onPress={() => this.props.onChange(!this.props.value)}>
+		   		<TouchableOpacity style={styles.checkboxButton} onPress={() => {
+					if (onChange) {
+						onChange(!value)}
+					}
+				}>
 		   			{
-		   				this.props.value 
+		   				value 
 		   				? <Image style={styles.checkboxIcon} source={Images.checkbox_selected}/>
 		   				: <Image style={styles.checkboxIcon} source={Images.checkbox_normal}/>
 		   			
@@ -17,7 +22,7 @@ export default class CheckBox extends React.Component {
 		   		</TouchableOpacity>
 		   		{
 		   			this.props.title 
-		   			? <Text style={styles.textLabel}>{this.props.title}</Text>
+		   			? <Text style={styles.textLabel}>{title}</Text>
 		   			: null
 		   		}
 		   		

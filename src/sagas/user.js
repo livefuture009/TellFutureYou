@@ -16,6 +16,8 @@ const {
   changePassword,
   getUser,
   updateProfile,
+  importContacts,
+  sendInvite,
 } = api;
 
 function* GetCurrentUser(action) {
@@ -178,6 +180,37 @@ function* UpdateProfile(action) {
   }
 }
 
+function* ImportContacts(action) {
+  yield put({ type: Types.IMPORT_CONTACTS_REQUEST });
+  try {
+    const res = yield call(importContacts, action.userId, action.contacts);
+    if (res.result) {
+      yield put({ type: Types.IMPORT_CONTACTS_SUCCESS, payload: res.user });
+    } else {
+      yield put({ type: Types.IMPORT_CONTACTS_FAILURE, error: res.error });      
+    }
+  } catch (error) {
+    yield put({ type: Types.IMPORT_CONTACTS_FAILURE, error: Messages.NetWorkError });
+    console.log(error);
+  }
+}
+
+function* SendInvite(action) {
+  yield put({ type: Types.SEND_INVITE_REQUEST });
+  try {
+    const res = yield call(sendInvite, action.email, action.receiver, action.sender);
+    console.log("sendInvite:", res);
+    if (res.result) {
+      yield put({ type: Types.SEND_INVITE_SUCCESS });
+    } else {
+      yield put({ type: Types.SEND_INVITE_FAILURE, error: res.error });      
+    }
+  } catch (error) {
+    yield put({ type: Types.SEND_INVITE_FAILURE, error: Messages.NetWorkError });
+    console.log(error);
+  }
+}
+
 export default [
   takeLatest(Types.LOGIN_USER, LoginUser),
   takeLatest(Types.LOGIN_WITH_SOCIAL, LoginWithSocial),
@@ -189,4 +222,6 @@ export default [
   takeLatest(Types.CHANGE_PASSWORD, ChangePassword),
   takeLatest(Types.GET_USER, GetUser),
   takeLatest(Types.UPDATE_PROFILE, UpdateProfile),
+  takeLatest(Types.IMPORT_CONTACTS, ImportContacts),
+  takeLatest(Types.SEND_INVITE, SendInvite),
 ];
