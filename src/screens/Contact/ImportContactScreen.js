@@ -25,7 +25,6 @@ class ImportContactScreen extends Component {
     super(props)
     this.state = {
       isLoading: false,
-      isFirst: true,
       contacts: [],
       originalContacts: [],
       isShowAddContactDialog: false,
@@ -91,7 +90,7 @@ class ImportContactScreen extends Component {
   }
 
   onFailure() {
-    this.setState({isLoading: false, isFirst: false});
+    this.setState({isLoading: false});
     this.refs.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);
   }
 

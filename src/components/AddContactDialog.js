@@ -18,7 +18,7 @@ export default class AddContactDialog extends React.Component {
 
           <View style={styles.body}>
             <RoundButton title="Import From Contacts" theme="blue" onPress={() => onSelect(0)}/>
-            <RoundButton title="Add New Contact" theme="blue" style={{marginTop: 15}}/>
+            <RoundButton title="Add New Contact" theme="blue" style={{marginTop: 15}} onPress={() => onSelect(1)}/>
           </View>
         </View>
       </Modal>

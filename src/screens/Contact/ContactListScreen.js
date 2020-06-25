@@ -29,6 +29,7 @@ class ContactListScreen extends Component {
     this.state = {
       isLoading: false,
       contacts: [],
+      originalContacts: [],
       isShowAddContactDialog: false,
     }    
   }
@@ -36,14 +37,17 @@ class ContactListScreen extends Component {
   componentDidMount() {
     const { currentUser } = this.props;
     if (currentUser && currentUser.contacts && currentUser.contacts.length > 0) {
-      this.setState({contacts: currentUser.contacts});
+      this.setState({contacts: currentUser.contacts, originalContacts: currentUser.contacts});
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.currentUser != this.props.currentUser) {
       if (this.props.currentUser.contacts && this.props.currentUser.contacts.length > 0) {
-        this.setState({contacts: this.props.currentUser.contacts});
+        this.setState({
+          contacts: this.props.currentUser.contacts,
+          originalContacts: this.props.currentUser.contacts,
+        });
       }  
     }
 
@@ -59,12 +63,47 @@ class ContactListScreen extends Component {
   }
 
   onFailure() {
-    this.setState({isLoading: false, isFirst: false});
+    this.setState({isLoading: false});
     this.refs.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);
   }
 
   onBack() {
     this.props.navigation.goBack();
+  }
+
+  searchContacts(keyword) {
+    var text = keyword.toLowerCase().trim();
+    const { originalContacts } = this.state;
+    if (text && text.length > 0) {
+        var list = [];
+        originalContacts.forEach(item => {
+            if (item.name.toLowerCase().indexOf(text) >= 0) {
+                list.push(item);
+            }
+        });
+
+        this.setState({contacts: list});
+    } 
+    else {
+        this.setState({contacts: originalContacts});
+    }
+  }
+
+  onSelectContact=(c)=> {
+    c.selected = !c.selected;
+    const { contacts } = this.state;
+    var list = [];
+    if (contacts && contacts.length > 0) {
+        contacts.forEach(item => {
+            if (item.id == c.id) {
+                list.push(c);
+            } else {
+                list.push(item);
+            }
+        });
+
+        this.setState({contacts: list});
+    }
   }
 
   onAddContact=()=> {
@@ -76,7 +115,7 @@ class ContactListScreen extends Component {
     if (type == 0) {
       this.importContacts();
     } else {
-      this.props.navigation.navigate('AddNewContact');
+      this.props.navigation.navigate('ContactDetail');
     }
   }
 
@@ -130,6 +169,10 @@ class ContactListScreen extends Component {
 
   }
 
+  onSelect=(data)=> {
+    this.props.navigation.navigate('ContactDetail', {contact: data});
+  }
+
   showResultMessage(message, isBack) {
     Alert.alert(
       '',
@@ -145,7 +188,7 @@ class ContactListScreen extends Component {
   }
 
   render() {
-    const { contacts, keyword, isFirst, isShowAddContactDialog } = this.state;
+    const { contacts, keyword, isShowAddContactDialog } = this.state;
 
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
@@ -161,7 +204,7 @@ class ContactListScreen extends Component {
                 style={{marginTop: 10, marginBottom: 10}} 
                 value={keyword} 
                 placeholder="Search ..." 
-                onChangeText={(text) => this.searchService(text)}
+                onChangeText={(text) => this.searchContacts(text)}
               />
               {
                 (contacts && contacts.length > 0)
@@ -174,6 +217,7 @@ class ContactListScreen extends Component {
                         data={item}
                         onSendInvite={this.onSendInvite}
                         onSendMessage={this.onSendMessage}
+                        onSelect={this.onSelect}
                       />
                     )}
                   />
