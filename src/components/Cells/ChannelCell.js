@@ -67,6 +67,7 @@ export default class ChannelCell extends React.PureComponent {
 const styles = StyleSheet.create({
   listItem: {
     flex: 1,
+    backgroundColor: 'white',
     borderBottomWidth: 1,
     borderColor: '#D8D8D8',
     paddingLeft: 15,

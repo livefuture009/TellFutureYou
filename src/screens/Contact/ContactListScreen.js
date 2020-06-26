@@ -39,6 +39,17 @@ class ContactListScreen extends Component {
     if (currentUser && currentUser.contacts && currentUser.contacts.length > 0) {
       this.setState({contacts: currentUser.contacts, originalContacts: currentUser.contacts});
     }
+
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.props.dispatch({
+        type: actionTypes.GET_CONTACT_STATUS,
+        userId: currentUser._id,
+      });
+    });
+  }
+
+  componentWillUnmount() {
+    this.focusListener();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -166,7 +177,7 @@ class ContactListScreen extends Component {
   }
 
   onSendMessage=(data)=> {
-
+    this.props.navigation.navigate('Chat', {contact: data});
   }
 
   onSelect=(data)=> {

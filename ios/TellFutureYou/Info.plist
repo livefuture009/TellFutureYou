@@ -41,8 +41,6 @@
 	<false/>
 	<key>FacebookDisplayName</key>
 	<string>TellFutureYou</string>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -97,5 +95,7 @@
 	<false/>
 	<key>NSContactsUsageDescription</key>
 	<string>$(PRODUCT_NAME) allow contact access</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>

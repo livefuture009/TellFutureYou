@@ -17,7 +17,7 @@ export default class ContactCell extends React.Component {
                     <View style={styles.leftView}>
                         <FastImage source={avatar} style={styles.avatarPhoto} />
                         <View>
-                            <Text style={styles.nameText}>{data.name}</Text>
+                            <Text style={styles.nameText}>{data.firstName} {data.lastName}</Text>
                             <Text style={styles.phoneText}>{data.phone}</Text>
                             <Text style={styles.phoneText}>{data.email}</Text>
                         </View>                    
@@ -29,7 +29,7 @@ export default class ContactCell extends React.Component {
                             if (data.status === 0) {
                                 onSendInvite(data);
                             } else {
-
+                                onSendMessage(data);
                             }
                             }}>
                             <View style={styles.actionButton}>
@@ -96,9 +96,9 @@ const styles = StyleSheet.create({
     },
 
     actionButton: {
+        width: 120,
         backgroundColor: Colors.appColor,
         paddingVertical: 5,
-        paddingHorizontal: 15,
         borderRadius: 15,
         shadowColor: Colors.appColor,
 		shadowOffset: {
@@ -107,7 +107,8 @@ const styles = StyleSheet.create({
 		},
 		shadowOpacity: 0.3,
 		shadowRadius: 10,
-		elevation: 5,
+        elevation: 5,
+        alignItems: 'center',
     },
 
     actionButtonText: {

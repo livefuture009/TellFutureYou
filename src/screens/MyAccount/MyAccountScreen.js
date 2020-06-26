@@ -42,10 +42,6 @@ class MyAccountScreen extends Component {
       });   
 
       this.props.dispatch({
-        type: actionTypes.RESET_JOB,
-      });   
-
-      this.props.dispatch({
         type: actionTypes.RESET_NOTIFICATION,
       });   
     }, 1000);
@@ -170,7 +166,6 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
   return {
     currentUser: state.user.currentUser,
-    errorMessage: state.jobs.errorMessage,
   };  
 }
 

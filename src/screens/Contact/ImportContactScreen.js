@@ -37,7 +37,8 @@ class ImportContactScreen extends Component {
         if (contacts && contacts.length > 0) {
             var list = [];
             contacts.forEach(c => {
-                const name = c.familyName + " " + c.givenName;
+                const firstName = c.familyName;
+                const lastName = c.givenName;
                 const avatar = c.thumbnailPath;
                 var phone = '';
                 if (c.phoneNumbers && c.phoneNumbers.length > 0) {
@@ -50,7 +51,8 @@ class ImportContactScreen extends Component {
 
                 list.push({
                     id: c.recordID,
-                    name: name,
+                    firstName: firstName,
+                    lastName: lastName,
                     avatar: avatar,
                     phone: phone,
                     email: email,

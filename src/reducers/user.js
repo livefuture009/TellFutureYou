@@ -6,7 +6,7 @@ export const initialState = {
   id: null,
   currentUser: null,
   needToSignUp: false,
-  user: {},
+  selectedUser: {},
   playerId: null,
   errorMessage: '',
   resultMessage: '',
@@ -21,10 +21,14 @@ export const initialState = {
   resetPasswordStatus: Status.NONE,
   changePasswordStatus: Status.NONE,
   getUserStatus: Status.NONE,
+  getUserByEmailStatus: Status.NONE,
   restoreUserStatus: Status.NONE,
   updateProfileStatus: Status.NONE,
   importContactsStatus: Status.NONE,
   sendInviteStatus: Status.NONE,
+  addContactStatus: Status.NONE,
+  editContactStatus: Status.NONE,
+  getContactsStatus: Status.NONE,
 };
 
 //////////////////////////////////////////////////////////////////
@@ -202,7 +206,7 @@ const getUserSuccess = (state, action) => {
   if (action.is_update) {
     state.currentUser = user;
   }
-  state.user = user;
+  state.selectedUser = user;
   state.userJobs = action.payload.jobs;
   return {
     ...state,
@@ -213,6 +217,26 @@ const getUserFailure = (state, action) => ({
   ...state,
   errorMessage: action.error,
   getUserStatus: Status.FAILURE,
+});
+
+//////////////////////////////////////////////////////////////////
+////////////////////// Get User By Email /////////////////////////
+//////////////////////////////////////////////////////////////////
+const getUserByEmailRequest = (state) => ({
+  ...state,
+  getUserByEmailStatus: Status.REQUEST,
+});
+
+const getUserByEmailSuccess = (state, action) => ({
+  ...state,
+  selectedUser: action.payload,
+  getUserByEmailStatus: Status.SUCCESS,
+});
+
+const getUserByEmailFailure = (state, action) => ({
+  ...state,
+  errorMessage: action.error,
+  getUserByEmailStatus: Status.FAILURE,
 });
 
 //////////////////////////////////////////////////////////////////
@@ -272,6 +296,66 @@ const sendInviteFailure = (state, action) => ({
   ...state,
   errorMessage: action.error,
   sendInviteStatus: Status.FAILURE,
+});
+
+//////////////////////////////////////////////////////////////////
+///////////////////////// Add Contact ////////////////////////////
+//////////////////////////////////////////////////////////////////
+const addContactRequest = (state) => ({
+  ...state,
+  addContactStatus: Status.REQUEST,
+});
+
+const addContactSuccess = (state, action) => ({
+  ...state,
+  currentUser: action.payload,
+  addContactStatus: Status.SUCCESS,
+});
+
+const addContactFailure = (state, action) => ({
+  ...state,
+  errorMessage: action.error,
+  addContactStatus: Status.FAILURE,
+});
+
+//////////////////////////////////////////////////////////////////
+///////////////////////// Edit Contact ////////////////////////////
+//////////////////////////////////////////////////////////////////
+const editContactRequest = (state) => ({
+  ...state,
+  editContactStatus: Status.REQUEST,
+});
+
+const editContactSuccess = (state, action) => ({
+  ...state,
+  currentUser: action.payload,
+  editContactStatus: Status.SUCCESS,
+});
+
+const editContactFailure = (state, action) => ({
+  ...state,
+  errorMessage: action.error,
+  editContactStatus: Status.FAILURE,
+});
+
+//////////////////////////////////////////////////////////////////
+////////////////////// Get Contact Status ////////////////////////
+//////////////////////////////////////////////////////////////////
+const getContactStatusRequest = (state) => ({
+  ...state,
+  getContactsStatus: Status.REQUEST,
+});
+
+const getContactStatusSuccess = (state, action) => ({
+  ...state,
+  currentUser: action.payload,
+  getContactsStatus: Status.SUCCESS,
+});
+
+const getContactStatusFailure = (state, action) => ({
+  ...state,
+  errorMessage: action.error,
+  getContactsStatus: Status.FAILURE,
 });
 
 //////////////////////////////////////////////////////////////////
@@ -355,6 +439,10 @@ const actionHandlers = {
   [Types.GET_USER_SUCCESS]: getUserSuccess,
   [Types.GET_USER_FAILURE]: getUserFailure,
 
+  [Types.GET_USER_BY_EMAIL_REQUEST]: getUserByEmailRequest,
+  [Types.GET_USER_BY_EMAIL_SUCCESS]: getUserByEmailSuccess,
+  [Types.GET_USER_BY_EMAIL_FAILURE]: getUserByEmailFailure,
+
   [Types.UPDATE_PROFILE_REQUEST]: updateProfileRequest,
   [Types.UPDATE_PROFILE_SUCCESS]: updateProfileSuccess,
   [Types.UPDATE_PROFILE_FAILURE]: updateProfileFailure,
@@ -366,6 +454,18 @@ const actionHandlers = {
   [Types.SEND_INVITE_REQUEST]: sendInviteRequest,
   [Types.SEND_INVITE_SUCCESS]: sendInviteSuccess,
   [Types.SEND_INVITE_FAILURE]: sendInviteFailure,
+
+  [Types.ADD_CONTACT_REQUEST]: addContactRequest,
+  [Types.ADD_CONTACT_SUCCESS]: addContactSuccess,
+  [Types.ADD_CONTACT_FAILURE]: addContactFailure,
+
+  [Types.EDIT_CONTACT_REQUEST]: editContactRequest,
+  [Types.EDIT_CONTACT_SUCCESS]: editContactSuccess,
+  [Types.EDIT_CONTACT_FAILURE]: editContactFailure,
+
+  [Types.GET_CONTACT_STATUS_REQUEST]: getContactStatusRequest,
+  [Types.GET_CONTACT_STATUS_SUCCESS]: getContactStatusSuccess,
+  [Types.GET_CONTACT_STATUS_FAILURE]: getContactStatusFailure,
 
   [Types.SET_CURRENT_USER]: setCurrentUser,
   [Types.SET_PLAYER_ID]: setPlayerId, 

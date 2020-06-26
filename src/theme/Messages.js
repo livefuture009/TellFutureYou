@@ -12,6 +12,8 @@ const Messages = {
 	InvalidTerms: 'Please agree to the Terms of Service.',
 	SuccessImportContacts: 'You have imported contacts succesfully!',
 	SuccessInvite: 'You sent invitation succesfully!',
+	SuccessAddContact: 'You have added a new contact succesfully!',
+	SuccessEditContact: 'You have updated a contact succesfully!',
 	NetWorkError: 'No internet connection.',	
 };
 

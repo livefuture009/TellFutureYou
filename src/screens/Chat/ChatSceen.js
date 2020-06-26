@@ -20,7 +20,6 @@ import TopNavBar from '../../components/TopNavBar'
 import ChatCell from '../../components/Cells/ChatCell'
 import Colors from '../../theme/Colors'
 import CommentInput from '../../components/CommentInput';
-import WalkieTalkie from '../../components/WalkieTalkie';
 import ImageResizer from 'react-native-image-resizer';
 import RNFS from 'react-native-fs';
 import ImageView from 'react-native-image-view';
@@ -63,7 +62,6 @@ class ChatScreen extends Component {
         commentHeight: 0,
         isFirst: true,
         otherUser: null,
-        showWalkieTalkie: false,
         isLoading: false,
         photos: [],
         isImageViewVisible: false,
@@ -84,17 +82,26 @@ class ChatScreen extends Component {
   }
 
   async componentDidMount() {
-    const { channel, user } = this.props.route.params;
-    if (channel) {
-        this.initChatChannel(channel);
-    } 
-
+    const { channel, user, contact } = this.props.route.params;
     // Check connection.
     const isConnected = await checkInternetConnectivity();
     if (isConnected) {
+      if (channel) {
+        this.initChatChannel(channel);
+        return;
+      } 
       if (user) {
         this.checkCreateChannel(user);
+        return;
       } 
+
+      if (contact) {
+        this.setState({isLoading: true});
+        this.props.dispatch({
+          type: actionTypes.GET_USER_BY_EMAIL,
+          email: contact.email,
+        });
+      }
     } else {
       this.refs.toast.show(Messages.NoInternet, TOAST_SHOW_TIME);
     }
@@ -106,12 +113,23 @@ class ChatScreen extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    // Get User By Email.
+    if (prevProps.getUserByEmailStatus != this.props.getUserByEmailStatus) {
+      if (this.props.getUserByEmailStatus == Status.SUCCESS) {
+        this.setState({isLoading: false});
+        this.checkCreateChannel(this.props.selectedUser);
+      } else if (this.props.getUserByEmailStatus == Status.FAILURE) {
+        this.onFailure(this.props.errorUserMessage);
+      }      
+    }
+
+    // Upload File.
     if (prevProps.uploadFileStatus != this.props.uploadFileStatus) {
       if (this.props.uploadFileStatus == Status.SUCCESS) {
         this.setState({isLoading: false});
         this.addMediaMessage(this.props.uploadedUrl, this.props.uploadedMediaType);
       } else if (this.props.uploadFileStatus == Status.FAILURE) {
-        this.onFailure();
+        this.onFailure(this.props.errorMessage);
       }      
     }
   }
@@ -161,14 +179,13 @@ class ChatScreen extends Component {
     });
   }
 
-  onFailure() {
+  onFailure(message) {
     this.setState({isLoading: false});
-    this.refs.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);
+    this.refs.toast.show(message, TOAST_SHOW_TIME);
   }
 
   checkCreateChannel(user) {
     this.setState({otherUser: user});
-    var canCreateChannel = true;
     const currentUser = sb.currentUser;
 
     var channelName1 = currentUser.userId + "_" + user._id;
@@ -218,6 +235,8 @@ class ChatScreen extends Component {
     params.name = channelName;
     params.data = realName;
 
+    console.log("user: ", user);
+    console.log("userIds: ", userIds);
     sb.GroupChannel.createChannel(params, function(channel, error) {
       if (error) {
         console.log('Create GroupChannel Fail.', error);
@@ -435,27 +454,6 @@ class ChatScreen extends Component {
     this.setState({ disabled })
   }
 
-  _onAudio() {
-    Keyboard.dismiss();
-    this.setState({
-      showWalkieTalkie: true
-    });
-  }
-
-  onDoneRecording(filename, currentTime, filePath, fileSize) {
-    const type = "audio/aac";
-    this.props.dispatch({
-      type: actionTypes.UPLOAD_ATTACH_FILE,
-      file: {
-        filename: filename,
-        type: type,
-        uri: filePath
-      },
-    });
-
-    this.setState({showWalkieTalkie: false});
-  }
-
   onBack() {
     if (this.props.route.params && this.props.route.params.onUpdateLastMessage) {
       const { channel } = this.state;
@@ -485,21 +483,23 @@ class ChatScreen extends Component {
   render() {
     const { isImageViewVisible, photos, currentPhotoIndex } = this.state;
     const currentUser = sb.currentUser;    
-    const { user, room } = this.props.route.params;  
+    const { user, room, contact } = this.props.route.params;  
     var name = "";
     if (user) {
       name = user.firstName + " " + user.lastName;
-    } else {
+    } 
+    else if (contact) {
+      name = contact.firstName + " " + contact.lastName;
+    } 
+    else {
       name = room;
     }
 
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.navColor}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
         <TopNavBar 
           title={name} 
-          rightIcon="walkie_talkie" 
           onBack={() => this.onBack()}
-          onRight={() => this._onAudio()}
         />
         <ChatView 
           behavior={Platform.OS === "ios" ? "padding" : null}
@@ -542,21 +542,12 @@ class ChatScreen extends Component {
                   onChangeText={this.onChangeText}
                   onPost={this.onSend}
                   onImagePress={() => this._onPhoto()}
-                  onAudioPress={() => this._onAudio()}
                   onGifPress={this.onInsertGifButtonPress}
                   onContentSizeChange={(event) => this.setState({
                     commentHeight: event.nativeEvent.contentSize.height
                   })}
                 />
               : null
-          }
-
-          {
-            this.state.showWalkieTalkie
-            ? <WalkieTalkie 
-                onDone={(currentTime, filePath, fileSize) => this.onDoneRecording(currentTime, filePath, fileSize)}
-              />
-            : null
           }
 
           <ActionSheet
@@ -678,6 +669,10 @@ function mapStateToProps(state) {
     uploadedUrl: state.globals.uploadedUrl,
     uploadedMediaType: state.globals.uploadedMediaType,
     uploadFileStatus: state.globals.uploadFileStatus,
+
+    errorUserMessage: state.user.errorMessage,
+    selectedUser: state.user.selectedUser,
+    getUserByEmailStatus: state.user.getUserByEmailStatus,
   };  
 }
 

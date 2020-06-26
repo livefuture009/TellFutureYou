@@ -17,9 +17,6 @@ export default class CommentInput extends React.Component{
       <TouchableOpacity style={{marginTop: 3}} onPress={props.onImagePress}>
         <Image source={Images.image_record_icon} style={{ width: 34, height: 34, marginRight: 12 }} resizeMode="contain" />
       </TouchableOpacity>
-      <TouchableOpacity style={{marginTop: 3}} onPress={props.onAudioPress}>
-        <Image source={Images.audio_record_icon} style={{ width: 34, height: 34, marginRight: 12 }} resizeMode="contain" />
-      </TouchableOpacity>
       <View style={styles.container}>
         <TextInput
           {...props}

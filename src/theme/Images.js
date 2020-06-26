@@ -26,7 +26,10 @@ const Images = {
     icon_plus: require('../../assets/images/icon_plus.png'),
     close_icon: require('../../assets/images/close_icon.png'),        
     sad: require('../../assets/images/sad.png'),        
-    
+    chat_icon: require('../../assets/images/chat_icon.png'),
+    image_record_icon: require('../../assets/images/image_record_icon.png'),
+    send_icon: require('../../assets/images/send_icon.png'),
+
     // 
     // bank_icon: require('../../assets/images/bank_icon.png'),
     // red_close_button: require('../../assets/images/red_close_button.png'),
@@ -49,11 +52,7 @@ const Images = {
     // type_provider: require('../../assets/images/type_provider.png'),
     // map_pin: require('../../assets/images/map_pin.png'),
     // pin_icon: require('../../assets/images/pin_icon.png'),
-    // chat_icon: require('../../assets/images/chat_icon.png'),
-    // image_record_icon: require('../../assets/images/image_record_icon.png'),
-    // audio_record_icon: require('../../assets/images/audio_record_icon.png'),
-    // record_board: require('../../assets/images/record_board.png'),
-    // send_icon: require('../../assets/images/send_icon.png'),
+
     // walkie_talkie_icon: require('../../assets/images/walkie_talkie_icon.png'),
     // play_black: require('../../assets/images/play_black.png'),
     // play_white: require('../../assets/images/play_white.png'),

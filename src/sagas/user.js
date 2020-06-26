@@ -15,9 +15,13 @@ const {
   resetPassword,
   changePassword,
   getUser,
+  getUserByEmail,
   updateProfile,
   importContacts,
   sendInvite,
+  addContact,
+  editContact,
+  getContactStatus,
 } = api;
 
 function* GetCurrentUser(action) {
@@ -164,6 +168,20 @@ function* GetUser(action) {
   }
 }
 
+function* GetUserByEmail(action) {
+  yield put({ type: Types.GET_USER_BY_EMAIL_REQUEST });
+  try {
+    const res = yield call(getUserByEmail, action.email);
+    if (res.result) {
+      yield put({ type: Types.GET_USER_BY_EMAIL_SUCCESS, payload: res.user});
+    } else {
+      yield put({ type: Types.GET_USER_BY_EMAIL_FAILURE, error: res.error });      
+    }
+  } catch (error) {
+    yield put({ type: Types.GET_USER_BY_EMAIL_FAILURE, error: Messages.NetWorkError });
+    console.log(error);
+  }
+}
 
 function* UpdateProfile(action) {
   yield put({ type: Types.UPDATE_PROFILE_REQUEST });
@@ -211,6 +229,52 @@ function* SendInvite(action) {
   }
 }
 
+function* AddContact(action) {
+  yield put({ type: Types.ADD_CONTACT_REQUEST });
+  try {
+    const res = yield call(addContact, action.contact, action.userId);
+    console.log("addContact: ", res);
+    if (res.result) {
+      yield put({ type: Types.ADD_CONTACT_SUCCESS, payload: res.user });
+    } else {
+      yield put({ type: Types.ADD_CONTACT_FAILURE, error: res.error });      
+    }
+  } catch (error) {
+    yield put({ type: Types.ADD_CONTACT_FAILURE, error: Messages.NetWorkError });
+    console.log(error);
+  }
+}
+
+function* EditContact(action) {
+  yield put({ type: Types.EDIT_CONTACT_REQUEST });
+  try {
+    const res = yield call(editContact, action.contact, action.userId);
+    if (res.result) {
+      yield put({ type: Types.EDIT_CONTACT_SUCCESS, payload: res.user });
+    } else {
+      yield put({ type: Types.EDIT_CONTACT_FAILURE, error: res.error });      
+    }
+  } catch (error) {
+    yield put({ type: Types.EDIT_CONTACT_FAILURE, error: Messages.NetWorkError });
+    console.log(error);
+  }
+}
+
+function* GetContactStatus(action) {
+  yield put({ type: Types.GET_CONTACT_STATUS_REQUEST });
+  try {
+    const res = yield call(getContactStatus, action.userId);
+    if (res.result) {
+      yield put({ type: Types.GET_CONTACT_STATUS_SUCCESS, payload: res.user });
+    } else {
+      yield put({ type: Types.GET_CONTACT_STATUS_FAILURE, error: res.error });      
+    }
+  } catch (error) {
+    yield put({ type: Types.GET_CONTACT_STATUS_FAILURE, error: Messages.NetWorkError });
+    console.log(error);
+  }
+}
+
 export default [
   takeLatest(Types.LOGIN_USER, LoginUser),
   takeLatest(Types.LOGIN_WITH_SOCIAL, LoginWithSocial),
@@ -221,7 +285,11 @@ export default [
   takeLatest(Types.RESET_PASSWORD, ResetPassword),
   takeLatest(Types.CHANGE_PASSWORD, ChangePassword),
   takeLatest(Types.GET_USER, GetUser),
+  takeLatest(Types.GET_USER_BY_EMAIL, GetUserByEmail),
   takeLatest(Types.UPDATE_PROFILE, UpdateProfile),
   takeLatest(Types.IMPORT_CONTACTS, ImportContacts),
   takeLatest(Types.SEND_INVITE, SendInvite),
+  takeLatest(Types.ADD_CONTACT, AddContact),
+  takeLatest(Types.EDIT_CONTACT, EditContact),
+  takeLatest(Types.GET_CONTACT_STATUS, GetContactStatus),
 ];

@@ -27,6 +27,7 @@ class ContactDetailScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
+        id: '',
         avatar: '',
         firstName: '',
         lastName: '',
@@ -44,34 +45,36 @@ class ContactDetailScreen extends Component {
 
   componentDidMount() {
     if (this.props.route.params && this.props.route.params.contact) {
-        const { contact } = this.props.route.params;
-        const name = contact.name;
-        var firstName = "";
-        var lastName = "";
-        if (name && name.length > 0) {
-            const array = name.split(" ");
-            firstName = array[0];
-            if (array.length > 0) {
-                lastName = array[1];
-            }
-        }
-        this.setState({
-            avatar: contact.avatar,
-            firstName: firstName,
-            lastName: lastName,
-            email: contact.email,
-            phone: contact.phone,
-            isEditing: true
-        });
+      const { contact } = this.props.route.params;
+      this.setState({
+        id: contact._id,
+        avatar: contact.avatar,
+        firstName: contact.firstName,
+        lastName: contact.lastName,
+        email: contact.email,
+        phone: contact.phone,
+        isEditing: true
+      });
     }     
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.updateProfileStatus != this.props.updateProfileStatus) {
-      if (this.props.updateProfileStatus == Status.SUCCESS) {
+    // Add Contact
+    if (prevProps.addContactStatus != this.props.addContactStatus) {
+      if (this.props.addContactStatus == Status.SUCCESS) {
         this.setState({isLoading: false});
-        this.showMessage("Profile has been updated successfully!", true);
-      } else if (this.props.updateProfileStatus == Status.FAILURE) {
+        this.showMessage(Messages.SuccessAddContact, true);
+      } else if (this.props.addContactStatus == Status.FAILURE) {
+        this.onFailure(this.props.errorMessage);
+      }      
+    }    
+
+    // Edit Contact
+    if (prevProps.editContactStatus != this.props.editContactStatus) {
+      if (this.props.editContactStatus == Status.SUCCESS) {
+        this.setState({isLoading: false});
+        this.showMessage(Messages.SuccessEditContact, true);
+      } else if (this.props.editContactStatus == Status.FAILURE) {
         this.onFailure(this.props.errorMessage);
       }      
     }    
@@ -115,13 +118,13 @@ class ContactDetailScreen extends Component {
     const { currentUser } = this.props;
     var isValid = true;
     const {
+      id,
       firstName, 
       lastName, 
       email, 
       phone, 
-      location, 
-      locationText,
-      avatarFile
+      avatarFile,
+      isEditing
     } = this.state;
 
     if (firstName == null || firstName.length == 0) {
@@ -144,45 +147,34 @@ class ContactDetailScreen extends Component {
       isValid = false;
     }
 
-    if (location == null || location.length == 0 || location != locationText) {
-      this.setState({locationError: Messages.InvalidLocation});
-      isValid = false;
-    }
-
     if (isValid) {
       this.setState({isLoading: true}, () => { 
-        this.updateProfileData();
+        var user = {
+          firstName,
+          lastName,
+          email,
+          phone,
+          avatarFile,
+        };
+
+        if (isEditing) {
+          user.id = id;
+          this.props.dispatch({
+            type: actionTypes.EDIT_CONTACT,
+            contact: user,
+            userId: currentUser._id,
+          });
+        } else {
+          this.props.dispatch({
+            type: actionTypes.ADD_CONTACT,
+            contact: user,
+            userId: currentUser._id,
+          });
+        }
       });  
     }
   }
 
-  updateProfileData() {
-    const {
-      id,
-      firstName,
-      lastName,
-      email,
-      phone,
-      location,
-      avatarFile,
-    } = this.state;
-
-    let user = {
-      id,
-      firstName,
-      lastName,
-      email,
-      phone,
-      location,
-      avatarFile,
-    };
-
-    this.props.dispatch({
-      type: actionTypes.UPDATE_PROFILE,
-      user: user,
-    });
-  }
-  
   onTakePicture() {
     const options = {
       title: 'Select Photo',
@@ -204,20 +196,6 @@ class ContactDetailScreen extends Component {
         });
       }
     });
-  }
-
-  filterData(data) {
-    var response = [];
-    for (var i = 0; i < data.length; i++) {
-      const item = data[i];
-      response.push({
-        id: item._id, 
-        label: item.name, 
-        value: item.name
-      });
-    }
-
-    return response;
   }
 
   onChangeFirstName =(text)=> {
@@ -256,7 +234,8 @@ class ContactDetailScreen extends Component {
                 <LabelFormInput
                     label="First name" 
                     type="text"
-                    placeholderTextColor={Colors.placeholderTextColor}
+                    placeholder="John"
+                    placeholderTextColor={Colors.placeholderColor}
                     value={this.state.firstName} 
                     errorMessage={this.state.firstNameError}
                     returnKeyType="next"                                       
@@ -268,7 +247,8 @@ class ContactDetailScreen extends Component {
                 <LabelFormInput
                     label="Last name" 
                     type="text"
-                    placeholderTextColor={Colors.placeholderTextColor}
+                    placeholder="Doe"
+                    placeholderTextColor={Colors.placeholderColor}
                     value={this.state.lastName} 
                     errorMessage={this.state.lastNameError}
                     returnKeyType="next"                                       
@@ -280,7 +260,8 @@ class ContactDetailScreen extends Component {
                 <LabelFormInput
                   label="Email" 
                   type="email"
-                  placeholderTextColor={Colors.placeholderTextColor}
+                  placeholder="john@email.com"
+                  placeholderTextColor={Colors.placeholderColor}
                   value={this.state.email} 
                   errorMessage={this.state.emailError}
                   returnKeyType="next"                                       
@@ -292,7 +273,8 @@ class ContactDetailScreen extends Component {
                 <LabelFormInput
                   label="Phone" 
                   type="phone"
-                  placeholderTextColor={Colors.placeholderTextColor}
+                  placeholder="123-456-7890"
+                  placeholderTextColor={Colors.placeholderColor}
                   value={this.state.phone} 
                   errorMessage={this.state.phoneError}
                   returnKeyType="next"                                       
@@ -360,8 +342,9 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
   return {
     currentUser: state.user.currentUser,
-    updateProfileStatus: state.user.updateProfileStatus,
     errorMessage: state.user.errorMessage,    
+    addContactStatus: state.user.addContactStatus,    
+    editContactStatus: state.user.editContactStatus,    
   };  
 }
 

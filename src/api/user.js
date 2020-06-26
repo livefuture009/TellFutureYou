@@ -169,6 +169,23 @@ export const getUser = (user_id, is_update) => {
 };
 
 //////////////////////////////////////////////////////////////////
+////////////////////// Get User by email /////////////////////////
+//////////////////////////////////////////////////////////////////
+export const getUserByEmail = (email) => {
+  const method = 'POST';
+  const request_url = `${url}/user/get_user_by_email`
+  const headers = {
+    'Content-Type': 'application/json',
+  }
+  const body = JSON.stringify({ 
+    email: email,                
+  });
+
+  return fetch(request_url, { method, body, headers})
+    .then((res) => res.json());
+};
+
+//////////////////////////////////////////////////////////////////
 //////////////////////// Update Profile //////////////////////////
 //////////////////////////////////////////////////////////////////
 export const updateProfile = (user) => {
@@ -211,7 +228,8 @@ export const importContacts = (userId, contacts) => {
     formData.append("count", contacts.length);
     var index = 0;
     contacts.forEach(c => {
-      formData.append("name" + index, c.name);
+      formData.append("firstName" + index, c.firstName);
+      formData.append("lastName" + index, c.lastName);
       formData.append("phone" + index, c.phone);
       formData.append("email" + index, c.email);
 
@@ -257,6 +275,86 @@ export const sendInvite = (email, receiver, sender) => {
     email: email,   
     receiver: receiver,             
     sender: sender,
+  });
+
+  return fetch(request_url, { method, body, headers})
+    .then((res) => res.json());
+};
+
+//////////////////////////////////////////////////////////////////
+////////////////////////// Add Contact ///////////////////////////
+//////////////////////////////////////////////////////////////////
+export const addContact = (contact, userId) => {
+  const formData = new FormData();
+  if (contact.avatarFile) {
+    var filename = filterFileName(contact.avatarFile, Platform.OS);
+    var filetype = contact.avatarFile.type ? contact.avatarFile.type : 'image/jpeg';
+    const fileUri = filterFileUri(contact.avatarFile.uri, Platform.OS);
+    const params = {
+      name: filename,
+      type: filetype,
+      uri: fileUri
+    };
+    formData.append("avatar", params);        
+  }
+
+  formData.append("firstName", contact.firstName);
+  formData.append("lastName", contact.lastName);
+  formData.append("email", contact.email);
+  formData.append("phone", contact.phone);
+  formData.append("userId", userId);
+
+  const request_url = `${url}/user/add_contact`
+  return fetch(request_url, {
+      method: "POST",
+      body: formData
+  })
+  .then(response => response.json())
+};
+
+//////////////////////////////////////////////////////////////////
+////////////////////////// Edit Contact ///////////////////////////
+//////////////////////////////////////////////////////////////////
+export const editContact = (contact, userId) => {
+  const formData = new FormData();
+  if (contact.avatarFile) {
+    var filename = filterFileName(contact.avatarFile, Platform.OS);
+    var filetype = contact.avatarFile.type ? contact.avatarFile.type : 'image/jpeg';
+    const fileUri = filterFileUri(contact.avatarFile.uri, Platform.OS);
+    const params = {
+      name: filename,
+      type: filetype,
+      uri: fileUri
+    };
+    formData.append("avatar", params);        
+  }
+
+  formData.append("id", contact.id);
+  formData.append("firstName", contact.firstName);
+  formData.append("lastName", contact.lastName);
+  formData.append("email", contact.email);
+  formData.append("phone", contact.phone);
+  formData.append("userId", userId);
+
+  const request_url = `${url}/user/edit_contact`
+  return fetch(request_url, {
+      method: "POST",
+      body: formData
+  })
+  .then(response => response.json())
+};
+
+//////////////////////////////////////////////////////////////////
+////////////////////// Get Contact Status ////////////////////////
+//////////////////////////////////////////////////////////////////
+export const getContactStatus = (userId) => {
+  const method = 'POST';
+  const request_url = `${url}/user/get_contact_status`
+  const headers = {
+    'Content-Type': 'application/json',
+  }
+  const body = JSON.stringify({ 
+    userId: userId,   
   });
 
   return fetch(request_url, { method, body, headers})

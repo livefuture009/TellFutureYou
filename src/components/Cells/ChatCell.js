@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   View, StyleSheet, Text, TouchableOpacity, Image,
 } from 'react-native';
-import AudioPlayer from '../AudioPlayer';
 import Colors from '../../theme/Colors';
 import Fonts from '../../theme/Fonts';
 import Moment from 'moment';
@@ -75,30 +74,6 @@ export default class ChatCell extends React.PureComponent {
                     )
                 }
                 <Text style={item._sender.userId === currentUser.userId ? styles.myTimeText : styles.otherTimeText}>{Moment(item.createdAt).format('DD MMM YYYY, hh:mm A')}</Text>
-              </View>
-            )
-            : null
-        }
-
-      {
-          item && item.data == 'audio'
-            ? (
-              <View style={[styles.listItem, { transform: [{ scaleY: -1 }] }]}>
-                {
-                  item._sender.userId == currentUser.userId
-                    ? (
-                      <View style={styles.myMessageBox}>
-                        <AudioPlayer type="me" url={item.message} />
-                      </View>
-                    )
-                    : (
-                      <View>
-                        <View style={styles.targetMessageBox}>
-                          <AudioPlayer type="target" url={item.message}/>
-                        </View>
-                      </View>
-                    )
-                }
               </View>
             )
             : null

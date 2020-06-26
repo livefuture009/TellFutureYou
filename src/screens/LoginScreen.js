@@ -121,14 +121,6 @@ class LoginScreen extends Component {
       } 
     }
 
-    if (prevProps.getJobStatus != this.props.getJobStatus) {
-      if (this.props.getJobStatus == Status.SUCCESS) {
-        this.getJobSuccess();
-      } else if (this.props.getJobStatus == Status.FAILURE) {
-        this.onFailure();
-      }      
-    }
-
     if (prevProps.restoreUserStatus != this.props.restoreUserStatus) {
       if (this.props.restoreUserStatus == Status.SUCCESS && this.props.currentUser && this.props.currentUser._id) {
         this.onMoveHome(false);
@@ -609,10 +601,6 @@ class LoginScreen extends Component {
     this.props.navigation.navigate('SignUp');
   }
 
-  getJobSuccess() {
-    this.onMoveNotificationPage(this.notification_type, this.props.job);
-  }
-
   async loginSuccess() {
     this.setState({isLoading: false});
     Storage.USERID.set(this.props.currentUser._id);
@@ -823,11 +811,9 @@ function mapStateToProps(state) {
     needToSignUp: state.user.needToSignUp,
     errorMessage: state.user.errorMessage,
     playerId: state.user.playerId,
-    job: state.jobs.job,
     loginUserStatus: state.user.loginUserStatus,
     loginWithSocialStatus: state.user.loginWithSocialStatus,    
     markReadNotificationStatus: state.notifications.markReadNotificationStatus,
-    getJobStatus: state.jobs.getJobStatus,
     restoreUserStatus: state.user.restoreUserStatus,
   };  
 }
