@@ -238,7 +238,7 @@ class EditProfile extends Component {
     const { currentUser } = this.props;
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
-        <TopNavBar title="EDIT PROFILE" align="left" onBack={() => this.onBack()}/>
+        <TopNavBar title="EDIT PROFILE" onBack={() => this.onBack()}/>
         <View style={styles.container}>
           <KeyboardAwareScrollView>
             <View>

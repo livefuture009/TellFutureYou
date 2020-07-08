@@ -209,48 +209,51 @@ class LoginScreen extends Component {
 
   connectSendBird() {
     const currentUser = this.props.currentUser;
+    var _SELF = this;
 
-    if (sb && currentUser._id != "undefined" && currentUser._id?.length > 0) {
-      const userId = currentUser._id;
-      const username = currentUser.firstName + " " + currentUser.lastName;
-      var profileUrl = '';
-      if (currentUser.avatar && currentUser.avatar.length > 0) {
-        profileUrl = currentUser.avatar;
+    return new Promise(function(resolve, reject) {
+      if (sb && currentUser._id != "undefined" && currentUser._id?.length > 0) {
+        const userId = currentUser._id;
+        const username = currentUser.firstName + " " + currentUser.lastName;
+        var profileUrl = '';
+        if (currentUser.avatar && currentUser.avatar.length > 0) {
+          profileUrl = currentUser.avatar;
+        }
+        
+        if (userId) {
+          sb.connect(userId, function (user, error) {
+            if (_SELF.props.pushToken && _SELF.props.pushToken.length > 0) {
+              if (Platform.OS === 'ios') {
+                sb.registerAPNSPushTokenForCurrentUser(_SELF.props.pushToken, function(result, error) {
+                });
+              } else {
+                sb.registerGCMPushTokenForCurrentUser(_SELF.props.pushToken, function(result, error) {
+                });
+              }
+            }     
+            sb.updateCurrentUserInfo(username, profileUrl, function(response, error) {
+            });
+  
+            sb.getTotalUnreadMessageCount(function(number, error) {
+              _SELF.props.dispatch({
+                type: actionTypes.SET_UNREAD_MESSAGE,
+                number: number
+              });
+            });
+  
+            var UserEventHandler = new sb.UserEventHandler();
+            UserEventHandler.onTotalUnreadMessageCountUpdated = function(totalCount, countByCustomTypes) {
+              _SELF.props.dispatch({
+                type: actionTypes.SET_UNREAD_MESSAGE,
+                number: totalCount
+              });
+            };
+            sb.addUserEventHandler("USER_EVENT_HANDLER", UserEventHandler);
+            resolve();
+          });
+        }    
       }
-      
-      if (userId) {
-        var _SELF = this;
-        sb.connect(userId, function (user, error) {
-          if (_SELF.props.pushToken && _SELF.props.pushToken.length > 0) {
-            if (Platform.OS === 'ios') {
-              sb.registerAPNSPushTokenForCurrentUser(_SELF.props.pushToken, function(result, error) {
-              });
-            } else {
-              sb.registerGCMPushTokenForCurrentUser(_SELF.props.pushToken, function(result, error) {
-              });
-            }
-          }     
-          sb.updateCurrentUserInfo(username, profileUrl, function(response, error) {
-          });
-
-          sb.getTotalUnreadMessageCount(function(number, error) {
-            _SELF.props.dispatch({
-              type: actionTypes.SET_UNREAD_MESSAGE,
-              number: number
-            });
-          });
-
-          var UserEventHandler = new sb.UserEventHandler();
-          UserEventHandler.onTotalUnreadMessageCountUpdated = function(totalCount, countByCustomTypes) {
-            _SELF.props.dispatch({
-              type: actionTypes.SET_UNREAD_MESSAGE,
-              number: totalCount
-            });
-          };
-          sb.addUserEventHandler("USER_EVENT_HANDLER", UserEventHandler);
-        });
-      }    
-    }
+    });
   }
 
   getUnreadMessageCount() {
@@ -259,7 +262,6 @@ class LoginScreen extends Component {
       var listQuery = sb.GroupChannel.createMyGroupChannelListQuery();
       listQuery.includeEmpty = true;
       listQuery.next(function(response, error) {
-        _SELF.setState({isLoading: false, isFirst: false});
         if (response) {
           var unReadCount = 0;
           for (var i = 0; i < response.length; i++) {
@@ -289,10 +291,8 @@ class LoginScreen extends Component {
   }
 
   async onMoveHome(animate) {
+    await this.connectSendBird();
     const { currentUser } = this.props;
-
-    // Reset Page.
-    this.setState({isLoading: false, email: '', password: ''});    
 
     // Move Next Page.
     var nextScreen = "MainTab"
@@ -304,13 +304,14 @@ class LoginScreen extends Component {
       this.getUnreadMessageCount();
     }, 1000);
 
-    this.connectSendBird();
-
     const user_id = currentUser._id;
     this.props.dispatch({
       type: actionTypes.GET_UNREADNUMBER,
       user_id: user_id,
     }); 
+
+    // Reset Page.
+    this.setState({isLoading: false, email: '', password: ''});    
   }
 
   onLogin() {
@@ -602,14 +603,13 @@ class LoginScreen extends Component {
   }
 
   async loginSuccess() {
-    this.setState({isLoading: false});
     Storage.USERID.set(this.props.currentUser._id);
     this.onMoveHome(true);
   }
 
   async loginWithSocialSuccess() {
-    this.setState({isLoading: false});
     if (this.props.needToSignUp) {
+      this.setState({isLoading: false});
       this.props.navigation.navigate('SelectUserType', {user: this.props.currentUser});
     } else {
       Storage.USERID.set(this.props.currentUser._id);

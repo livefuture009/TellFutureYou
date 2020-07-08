@@ -17,40 +17,20 @@ export default class TopNavBar extends React.Component {
 	    		(rightLabel || rightButton || rightIcon) ? styles.containerWithRight : null
 	    	]}
 	    >
-	    	<View style={{ position: 'relative', width: (rightLabel || rightButton || rightIcon) ? screenWidth - 90 : screenWidth }}>
-				<TouchableOpacity style={styles.closeButton} onPress={() => onBack()}>
-					<Image
-			          style={styles.closeButtonIcon}
-			          source={Images.back_arrow}
-				    />
-				</TouchableOpacity>	    	
-				<Text numberOfLines={1} style={this.props.align == "left" ? styles.leftTitleText : styles.titleText}>{this.props.title}</Text>	    	
-	    	</View>
-
-	    	{
-	    		rightLabel
-	    		? <View style={{paddingRight: 15}}>
-	    			<Text style={styles.rightValueText}>{rightValue}</Text>
-	    			<Text style={styles.rightLabelText}>{rightLabel}</Text>
-	    		  </View>
-	    		: null
-	    	}
-			
+			<TouchableOpacity style={styles.closeButton} onPress={() => onBack()}>
+				<Image
+					style={styles.closeButtonIcon}
+					source={Images.back_arrow}
+				/>
+			</TouchableOpacity>	    	
+			<Text numberOfLines={1} style={styles.titleText}>{this.props.title}</Text>	    	
 			{
-				rightButton
+				rightButton === "schedule"
 				? <TouchableOpacity style={styles.rightButton} onPress={() => this.props.onRight()}>
-					 <Text style={styles.rightButtonText}>{this.props.rightButton}</Text>	
+					<Image source={Images.icon_calendar} style={styles.rightIcon}/>
 				  </TouchableOpacity>	    	
 				: null
 			}
-
-			{
-				rightIcon == 'walkie_talkie'
-				? <TouchableOpacity onPress={() => this.props.onRight()}>
-					<Image source={Images.walkie_talkie_icon} style={styles.rightIcon}/>
-				  </TouchableOpacity>	    	
-				: null
-			}	    	
 	    </View>
     );
   }
@@ -59,11 +39,6 @@ export default class TopNavBar extends React.Component {
 const styles = StyleSheet.create({
 	container: {
 		zIndex: 3,
-		...ifIphoneX({
-			paddingVertical: 20
-		 }, {
-			paddingVertical: 10
-		})
 	},
 
 	containerWithShadow: {
@@ -88,34 +63,13 @@ const styles = StyleSheet.create({
 	},
 
 	titleText: {
+		width: '100%',
 		textAlign: 'center',
 		fontFamily: Fonts.bold,
 		fontSize: 20,
 		color: 'black',
-	},
-
-	leftTitleText: {
-		textAlign: 'left',
-		fontFamily: Fonts.bold,
-		fontSize: 24,
-		marginLeft: 60,
-		paddingRight: 20,
-		color: 'black',
-	},
-
-	rightValueText: {
-		fontFamily: Fonts.bold,
-		fontSize: 18,
-		textAlign: 'right',
-		color: 'white',
-	},
-
-	rightLabelText: {
-		fontFamily: Fonts.regular,
-		fontSize: 14,
-		textAlign: 'right',
-		marginTop: -3,
-		color: 'white',
+		paddingHorizontal: 50,
+		paddingVertical: 10,
 	},
 
 	closeButton: {
@@ -123,6 +77,7 @@ const styles = StyleSheet.create({
 		width: 30,
 		height: 30,
 		left: 15,
+		top: 7, 
 		zIndex: 2
 	},
 
@@ -132,14 +87,8 @@ const styles = StyleSheet.create({
 	},
 
 	rightButton: {
-		borderWidth: 1,
-		borderColor: Colors.appColor,
-		paddingLeft: 14,		
-		paddingRight: 14,
-		paddingTop: 7,
-		paddingBottom: 7,
-		marginRight: 8,
-		borderRadius: 5,
+		position: 'absolute',
+		right: 15,
 	},
 
 	rightButtonText: {
@@ -150,9 +99,8 @@ const styles = StyleSheet.create({
 	},
 
 	rightIcon: {
-		width: 35,
-		height: 35,
+		width: 30,
+		height: 30,
 		resizeMode: 'contain',
-		marginRight: 15,
 	},
 });

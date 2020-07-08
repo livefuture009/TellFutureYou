@@ -120,6 +120,7 @@ class ChatScreen extends Component {
         _SELF.setState({ 
           channelList: channelList, 
         });  
+        console.log("channelList: ", channelList);
       } else {
         if (error) {
           console.log('Get Private List Fail.', error);

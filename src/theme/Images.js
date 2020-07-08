@@ -29,6 +29,8 @@ const Images = {
     chat_icon: require('../../assets/images/chat_icon.png'),
     image_record_icon: require('../../assets/images/image_record_icon.png'),
     send_icon: require('../../assets/images/send_icon.png'),
+    icon_clock: require('../../assets/images/icon_clock.png'),
+    icon_calendar: require('../../assets/images/icon_calendar.png'),
 
     // 
     // bank_icon: require('../../assets/images/bank_icon.png'),
