@@ -2,10 +2,8 @@ import React, { Component } from 'react';
 import {
   View,
   StyleSheet,
-  PixelRatio,
   Platform,
   KeyboardAvoidingView,
-  Image,
   SafeAreaView,
   FlatList,
   Keyboard,
@@ -52,17 +50,17 @@ class ChatScreen extends Component {
     this.text='';
     this.scheduleTime = null;
     this.state = {
-        channel: null,
-        messageQuery: null,
-        messages: [],
-        disabled: true,
-        lastMessage: null,
-        commentHeight: 0,
-        isFirst: true,
-        isLoading: false,
-        photos: [],
-        isImageViewVisible: false,
-        currentPhotoIndex: 0,
+      channel: null,
+      messageQuery: null,
+      messages: [],
+      disabled: true,
+      lastMessage: null,
+      commentHeight: 0,
+      isFirst: true,
+      isLoading: false,
+      photos: [],
+      isImageViewVisible: false,
+      currentPhotoIndex: 0,
     }
   }
 

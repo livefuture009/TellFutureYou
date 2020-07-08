@@ -17,6 +17,9 @@ import { TOAST_SHOW_TIME, Status} from '../../constants.js'
 import LoadingOverlay from '../../components/LoadingOverlay'
 import actionTypes from '../../actions/actionTypes';
 import {checkInternetConnectivity} from '../../functions'
+import ActionSheet from 'react-native-actionsheet'
+import DatePicker from 'react-native-datepicker'
+import moment from 'moment';
 
 // Android does keyboard height adjustment natively.
 const ChatView = Platform.select({
@@ -28,25 +31,28 @@ class ScheduleMessageScreen extends Component {
   constructor(props) {
     super(props)
     this.text='';
+    this.scheduleTime = null;
     this.state = {
         messages: [],
+        selectedMessage: null,
     }
   }
 
   async componentDidMount() {
     const { currentUser } = this.props;
     if (this.props.route.params && this.props.route.params.channel) {
-        const { channel } = this.props.route.params;        
-        this.setState({isLoading: true});
-        this.props.dispatch({
-            type: actionTypes.GET_SCHEDULED_MESSAGES,
-            userId: currentUser._id,
-            channelId: channel.name,
-        });
+      const { channel } = this.props.route.params;        
+      this.setState({isLoading: true});
+      this.props.dispatch({
+          type: actionTypes.GET_SCHEDULED_MESSAGES,
+          userId: currentUser._id,
+          channelId: channel.name,
+      });
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
+
     // Get Scheduled Messages.
     if (prevProps.getScheduledMessagesStatus != this.props.getScheduledMessagesStatus) {
         if (this.props.getScheduledMessagesStatus == Status.SUCCESS) {
@@ -54,6 +60,33 @@ class ScheduleMessageScreen extends Component {
         } else if (this.props.getScheduledMessagesStatus == Status.FAILURE) {
           this.onFailure(this.props.errorScheduledMessage);
         }      
+    }
+
+    // Delete 
+    if (prevProps.deleteScheduledMessageStatus != this.props.deleteScheduledMessageStatus) {
+      if (this.props.deleteScheduledMessageStatus == Status.SUCCESS) {
+          this.setState({isLoading: false, messages: this.props.messages});
+      } else if (this.props.deleteScheduledMessageStatus == Status.FAILURE) {
+        this.onFailure(this.props.errorScheduledMessage);
+      }      
+    }
+
+    // Send now.
+    if (prevProps.sendNowScheduledMessageStatus != this.props.sendNowScheduledMessageStatus) {
+      if (this.props.sendNowScheduledMessageStatus == Status.SUCCESS) {
+          this.setState({isLoading: false, messages: this.props.messages});
+      } else if (this.props.sendNowScheduledMessageStatus == Status.FAILURE) {
+        this.onFailure(this.props.errorScheduledMessage);
+      }      
+    }
+    
+    // Reschedule.
+    if (prevProps.rescheduleMessageStatus != this.props.rescheduleMessageStatus) {
+      if (this.props.rescheduleMessageStatus == Status.SUCCESS) {
+          this.setState({isLoading: false, messages: this.props.messages});
+      } else if (this.props.rescheduleMessageStatus == Status.FAILURE) {
+        this.onFailure(this.props.errorScheduledMessage);
+      }      
     }
   }
 
@@ -64,6 +97,50 @@ class ScheduleMessageScreen extends Component {
 
   onBack() {
     this.props.navigation.goBack();
+  }
+
+  onSelectedMessage=(message)=> {
+    this.setState({selectedMessage: message});
+    this.ActionSheet.show();
+  }
+
+  selectActionSheet(index) {
+    const { selectedMessage } = this.state;
+
+    // Send now.
+    if (index == 0) {
+      this.setState({isLoading: true});
+      this.props.dispatch({
+        type: actionTypes.SEND_NOW_SCHEDULED_MESSAGE,
+        id: selectedMessage._id,
+      });
+    } 
+
+    // Reschedule.
+    else if (index == 1) {
+      this.datePickerRef.onPressDate();
+    }
+
+    // Delete.
+    else if (index == 2) {
+      this.setState({isLoading: true});
+      this.props.dispatch({
+        type: actionTypes.DELETE_SCHEDULED_MESSAGE,
+        id: selectedMessage._id,
+      });
+    }
+  }
+
+  rescheduleMessage=()=> {
+    const { selectedMessage } = this.state;
+    this.setState({isLoading: true});
+    const scheduledAt = moment(this.scheduleTime).unix() * 1000;
+
+    this.props.dispatch({
+      type: actionTypes.RESCHEDULE_MESSAGE,
+      id: selectedMessage._id,
+      scheduledAt: scheduledAt,
+    });
   }
 
   render() {
@@ -86,7 +163,8 @@ class ScheduleMessageScreen extends Component {
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({item, i}) => (
                         <ScheduledChatCell 
-                            data={item} 
+                          data={item} 
+                          onSelect={this.onSelectedMessage}
                         />
                     )}
                 />
@@ -98,6 +176,28 @@ class ScheduleMessageScreen extends Component {
         ? <LoadingOverlay />
         : null
       } 
+      <ActionSheet
+        ref={o => this.ActionSheet = o}
+        options={[
+          'Send Now', 
+          'Reschedule',
+          'Delete',
+          'Cancel']}
+        cancelButtonIndex={3}
+        onPress={(index) => this.selectActionSheet(index)}
+      />
+      <DatePicker
+        showIcon={false}
+        mode="datetime"
+        style={{position: 'absolute'}}
+        ref={(ref) => this.datePickerRef = ref}
+        showIcon={false} 
+        hideText={true}
+        confirmBtnText="Confirm"
+        cancelBtnText="Cancel"
+        onDateChange={(date) => this.scheduleTime = date}
+        onCloseModal={this.rescheduleMessage}
+      /> 
       </SafeAreaView>
     );
   }
@@ -130,6 +230,9 @@ function mapStateToProps(state) {
     messages: state.scheduledMessages.messages,
     errorScheduledMessage: state.scheduledMessages.errorMessage,
     getScheduledMessagesStatus: state.scheduledMessages.getScheduledMessagesStatus,
+    rescheduleMessageStatus: state.scheduledMessages.rescheduleMessageStatus,
+    deleteScheduledMessageStatus: state.scheduledMessages.deleteScheduledMessageStatus,
+    sendNowScheduledMessageStatus: state.scheduledMessages.sendNowScheduledMessageStatus,
   };  
 }
 

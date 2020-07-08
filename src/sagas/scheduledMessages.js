@@ -8,6 +8,9 @@ import Messages from '../theme/Messages'
 const {
     getScheduledMessages,
     createScheduledMessage,
+    sendNowScheduledMessage,
+    deleteScheduledMessage,
+    rescheduleMessage,
 } = api;
   
 function* GetScheduledMessages(action) {
@@ -40,7 +43,55 @@ function* CreateScheduledMessage(action) {
     }
 }
 
+function* SendNowScheduledMessage(action) {
+  yield put({ type: Types.SEND_NOW_SCHEDULED_MESSAGE_REQUEST });
+  try {
+    const res = yield call(sendNowScheduledMessage, action.id);
+    if (res.result) {
+      yield put({ type: Types.SEND_NOW_SCHEDULED_MESSAGE_SUCCESS, payload: res.data });
+    } else {
+      yield put({ type: Types.SEND_NOW_SCHEDULED_MESSAGE_FAILURE, error: res.error });      
+    }
+  } catch (error) {
+    yield put({ type: Types.SEND_NOW_SCHEDULED_MESSAGE_FAILURE, error: Messages.NetWorkError });
+    console.log(error);
+  }
+}
+
+function* DeleteScheduledMessage(action) {
+  yield put({ type: Types.DELETE_SCHEDULED_MESSAGE_REQUEST });
+  try {
+    const res = yield call(deleteScheduledMessage, action.id);
+    if (res.result) {
+      yield put({ type: Types.DELETE_SCHEDULED_MESSAGE_SUCCESS, payload: res.data });
+    } else {
+      yield put({ type: Types.DELETE_SCHEDULED_MESSAGE_FAILURE, error: res.error });      
+    }
+  } catch (error) {
+    yield put({ type: Types.DELETE_SCHEDULED_MESSAGE_FAILURE, error: Messages.NetWorkError });
+    console.log(error);
+  }
+}
+
+function* RescheduleMessage(action) {
+  yield put({ type: Types.RESCHEDULE_MESSAGE_REQUEST });
+  try {
+    const res = yield call(rescheduleMessage, action.id, action.scheduledAt);
+    if (res.result) {
+      yield put({ type: Types.RESCHEDULE_MESSAGE_SUCCESS, payload: res.data });
+    } else {
+      yield put({ type: Types.RESCHEDULE_MESSAGE_FAILURE, error: res.error });      
+    }
+  } catch (error) {
+    yield put({ type: Types.RESCHEDULE_MESSAGE_FAILURE, error: Messages.NetWorkError });
+    console.log(error);
+  }
+}
+
 export default [
-    takeLatest(Types.GET_SCHEDULED_MESSAGES, GetScheduledMessages),
-    takeLatest(Types.CREATE_SCHEDULED_MESSAGE, CreateScheduledMessage),
+  takeLatest(Types.GET_SCHEDULED_MESSAGES, GetScheduledMessages),
+  takeLatest(Types.CREATE_SCHEDULED_MESSAGE, CreateScheduledMessage),
+  takeLatest(Types.SEND_NOW_SCHEDULED_MESSAGE, SendNowScheduledMessage),
+  takeLatest(Types.DELETE_SCHEDULED_MESSAGE, DeleteScheduledMessage),
+  takeLatest(Types.RESCHEDULE_MESSAGE, RescheduleMessage),
 ];

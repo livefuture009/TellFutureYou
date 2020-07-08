@@ -8,6 +8,9 @@ export const initialState = {
 
   getScheduledMessagesStatus: Status.NONE,
   createScheduledMessageStatus: Status.NONE,
+  deleteScheduledMessageStatus: Status.NONE,
+  rescheduleMessageStatus: Status.NONE,
+  sendNowScheduledMessageStatus: Status.NONE,
 };
 
 //////////////////////////////////////////////////////////////////
@@ -56,6 +59,102 @@ const createScheduledMessageFailure = (state, action) => ({
 });
 
 //////////////////////////////////////////////////////////////////
+////////////////// Delete Schedule Message. //////////////////////
+//////////////////////////////////////////////////////////////////
+const deleteScheduledMessageRequest = (state) => ({
+  ...state,
+  deleteScheduledMessageStatus: Status.REQUEST,
+});
+
+const deleteScheduledMessageSuccess = (state, action) => {
+  state.deleteScheduledMessageStatus = Status.SUCCESS;
+  const message_id = action.payload;
+  const messages = state.messages;
+  if (messages && messages.length > 0) {
+    for (var i = 0; i < messages.length; i++) {
+      if (messages[i]._id == message_id) {
+        messages.splice(i, 1);
+        break;
+      }
+    }
+  }
+  state.messages = messages;
+  return {
+    ...state,
+  };
+};
+
+const deleteScheduledMessageFailure = (state, action) => ({
+  ...state,
+  errorMessage: action.error,
+  deleteScheduledMessageStatus: Status.FAILURE,
+});
+
+//////////////////////////////////////////////////////////////////
+////////////////// Send Now Schedule Message. //////////////////////
+//////////////////////////////////////////////////////////////////
+const sendNowScheduledMessageRequest = (state) => ({
+  ...state,
+  sendNowScheduledMessageStatus: Status.REQUEST,
+});
+
+const sendNowScheduledMessageSuccess = (state, action) => {
+  state.sendNowScheduledMessageStatus = Status.SUCCESS;
+  const message_id = action.payload;
+  const messages = state.messages;
+  if (messages && messages.length > 0) {
+    for (var i = 0; i < messages.length; i++) {
+      if (messages[i]._id == message_id) {
+        messages.splice(i, 1);
+        break;
+      }
+    }
+  }
+  state.messages = messages;
+  return {
+    ...state,
+  };
+};
+
+const sendNowScheduledMessageFailure = (state, action) => ({
+  ...state,
+  errorMessage: action.error,
+  sendNowScheduledMessageStatus: Status.FAILURE,
+});
+
+//////////////////////////////////////////////////////////////////
+////////////////// Reschedule Message. //////////////////////
+//////////////////////////////////////////////////////////////////
+const rescheduleMessageRequest = (state) => ({
+  ...state,
+  rescheduleMessageStatus: Status.REQUEST,
+});
+
+const rescheduleMessageSuccess = (state, action) => {
+  state.rescheduleMessageStatus = Status.SUCCESS;
+  const message = action.payload;
+  const messages = state.messages;
+  if (messages && messages.length > 0) {
+    for (var i = 0; i < messages.length; i++) {
+      if (messages[i]._id == message._id) {
+        messages[i] = message;
+        break;
+      }
+    }
+  }
+  state.messages = messages;
+  return {
+    ...state,
+  };
+};
+
+const rescheduleMessageFailure = (state, action) => ({
+  ...state,
+  errorMessage: action.error,
+  rescheduleMessageStatus: Status.FAILURE,
+});
+
+//////////////////////////////////////////////////////////////////
 ////////////////////// RESET /////////////////////////////////////
 //////////////////////////////////////////////////////////////////
 const resetScheduledMessages = (state, action) => {
@@ -74,6 +173,18 @@ const actionHandlers = {
   [Types.CREATE_SCHEDULED_MESSAGE_REQUEST]: createScheduledMessageRequest,
   [Types.CREATE_SCHEDULED_MESSAGE_SUCCESS]: createScheduledMessageSuccess,
   [Types.CREATE_SCHEDULED_MESSAGE_FAILURE]: createScheduledMessageFailure,
+
+  [Types.DELETE_SCHEDULED_MESSAGE_REQUEST]: deleteScheduledMessageRequest,
+  [Types.DELETE_SCHEDULED_MESSAGE_SUCCESS]: deleteScheduledMessageSuccess,
+  [Types.DELETE_SCHEDULED_MESSAGE_FAILURE]: deleteScheduledMessageFailure,
+
+  [Types.SEND_NOW_SCHEDULED_MESSAGE_REQUEST]: sendNowScheduledMessageRequest,
+  [Types.SEND_NOW_SCHEDULED_MESSAGE_SUCCESS]: sendNowScheduledMessageSuccess,
+  [Types.SEND_NOW_SCHEDULED_MESSAGE_FAILURE]: sendNowScheduledMessageFailure,
+
+  [Types.RESCHEDULE_MESSAGE_REQUEST]: rescheduleMessageRequest,
+  [Types.RESCHEDULE_MESSAGE_SUCCESS]: rescheduleMessageSuccess,
+  [Types.RESCHEDULE_MESSAGE_FAILURE]: rescheduleMessageFailure,
 
   [Types.RESET_SCHEDULED_MESSAGES]: resetScheduledMessages,
 };

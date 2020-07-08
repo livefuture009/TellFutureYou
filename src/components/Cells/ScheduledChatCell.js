@@ -9,12 +9,12 @@ import FastImage from 'react-native-fast-image'
 
 export default class ScheduledChatCell extends React.PureComponent {
   render() {
-    const { data } = this.props;
+    const { data, onSelect } = this.props;
     const width = 244;
     let height = 148;
 
     return (
-      <View style={{ flex: 1 }}>
+      <TouchableOpacity style={{ flex: 1 }} onPress={() => onSelect(data)}>
         {
           data && data.type == 'text'
             ? (
@@ -37,7 +37,7 @@ export default class ScheduledChatCell extends React.PureComponent {
             )
             : null
         }
-      </View>
+      </TouchableOpacity>
     );
   }
 }
