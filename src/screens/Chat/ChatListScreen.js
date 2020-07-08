@@ -26,6 +26,7 @@ class ChatScreen extends Component {
     this.state = {
       isLoading: false,
       channelList: [],
+      originalChannelList: [],
       keyword: '',
     }
   }
@@ -80,7 +81,11 @@ class ChatScreen extends Component {
       if (!isExisting) {
         list.push(channel);
       }
-      this.setState({channelList: list});
+
+      this.setState({
+        channelList: list,
+        originalChannelList: [...list],
+      });
       this.props.dispatch({
         type: actionTypes.SET_UNREAD_MESSAGE,
         number: totalUnreadCount
@@ -119,8 +124,8 @@ class ChatScreen extends Component {
 
         _SELF.setState({ 
           channelList: channelList, 
+          originalChannelList: [...channelList],
         });  
-        console.log("channelList: ", channelList);
       } else {
         if (error) {
           console.log('Get Private List Fail.', error);
@@ -136,12 +141,43 @@ class ChatScreen extends Component {
       var channel = channels[i];
       unreadCount += channel.unreadMessageCount;
     }
-
     return unreadCount;
   }
 
   onBack() {
     this.props.navigation.goBack();
+  }
+
+  onSearch(keyword) {
+    this.setState({keyword: keyword});
+    const { originalChannelList } = this.state;
+
+    if (keyword) {
+      const text = keyword.trim().toLowerCase();
+      if (text.length > 0) {
+        const { currentUser } = this.props;
+        var list = [];
+        originalChannelList.forEach(item => {
+          var targetUsername = "";
+          if (item.members[0].userId == currentUser._id) {
+            targetUsername = item.members[1].nickname.toLowerCase();
+          } else {
+            targetUsername = item.members[0].nickname.toLowerCase();
+          }
+
+          if (targetUsername.indexOf(text) >= 0) {
+            list.push(item);
+          }
+        });
+
+        this.setState({ channelList: list });
+      } else {
+        this.setState({ channelList: originalChannelList });
+      }
+    } 
+    else {
+      this.setState({ channelList: originalChannelList });
+    }
   }
 
   render() {
@@ -161,7 +197,7 @@ class ChatScreen extends Component {
               style={{marginTop: 10, marginBottom: 10}} 
               value={keyword} 
               placeholder="Search ..." 
-              onChangeText={(text) => this.searchService(text)}
+              onChangeText={(text) => this.onSearch(text)}
             />
             {
               (this.state.channelList && this.state.channelList.length > 0)
