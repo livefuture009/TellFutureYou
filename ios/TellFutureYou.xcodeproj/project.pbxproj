@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		00CA0C0927DD45EC95B25A74 /* OpenSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0F6C0CFA9395453D8E0295F6 /* OpenSans-Regular.ttf */; };
 		00E356F31AD99517003FC87E /* TellFutureYouTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* TellFutureYouTests.m */; };
+		043C7BE324B8DAAD00CCE1F7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 043C7BE224B8DAAD00CCE1F7 /* GoogleService-Info.plist */; };
 		119C7A4CE3C848F58BF88568 /* OpenSans-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83C400B16CC949E3B0498657 /* OpenSans-BoldItalic.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
@@ -54,6 +55,7 @@
 		00E356EE1AD99517003FC87E /* TellFutureYouTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TellFutureYouTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* TellFutureYouTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TellFutureYouTests.m; sourceTree = "<group>"; };
+		043C7BE224B8DAAD00CCE1F7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "TellFutureYou/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		049C3F69249D6C19008FCB01 /* TellFutureYou.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = TellFutureYou.entitlements; path = TellFutureYou/TellFutureYou.entitlements; sourceTree = "<group>"; };
 		0C0DAB35ED3B44E59D789E22 /* OpenSans-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-Light.ttf"; path = "../assets/fonts/OpenSans-Light.ttf"; sourceTree = "<group>"; };
 		0F6C0CFA9395453D8E0295F6 /* OpenSans-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-Regular.ttf"; path = "../assets/fonts/OpenSans-Regular.ttf"; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 		13B07FAE1A68108700A75B9A /* TellFutureYou */ = {
 			isa = PBXGroup;
 			children = (
+				043C7BE224B8DAAD00CCE1F7 /* GoogleService-Info.plist */,
 				049C3F69249D6C19008FCB01 /* TellFutureYou.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -379,6 +382,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				043C7BE324B8DAAD00CCE1F7 /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				51D956419E5049E2980839A4 /* OpenSans-Bold.ttf in Resources */,

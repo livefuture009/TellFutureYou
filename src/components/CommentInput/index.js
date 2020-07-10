@@ -35,11 +35,7 @@ export default class CommentInput extends React.Component{
             placeholderTextColor="#888888"
           />
         </View>
-        <TouchableOpacity style={styles.scheduleButton} onPress={() => {
-          if (!props.disabled) {
-            props.onSchedule
-          }
-          }}>
+        <TouchableOpacity style={styles.scheduleButton} onPress={() => props.onSchedule()}>
           <Image source={Images.icon_clock} style={[styles.schedlueIcon, props.disabled && { opacity: 0.2 }]} resizeMode="contain" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.scheduleButton} onPress={props.onPost}>

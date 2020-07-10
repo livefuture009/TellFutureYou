@@ -610,7 +610,7 @@ class LoginScreen extends Component {
   async loginWithSocialSuccess() {
     if (this.props.needToSignUp) {
       this.setState({isLoading: false});
-      this.props.navigation.navigate('SelectUserType', {user: this.props.currentUser});
+      this.props.navigation.navigate('SignUp', {user: this.props.currentUser});
     } else {
       Storage.USERID.set(this.props.currentUser._id);
       this.onMoveHome(true);

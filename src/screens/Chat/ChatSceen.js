@@ -450,14 +450,13 @@ class ChatScreen extends Component {
     this.text = '';
     this.setState({disabled: true, commentHeight: 45});        
     this.commentInputRef.clear();
-    this.setState({disabled: true});
   }
 
   onChangeText=(text)=> {
     this.text= text;
     const disabled = (text.trim().length > 0) ? false : true;
     if (disabled === this.state.disabled) return;
-    
+    console.log("disabled: ", disabled);
     this.setState({ disabled })
   }
 
@@ -488,6 +487,7 @@ class ChatScreen extends Component {
   }
 
   onSchedule=()=> {
+    if (this.state.disabled) return;
     this.datePickerRef.onPressDate();
   }
 

@@ -27,7 +27,15 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb3605929916114343</string>
+				<string>fb636397710292136</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.389020544990-8uohd3jvl00dvo5c9rao5g9cmvcekocs</string>
 			</array>
 		</dict>
 	</array>
@@ -41,6 +49,8 @@
 	<false/>
 	<key>FacebookDisplayName</key>
 	<string>TellFutureYou</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -58,6 +68,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) requires to access camera for taking profile picture.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>$(PRODUCT_NAME) allow contact access</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>$(PRODUCT_NAME) required to access your geo location for push notification.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -91,13 +103,9 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
-	<key>NSContactsUsageDescription</key>
-	<string>$(PRODUCT_NAME) allow contact access</string>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 </dict>
 </plist>
