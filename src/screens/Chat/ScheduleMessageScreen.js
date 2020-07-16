@@ -18,7 +18,7 @@ import LoadingOverlay from '../../components/LoadingOverlay'
 import actionTypes from '../../actions/actionTypes';
 import {checkInternetConnectivity} from '../../functions'
 import ActionSheet from 'react-native-actionsheet'
-import DatePicker from 'react-native-datepicker'
+import ScheduleDialog from '../../components/ScheduleDialog'
 import moment from 'moment';
 
 // Android does keyboard height adjustment natively.
@@ -35,6 +35,7 @@ class ScheduleMessageScreen extends Component {
     this.state = {
         messages: [],
         selectedMessage: null,
+        isShowScheduleDialog: false,
     }
   }
 
@@ -118,7 +119,7 @@ class ScheduleMessageScreen extends Component {
 
     // Reschedule.
     else if (index == 1) {
-      this.datePickerRef.onPressDate();
+      this.setState({isShowScheduleDialog: true});
     }
 
     // Delete.
@@ -144,7 +145,7 @@ class ScheduleMessageScreen extends Component {
   }
 
   render() {
-    const { messages } = this.state;
+    const { messages, isShowScheduleDialog } = this.state;
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
         <TopNavBar 
@@ -186,18 +187,16 @@ class ScheduleMessageScreen extends Component {
         cancelButtonIndex={3}
         onPress={(index) => this.selectActionSheet(index)}
       />
-      <DatePicker
-        showIcon={false}
-        mode="datetime"
-        style={{position: 'absolute'}}
-        ref={(ref) => this.datePickerRef = ref}
-        showIcon={false} 
-        hideText={true}
-        confirmBtnText="Confirm"
-        cancelBtnText="Cancel"
-        onDateChange={(date) => this.scheduleTime = date}
-        onCloseModal={this.rescheduleMessage}
-      /> 
+      <ScheduleDialog 
+        isVisible={isShowScheduleDialog}
+        value={this.scheduleTime}
+        onClose={() => this.setState({isShowScheduleDialog: false})}
+        onSelect={(date) => {
+          this.scheduleTime = date;
+          this.setState({isShowScheduleDialog: false});
+          this.rescheduleMessage();
+        }}
+      />
       </SafeAreaView>
     );
   }

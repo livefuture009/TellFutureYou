@@ -27,8 +27,8 @@ import LoadingOverlay from '../../components/LoadingOverlay'
 import actionTypes from '../../actions/actionTypes';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import {checkInternetConnectivity} from '../../functions'
-import DatePicker from 'react-native-datepicker'
 import moment from 'moment';
+import ScheduleDialog from '../../components/ScheduleDialog'
 
 const OPEN_CAMERA=0;
 const OPEN_GALLERY=1;
@@ -60,6 +60,7 @@ class ChatScreen extends Component {
       isLoading: false,
       photos: [],
       isImageViewVisible: false,
+      isShowScheduleDialog: false,
       currentPhotoIndex: 0,
     }
   }
@@ -488,7 +489,8 @@ class ChatScreen extends Component {
 
   onSchedule=()=> {
     if (this.state.disabled) return;
-    this.datePickerRef.onPressDate();
+    Keyboard.dismiss();
+    this.setState({isShowScheduleDialog: true});
   }
 
   sendScheduledMessage=()=> {
@@ -526,7 +528,7 @@ class ChatScreen extends Component {
   }
 
   render() {
-    const { disabled, isImageViewVisible, photos, currentPhotoIndex } = this.state;
+    const { disabled, isImageViewVisible, isShowScheduleDialog, photos, currentPhotoIndex } = this.state;
     const currentUser = sb.currentUser;    
     const { user, room, contact } = this.props.route.params;  
     var name = "";
@@ -619,18 +621,16 @@ class ChatScreen extends Component {
         isVisible={isImageViewVisible}
         onClose={() => this.setState({isImageViewVisible: false})}
       />    
-      <DatePicker
-        showIcon={false}
-        mode="datetime"
-        style={{position: 'absolute'}}
-        ref={(ref) => this.datePickerRef = ref}
-        showIcon={false} 
-        hideText={true}
-        confirmBtnText="Confirm"
-        cancelBtnText="Cancel"
-        onDateChange={(date) => this.scheduleTime = date}
-        onCloseModal={this.sendScheduledMessage}
-      /> 
+      <ScheduleDialog 
+        isVisible={isShowScheduleDialog}
+        value={this.scheduleTime}
+        onClose={() => this.setState({isShowScheduleDialog: false})}
+        onSelect={(date) => {
+          this.scheduleTime = date;
+          this.setState({isShowScheduleDialog: false});
+          this.sendScheduledMessage();
+        }}
+      />
       </SafeAreaView>
     );
   }

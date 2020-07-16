@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text, Platform } from 'react-native';
 import FastImage from 'react-native-fast-image'
 import CheckBox from '../CheckBox'
 import Colors from '../../theme/Colors'
@@ -13,7 +13,7 @@ export default class ContactCell extends React.Component {
 
     	return (
 	   		<TouchableOpacity style={styles.container} onPress={() => onSelect(data)}>
-                <View style={styles.contentView}>
+                <View style={[styles.contentView, Platform.OS == "ios" ? styles.shadowView: {}]}>
                     <View style={styles.leftView}>
                         <FastImage source={avatar} style={styles.avatarPhoto} />
                         <View>
@@ -61,6 +61,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
+    },
+
+    shadowView: {
         shadowColor: 'black',
 		shadowOffset: {
 			width: 0,
