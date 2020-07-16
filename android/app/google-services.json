@@ -1,0 +1,71 @@
+{
+  "project_info": {
+    "project_number": "389020544990",
+    "firebase_url": "https://tell-future-you.firebaseio.com",
+    "project_id": "tell-future-you",
+    "storage_bucket": "tell-future-you.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:389020544990:android:b148f3fb37c8ee1c0af74f",
+        "android_client_info": {
+          "package_name": "com.tellfutureyou"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "389020544990-sdt37v8oaahplh0tggo4dpf5qa0erhcr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tellfutureyou",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "389020544990-7a497gm9p475fod1v35rqpnlkm4j4fae.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tellfutureyou",
+            "certificate_hash": "e50c70f7569d6c5fe0c1704dd889e143f1add389"
+          }
+        },
+        {
+          "client_id": "389020544990-gl0np8jg106jdrcor9dvgb8kv7rgmjdf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tellfutureyou",
+            "certificate_hash": "903052f63a5b711b128c410841697e4c387f1b95"
+          }
+        },
+        {
+          "client_id": "389020544990-v7jscnad80i684d8tid52p4i8433t6jk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDo1KXfpxtFJqhwIzWPxk6LiLUK_c6usuE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "389020544990-v7jscnad80i684d8tid52p4i8433t6jk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "389020544990-8uohd3jvl00dvo5c9rao5g9cmvcekocs.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "gad.tellfutureyou.org"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

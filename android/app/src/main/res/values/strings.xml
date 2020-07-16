@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TellFutureYou</string>
+    <string name="facebook_app_id">636397710292136</string>
+    <string name="server_client_id">389020544990-v7jscnad80i684d8tid52p4i8433t6jk.apps.googleusercontent.com</string>
 </resources>
