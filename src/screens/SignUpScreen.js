@@ -36,6 +36,7 @@ class SignUpScreen extends Component {
       email: '',
       phone: '',
       location: '',
+      locationText: '',
       password: '',
       confirmPassword: '',
       agreeTerms: false,
@@ -98,6 +99,14 @@ class SignUpScreen extends Component {
     }
   }
 
+  onChangeLocation(address) {
+    this.setState({
+      location: address,
+      locationText: address,
+      locationError: null,
+    })
+  }
+
   onTerms=()=> {
     this.props.navigation.navigate('Terms');
   }
@@ -120,6 +129,7 @@ class SignUpScreen extends Component {
       email,
       phone,
       location,
+      locationText,
       socialId, 
       socialType,
       password,
@@ -148,7 +158,7 @@ class SignUpScreen extends Component {
       isValid = false;
     }
 
-    if (location == null || location.length == 0) {
+    if (location == null || location.length == 0 || location != locationText) {
       this.setState({locationError: Messages.InvalidLocation});
       isValid = false;
     }
@@ -217,6 +227,7 @@ class SignUpScreen extends Component {
       email,
       phone,
       location,
+      locationText,
       password,
       confirmPassword,
       socialId,
@@ -281,7 +292,7 @@ class SignUpScreen extends Component {
                   onChangeText={(text) => this.setState({email: text, emailError: null})} />
 
                 <FormInput
-                  label="Mobile Number"
+                  label="Phone"
                   placeholder="644 631-5465" 
                   type="phone"
                   value={phone} 
@@ -296,7 +307,7 @@ class SignUpScreen extends Component {
                   placeholder="No. 212"
                   type="address"
                   placeholderTextColor={Colors.placeholderColor}
-                  value={location} 
+                  value={locationText} 
                   errorMessage={locationError}
                   returnKeyType="next"
                   onFocus={() => {this.scroll.props.scrollToPosition(0, 110)}}
@@ -308,7 +319,8 @@ class SignUpScreen extends Component {
                      Keyboard.dismiss()
                     }
                   }}
-                  onChangeText={(text) => this.setState({location: text, locationError: null})} />
+                  onSelectAddress={(address) => this.onChangeLocation(address)}
+                  onChangeText={(text) => this.setState({locationText: text, locationError: null})} />
                 {
 	            	  socialId == null
 	            	  ? <View>

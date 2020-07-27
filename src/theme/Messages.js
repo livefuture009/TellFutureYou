@@ -11,9 +11,11 @@ const Messages = {
 	InvalidPhone: 'Please input a valid phone number.',
 	InvalidTerms: 'Please agree to the Terms of Service.',
 	SuccessImportContacts: 'You have imported contacts succesfully!',
-	SuccessInvite: 'You sent invitation succesfully!',
+	InvalidVerifyCode: 'Please input the 6-digit verification code.',
+	SuccessInvite: 'Invitation has been sent!',
 	SuccessAddContact: 'You have added a new contact succesfully!',
 	SuccessEditContact: 'You have updated a contact succesfully!',
+	InvalidSelectedContacts: 'Please select contacts to import.',
 	NetWorkError: 'No internet connection.',	
 };
 

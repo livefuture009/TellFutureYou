@@ -232,7 +232,7 @@ class ContactDetailScreen extends Component {
                   <EditAvatar avatar={this.state.avatar} onTakePhoto={() => this.onTakePicture()} />
                 </View>                          
                 <LabelFormInput
-                    label="First name" 
+                    label="First Name" 
                     type="text"
                     placeholder="John"
                     placeholderTextColor={Colors.placeholderColor}
@@ -245,7 +245,7 @@ class ContactDetailScreen extends Component {
                 />
 
                 <LabelFormInput
-                    label="Last name" 
+                    label="Last Name" 
                     type="text"
                     placeholder="Doe"
                     placeholderTextColor={Colors.placeholderColor}
@@ -277,9 +277,9 @@ class ContactDetailScreen extends Component {
                   placeholderTextColor={Colors.placeholderColor}
                   value={this.state.phone} 
                   errorMessage={this.state.phoneError}
-                  returnKeyType="next"                                       
+                  returnKeyType="done"                                       
                   onRefInput={(input) => { this.phoneInput = input }}
-                  onSubmitEditing={() => { this.locationInput.focus() }}
+                  onSubmitEditing={() => { this.onMakeChanges() }}
                   onChangeText={(text) => this.setState({phone: text, phoneError: null})} />
 
                 <View style={styles.centerView}>

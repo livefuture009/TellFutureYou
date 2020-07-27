@@ -3,13 +3,14 @@ import {
   View,
   TextInput,
   StyleSheet,
-  SafeAreaView,
+  StatusBar,
   ActivityIndicator
 } from 'react-native';
 
 import TopNavBar from '../components/TopNavBar'
 import { WebView } from 'react-native-webview';
 import Colors from '../theme/Colors'
+import { SafeAreaConsumer } from 'react-native-safe-area-context';
 
 class TermsScreen extends Component {
   constructor(props) {
@@ -23,10 +24,14 @@ class TermsScreen extends Component {
     this.props.navigation.goBack();
   }
 
+  componentDidMount() {
+    StatusBar.setBarStyle('dark-content', true);
+  }
+
   ActivityIndicatorLoadingView() {
     return (
       <ActivityIndicator
-        color='#009688'
+        color={Colors.appColor}
         size='large'
         style={styles.ActivityIndicatorStyle}
       />
@@ -36,19 +41,25 @@ class TermsScreen extends Component {
 
   render() {
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.navColor}}>
-        <View style={styles.container}>
-          <TopNavBar title="Terms of Service" onBack={() => this.onBack()}/>
-          <WebView 
-            style={{ flex: 1 }}
-            javaScriptEnabled={true}
-            domStorageEnabled={true}
-            renderLoading={this.ActivityIndicatorLoadingView} 
-            startInLoadingState={true}  
-            source={{ uri: 'http://12helpme.com/terms-and-conditions.html' }} 
-          />
-        </View>
-      </SafeAreaView>
+      <View style={{flex: 1, backgroundColor: 'white'}}>
+        <SafeAreaConsumer>
+          {insets => 
+            <View style={{flex: 1, paddingTop: insets.top }} >
+              <TopNavBar title="Terms of Service" align="left" onBack={() => this.onBack()}/>                      
+              <View style={styles.container}>
+                <WebView 
+                  style={{ flex: 1 }}
+                  javaScriptEnabled={true}
+                  domStorageEnabled={true}
+                  renderLoading={this.ActivityIndicatorLoadingView} 
+                  startInLoadingState={true}  
+                  source={{ uri: 'http://12helpme.com/terms-and-conditions.html' }} 
+                />
+              </View>
+            </View>
+          }
+        </SafeAreaConsumer>
+      </View>
     );
   }
 }

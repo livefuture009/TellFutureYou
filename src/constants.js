@@ -5,7 +5,7 @@ export const ONE_SIGNAL_APP_ID = 'a17cbcdf-1034-43a3-ab3e-1b9e0ebe1de6'
 export const GOOGLE_API_KEY = 'AIzaSyCGJg6E9WkiiIbbOhAWw_A0wSMS3YKaNBs'
 export const GOOGLE_SIGNIN_WEB_CLIENT_ID = '389020544990-v7jscnad80i684d8tid52p4i8433t6jk.apps.googleusercontent.com';
 export const GOOGLE_SIGNIN_IOS_CLIENT_ID = '389020544990-8uohd3jvl00dvo5c9rao5g9cmvcekocs.apps.googleusercontent.com';
-export const SENDBIRD_APP_ID = '93D0DF90-B1A0-4FEE-9665-6858DE2A0C3E';
+export const SENDBIRD_APP_ID = '83A1D87C-EAA9-460A-AAF9-6D224B27E793';
 
 /**
  * Possible requests status

@@ -22,6 +22,7 @@ export default class ContactCell extends React.Component {
                             <Text style={styles.phoneText}>{data.email}</Text>
                         </View>                    
                     </View>
+                    <View style={{width: '50%', alignItems: 'flex-end'}}>
                     {
                         isImport
                         ? <CheckBox value={data.selected} />
@@ -41,7 +42,7 @@ export default class ContactCell extends React.Component {
                             </View>
                         </TouchableOpacity>
                     }
-                    
+                    </View>
                 </View>
             </TouchableOpacity>
         );
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
 
     leftView: {
         flexDirection: 'row',
-        width: '60%',
+        width: '45%',
     },
 
     avatarPhoto: {
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
     },
 
     actionButton: {
-        width: 120,
+        width: 110,
         backgroundColor: Colors.appColor,
         paddingVertical: 5,
         borderRadius: 15,

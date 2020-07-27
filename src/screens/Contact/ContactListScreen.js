@@ -22,6 +22,8 @@ import EmptyView from '../../components/EmptyView'
 import { TOAST_SHOW_TIME, Status } from '../../constants.js'
 import Colors from '../../theme/Colors'
 import Messages from '../../theme/Messages'
+import { filterName } from '../../functions';
+
 
 class ContactListScreen extends Component {
   constructor(props) {
@@ -37,7 +39,11 @@ class ContactListScreen extends Component {
   componentDidMount() {
     const { currentUser } = this.props;
     if (currentUser && currentUser.contacts && currentUser.contacts.length > 0) {
-      this.setState({contacts: currentUser.contacts, originalContacts: currentUser.contacts});
+      this.sortContacts(currentUser.contacts);
+      this.setState({
+        contacts: currentUser.contacts, 
+        originalContacts: currentUser.contacts
+      });
     }
 
     this.focusListener = this.props.navigation.addListener('focus', () => {
@@ -52,9 +58,18 @@ class ContactListScreen extends Component {
     this.focusListener();
   }
 
+  sortContacts(contacts) {
+    contacts.sort((a, b) => {
+      const nameA = filterName(a.firstName.trim(), a.lastName.trim());
+      const nameB = filterName(b.firstName.trim(), b.lastName.trim());
+      return nameA > nameB ? 1 : -1;
+    })
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.currentUser != this.props.currentUser) {
       if (this.props.currentUser.contacts && this.props.currentUser.contacts.length > 0) {
+        this.sortContacts(this.props.currentUser.contacts);
         this.setState({
           contacts: this.props.currentUser.contacts,
           originalContacts: this.props.currentUser.contacts,
@@ -130,28 +145,37 @@ class ContactListScreen extends Component {
     }
   }
 
-  importContacts() {
+  async importContacts() {
     if (Platform.OS == 'android') {
-      PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
-        {
-          'title': 'Contacts',
-          'message': 'This app would like to view your contacts.',
-          'buttonPositive': 'Please accept bare mortal'
-        }
-      ).then(() => {
-        Contacts.getAll((err, contacts) => {
-          if (err === 'denied'){
-            // error
-          } else {
-            this.parseContacts(contacts);
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+          {
+            'title': 'Contacts',
+            'message': 'This app would like to view your contacts.',
+            'buttonPositive': 'Accept'
           }
-        })
-      })
-    } else {
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          Contacts.getAll((err, contacts) => {
+            if (err === 'denied'){
+              // error
+            } else {
+              this.parseContacts(contacts);
+            }
+          })
+        } else {
+          this.refs.toast.show("Read Contacts Permission Denied", TOAST_SHOW_TIME);
+        }
+      }
+      catch (err) {
+        console.warn(err)
+      }
+    }
+    else {
       Contacts.getAll((err, contacts) => {
         if (err === 'denied'){
-          // error
+          this.refs.toast.show("Read Contacts Permission Denied", TOAST_SHOW_TIME);
         } else {
           this.parseContacts(contacts);
         }
@@ -165,14 +189,16 @@ class ContactListScreen extends Component {
 
   onSendInvite=(data)=> {
     const { currentUser } = this.props;
+    console.log("data:" , data);
     const sender = currentUser.firstName + " " + currentUser.lastName;
+    const receiver = data.firstName + " " + data.lastName;
 
     this.setState({isLoading: true});
     this.props.dispatch({
       type: actionTypes.SEND_INVITE,
       email: data.email,
       sender: sender,
-      receiver: data.name
+      receiver: receiver
     });
   }
 

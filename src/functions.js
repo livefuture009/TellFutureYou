@@ -188,3 +188,15 @@ export const validateEmail = (email) => {
 export const getOnlyAlphabetLetters = (text) => {
   return  text.replace(/[`~0-9!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '')
 };
+
+export const filterName = (firstName, lastName) => {
+  var name = "";
+  if (firstName && firstName.length > 0) {
+    name = firstName.toLowerCase();
+  }
+
+  if (lastName && lastName.length > 0) {
+    name += lastName.toLowerCase();
+  }
+  return name;
+};

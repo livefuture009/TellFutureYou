@@ -19,6 +19,7 @@ import EmptyView from '../../components/EmptyView'
 import { TOAST_SHOW_TIME, Status } from '../../constants.js'
 import Colors from '../../theme/Colors'
 import Messages from '../../theme/Messages'
+import { filterName } from '../../functions';
 
 class ImportContactScreen extends Component {
   constructor(props) {
@@ -60,6 +61,7 @@ class ImportContactScreen extends Component {
                 });
             });
 
+            this.sortContacts(list);
             this.setState({contacts: list, originalContacts: list});
         }
     }
@@ -75,6 +77,14 @@ class ImportContactScreen extends Component {
         this.onFailure();
       }      
     }
+  }
+
+  sortContacts(contacts) {
+    contacts.sort((a, b) => {
+      const nameA = filterName(a.firstName.trim(), a.lastName.trim());
+      const nameB = filterName(b.firstName.trim(), b.lastName.trim());
+      return nameA > nameB ? 1 : -1;
+    })
   }
 
   showResultMessage(message, isBack) {
@@ -110,12 +120,17 @@ class ImportContactScreen extends Component {
       }
     });
 
-    this.setState({isLoading: true});
-    this.props.dispatch({
-      type: actionTypes.IMPORT_CONTACTS,
-      userId: currentUser._id,
-      contacts: list,
-    });
+    if (list && list.length > 0) {
+      this.setState({isLoading: true});
+      this.props.dispatch({
+        type: actionTypes.IMPORT_CONTACTS,
+        userId: currentUser._id,
+        contacts: list,
+      });
+    } 
+    else {
+      this.refs.toast.show(Messages.InvalidSelectedContacts, TOAST_SHOW_TIME);
+    }
   }
 
   searchContacts(keyword) {
@@ -124,9 +139,14 @@ class ImportContactScreen extends Component {
     if (text && text.length > 0) {
         var list = [];
         originalContacts.forEach(item => {
-            if (item.name.toLowerCase().indexOf(text) >= 0) {
-                list.push(item);
-            }
+          
+          if (item.firstName.toLowerCase().indexOf(text) >= 0 
+          || item.lastName.toLowerCase().indexOf(text) >= 0
+          || item.email.toLowerCase().indexOf(text) >= 0
+          || item.phone.toLowerCase().indexOf(text) >= 0) 
+          {
+              list.push(item);
+          }
         });
 
         this.setState({contacts: list});

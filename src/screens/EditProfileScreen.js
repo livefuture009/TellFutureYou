@@ -36,7 +36,7 @@ class EditProfile extends Component {
       phone: '',
       location: '',
       locationText: '',
-
+      
       firstNameError: '',
       lastNameError: '',
       emailError: '',
@@ -248,7 +248,7 @@ class EditProfile extends Component {
                 </View>              
                 <View style={styles.rowView}>
                   <LabelFormInput
-                    label="First name" 
+                    label="First Name" 
                     type="text"
                     placeholderTextColor={Colors.placeholderTextColor}
                     value={this.state.firstName} 
@@ -260,7 +260,7 @@ class EditProfile extends Component {
                   />
 
                   <LabelFormInput
-                    label="Last name" 
+                    label="Last Name" 
                     type="text"
                     placeholderTextColor={Colors.placeholderTextColor}
                     value={this.state.lastName} 

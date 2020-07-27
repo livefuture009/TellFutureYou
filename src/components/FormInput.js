@@ -176,6 +176,7 @@ class FormInput extends Component {
                                             onSelectAddress={(address) => {
                                                 this.setState({showAddressList: false});
                                                 this.props.onChangeText(address)
+                                                this.props.onSelectAddress(address)
                                             }}
                                         />
                                         ))}
@@ -293,10 +294,17 @@ const styles = StyleSheet.create({
 
     showPasswordButton: {
         position: 'absolute',
-        right: 0,
+        right: 15,
         top: 12,
+        zIndex: 2,
     },
 
+    eye_icon: {
+        width: 25,
+        height: 25,
+        resizeMode: 'contain',
+    },
+    
     errorMessage: {
         fontFamily: Fonts.regular,
         fontStyle: 'italic',
@@ -308,15 +316,6 @@ const styles = StyleSheet.create({
 
     centerText: {
         textAlign: 'center'
-    },
-
-    eye_icon: {
-        width: 25,
-        height: 25,
-        resizeMode: 'contain',
-        position: 'absolute',
-        top: 0,
-        right: 17,
     },
 
     textViewWithIcon: {

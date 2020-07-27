@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Keyboard,
+  StatusBar,
   Platform
 } from 'react-native';
 
@@ -69,6 +70,10 @@ class LoginScreen extends Component {
   }
 
   componentDidMount() {
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      StatusBar.setBarStyle('dark-content', true);
+    });
+
     this.initPush();
 
     GoogleSignin.configure({
@@ -99,6 +104,7 @@ class LoginScreen extends Component {
   }
 
   componentWillUnmount() {
+    this.focusListener();
     OneSignal.removeEventListener('received', this.onReceived);
     OneSignal.removeEventListener('opened', this.onOpened);
     OneSignal.removeEventListener('ids', this.onIds);
