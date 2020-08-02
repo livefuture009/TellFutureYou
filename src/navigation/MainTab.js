@@ -3,11 +3,11 @@ import { Image, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import Images from '../theme/Images'
-import Colors from '../theme/Colors'
 
 import ContactListScreen from '../screens/Contact/ContactListScreen';
 import ChatListScreen from '../screens/Chat/ChatListScreen';
 import MyAccountScreen from '../screens/MyAccount/MyAccountScreen';
+import TabBarItem from './TabBarItem';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -42,26 +42,17 @@ class CustomerTab extends React.Component {
             <Tab.Navigator
               screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, color, size }) => {
-                  var icon;
-                  var selectedIcon;
-
+                  var iconImage;
                   if (route.name === 'ChatStack') {
-                    icon = Images.tab_message;
-                    selectedIcon = Images.tab_message_selected;
+                    iconImage = focused ? Images.tab_message_selected : Images.tab_message;
                   }
                   else if (route.name === 'ContactStack') {
-                    icon = Images.tab_contacts;
-                    selectedIcon = Images.tab_contacts_selected;
+                    iconImage = focused ? Images.tab_contacts_selected : Images.tab_contacts;
                   } 
                   else if (route.name === 'MyAccountStack') {
-                    icon = Images.tab_profile;
-                    selectedIcon = Images.tab_profile_selected;
+                    iconImage = focused ? Images.tab_profile_selected : Images.tab_profile;
                   }
-
-                  return <Image
-                    style={[styles.iconImage, !focused ? styles.inactiveIcon : null ]}
-                    source={focused ? selectedIcon : icon} 
-                  />
+                  return <TabBarItem icon={iconImage} page={route.name} />;
                 },
               })}
               tabBarOptions={{

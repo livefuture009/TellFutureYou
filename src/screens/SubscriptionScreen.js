@@ -16,6 +16,7 @@ import Messages from '../theme/Messages'
 import Colors from '../theme/Colors'
 import { TOAST_SHOW_TIME, Status, PASSWORD_MIN_LENGTH } from '../constants.js'
 import actionTypes from '../actions/actionTypes';
+import * as RNIap from 'react-native-iap';
 
 class SubscriptionScreen extends Component {
   constructor(props) {
@@ -38,6 +39,10 @@ class SubscriptionScreen extends Component {
     this.refs.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);
   }
 
+  onSubscribe=()=> {
+    
+  }
+
   render() {
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
@@ -51,7 +56,7 @@ class SubscriptionScreen extends Component {
               title="Subscribe" 
               theme="blue" 
               style={styles.registerButton} 
-              onPress={this.onChangePassword} 
+              onPress={this.onSubscribe} 
             />
           </View>
         </View>

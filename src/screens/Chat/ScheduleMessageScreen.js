@@ -10,6 +10,7 @@ import {
 
 import {connect} from 'react-redux';
 import Toast from 'react-native-easy-toast'
+import BackgroundTimer from 'react-native-background-timer';
 import TopNavBar from '../../components/TopNavBar'
 import ScheduledChatCell from '../../components/Cells/ScheduledChatCell'
 import Colors from '../../theme/Colors'
@@ -20,6 +21,7 @@ import {checkInternetConnectivity} from '../../functions'
 import ActionSheet from 'react-native-actionsheet'
 import ScheduleDialog from '../../components/ScheduleDialog'
 import moment from 'moment';
+import EmptyView from '../../components/EmptyView'
 
 // Android does keyboard height adjustment natively.
 const ChatView = Platform.select({
@@ -36,6 +38,7 @@ class ScheduleMessageScreen extends Component {
         messages: [],
         selectedMessage: null,
         isShowScheduleDialog: false,
+        isFirst: true,
     }
   }
 
@@ -49,7 +52,20 @@ class ScheduleMessageScreen extends Component {
           userId: currentUser._id,
           channelId: channel.name,
       });
+
+      BackgroundTimer.runBackgroundTimer(() => { 
+        this.props.dispatch({
+          type: actionTypes.GET_SCHEDULED_MESSAGES,
+          userId: currentUser._id,
+          channelId: channel.name,
+        });
+        }, 
+      1000);
     }
+  }
+
+  componentWillUnmount() {
+    BackgroundTimer.stopBackgroundTimer();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -57,7 +73,11 @@ class ScheduleMessageScreen extends Component {
     // Get Scheduled Messages.
     if (prevProps.getScheduledMessagesStatus != this.props.getScheduledMessagesStatus) {
         if (this.props.getScheduledMessagesStatus == Status.SUCCESS) {
-            this.setState({isLoading: false, messages: this.props.messages});
+            this.setState({
+              isLoading: false, 
+              isFirst: false,
+              messages: this.props.messages
+            });
         } else if (this.props.getScheduledMessagesStatus == Status.FAILURE) {
           this.onFailure(this.props.errorScheduledMessage);
         }      
@@ -92,7 +112,7 @@ class ScheduleMessageScreen extends Component {
   }
 
   onFailure(message) {
-    this.setState({isLoading: false});
+    this.setState({isLoading: false, isFirst: false});
     this.refs.toast.show(message, TOAST_SHOW_TIME);
   }
 
@@ -145,33 +165,37 @@ class ScheduleMessageScreen extends Component {
   }
 
   render() {
-    const { messages, isShowScheduleDialog } = this.state;
+    const { messages, isFirst, isShowScheduleDialog } = this.state;
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
         <TopNavBar 
           title="Scheduled Messages" 
           onBack={() => this.onBack()}
         />
-        <ChatView 
-          behavior={Platform.OS === "ios" ? "padding" : null}
-          style={styles.container} 
-        >
-          <View style={[styles.chatContainer, {transform: [{ scaleY: -1 }]}]}>
-            { 
-                <FlatList
-                    enableEmptySections={true}
-                    data={messages}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({item, i}) => (
-                        <ScheduledChatCell 
-                          data={item} 
-                          onSelect={this.onSelectedMessage}
-                        />
-                    )}
-                />
-            }
-          </View>
-      </ChatView>
+        {
+          messages && messages.length > 0
+          ? <ChatView 
+              behavior={Platform.OS === "ios" ? "padding" : null}
+              style={styles.container} 
+            >
+              <View style={[styles.chatContainer, {transform: [{ scaleY: -1 }]}]}>
+                { 
+                    <FlatList
+                        enableEmptySections={true}
+                        data={messages}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={({item, i}) => (
+                            <ScheduledChatCell 
+                              data={item} 
+                              onSelect={this.onSelectedMessage}
+                            />
+                        )}
+                    />
+                }
+              </View>
+            </ChatView>
+          : !isFirst && <EmptyView title="No scheduled messages." />
+        }
       <Toast ref="toast"/>
       { this.state.isLoading
         ? <LoadingOverlay />

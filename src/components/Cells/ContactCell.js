@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Text, Platform } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text, Image, Platform } from 'react-native';
 import FastImage from 'react-native-fast-image'
 import CheckBox from '../CheckBox'
 import Colors from '../../theme/Colors'
@@ -25,7 +25,7 @@ export default class ContactCell extends React.Component {
                     <View style={{width: '50%', alignItems: 'flex-end'}}>
                     {
                         isImport
-                        ? <CheckBox value={data.selected} />
+                        ? <Image source={data.selected ? Images.checkbox_selected : Images.checkbox_normal} style={styles.checkboxIcon}/>
                         : <TouchableOpacity onPress={() => {
                             if (data.status === 0) {
                                 onSendInvite(data);
@@ -118,5 +118,11 @@ const styles = StyleSheet.create({
     actionButtonText: {
         fontFamily: Fonts.regular,
         color: 'white',
+    },
+
+    checkboxIcon: {
+        width: 22,
+		height: 22,
+		resizeMode: 'contain',
     },
 });

@@ -12,6 +12,7 @@ const Messages = {
 	InvalidTerms: 'Please agree to the Terms of Service.',
 	SuccessImportContacts: 'You have imported contacts succesfully!',
 	InvalidVerifyCode: 'Please input the 6-digit verification code.',
+	InvalidScheduleTime: 'Please select future schedule time.',
 	SuccessInvite: 'Invitation has been sent!',
 	SuccessAddContact: 'You have added a new contact succesfully!',
 	SuccessEditContact: 'You have updated a contact succesfully!',

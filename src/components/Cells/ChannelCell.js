@@ -3,6 +3,7 @@ import {
   View, StyleSheet, Text, TouchableOpacity
 } from 'react-native';
 import Colors from '../../theme/Colors';
+import Fonts from '../../theme/Fonts';
 import Images from '../../theme/Images';
 import FastImage from 'react-native-fast-image'
 import Moment from 'moment';
@@ -11,7 +12,12 @@ export default class ChannelCell extends React.PureComponent {
   getChannelName(currentUser, channel) {
     const members = channel.members;
     if (members[0].userId === currentUser.userId) {
-      return members[1].nickname;
+      if (members.length >= 2) {
+        return members[1].nickname;
+      }
+      else {
+        return "";
+      }      
     } else {
       return members[0].nickname;
     }
@@ -20,7 +26,11 @@ export default class ChannelCell extends React.PureComponent {
   getProfileImage(currentUser, channel) {
     const members = channel.members;
     if (members[0].userId === currentUser.userId) {
-      return members[1].profileUrl;
+      if (members.length >= 2) {
+        return members[1].profileUrl;
+      } else {
+        return '';
+      }      
     } else {
       return members[0].profileUrl;
     }
@@ -58,6 +68,11 @@ export default class ChannelCell extends React.PureComponent {
           </View>          
         </View>
       <Text style={styles.timeText}>{time}</Text>
+      {
+        channel.unreadMessageCount > 0
+          ? <View style={styles.unreadBadge} />
+          : null
+      }
       </TouchableOpacity>
     );
   }
@@ -101,11 +116,14 @@ const styles = StyleSheet.create({
   },
 
   unreadBadge: {
+    position: 'absolute',
     backgroundColor: Colors.appColor,
-    width: 6,
-    height: 6,
-    borderRadius: 3,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    right: 7,
   },
+
 
   lastMessageText: {
     fontFamily: 'OpenSans',
@@ -115,8 +133,9 @@ const styles = StyleSheet.create({
   },
 
   timeText: {
-    fontFamily: 'OpenSans',
+    fontFamily: Fonts.regular,
     fontSize: 12,
     color: 'gray',
+    marginRight: 10,
   },
 });

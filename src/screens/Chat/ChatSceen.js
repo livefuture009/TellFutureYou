@@ -527,6 +527,12 @@ class ChatScreen extends Component {
     this.props.navigation.navigate('ScheduleMessage', {channel: channel});
   }
 
+  onSelectScheduleDate(date) {
+    this.scheduleTime = date;
+    this.setState({isShowScheduleDialog: false});
+    this.sendScheduledMessage();
+  }
+
   render() {
     const { disabled, isImageViewVisible, isShowScheduleDialog, photos, currentPhotoIndex } = this.state;
     const currentUser = sb.currentUser;    
@@ -626,9 +632,7 @@ class ChatScreen extends Component {
         value={this.scheduleTime}
         onClose={() => this.setState({isShowScheduleDialog: false})}
         onSelect={(date) => {
-          this.scheduleTime = date;
-          this.setState({isShowScheduleDialog: false});
-          this.sendScheduledMessage();
+          this.onSelectScheduleDate(date);
         }}
       />
       </SafeAreaView>

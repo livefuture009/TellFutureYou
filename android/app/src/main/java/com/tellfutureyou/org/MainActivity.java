@@ -1,4 +1,4 @@
-package com.tellfutureyou;
+package com.tellfutureyou.org;
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;

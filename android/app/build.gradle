@@ -129,7 +129,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.tellfutureyou"
+        applicationId "com.tellfutureyou.org"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

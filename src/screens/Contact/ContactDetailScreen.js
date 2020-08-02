@@ -227,7 +227,7 @@ class ContactDetailScreen extends Component {
         <TopNavBar title={title} align="left" onBack={() => this.onBack()}/>
         <View style={styles.container}>
               <View style={styles.profileBox}>
-              <KeyboardAwareScrollView>      
+              <KeyboardAwareScrollView style={{paddingHorizontal: 20}}>      
                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                   <EditAvatar avatar={this.state.avatar} onTakePhoto={() => this.onTakePicture()} />
                 </View>                          
@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 30,
+    paddingBottom: 20,    
   },
 
   blueButton: {
@@ -319,8 +319,6 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-    paddingLeft: 22,
-    paddingRight: 22,
     paddingTop: 10,
     paddingBottom: 10,
     borderRadius: 10,

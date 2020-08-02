@@ -100,15 +100,18 @@ class ContactListScreen extends Component {
   searchContacts(keyword) {
     var text = keyword.toLowerCase().trim();
     const { originalContacts } = this.state;
+    console.log("originalContacts: ", originalContacts);
     if (text && text.length > 0) {
         var list = [];
-        originalContacts.forEach(item => {
-            if (item.name.toLowerCase().indexOf(text) >= 0) {
+        if (originalContacts && originalContacts.length > 0) {
+          originalContacts.forEach(item => {
+            const name = item.firstName + " " + item.lastName;
+            if (name.toLowerCase().indexOf(text) >= 0) {
                 list.push(item);
             }
-        });
-
-        this.setState({contacts: list});
+          });
+          this.setState({contacts: list});
+        }
     } 
     else {
         this.setState({contacts: originalContacts});

@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
 	checkboxIcon: {
 		width: 22,
 		height: 22,
+		resizeMode: 'contain',
 	},
 
 	textLabel: {
