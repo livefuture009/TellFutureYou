@@ -23,8 +23,15 @@ export default class ScheduleDialog extends React.Component {
         }        
     }
 
+    componentDidMount() {
+      this.setState({scheduleDate: Moment(new Date()).format('YYYY-MM-DD')});
+    }
+
     onSchedule() {
       const { scheduleDate, scheduleTime } = this.state;
+      console.log("scheduleDate: ", scheduleDate);
+      console.log("scheduleTime: ", scheduleTime);
+
       const { onSelect } = this.props;
       const today = new Date();
       if (scheduleDate && scheduleTime) {

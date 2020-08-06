@@ -10,6 +10,7 @@ import {
 import {connect} from 'react-redux';
 import Toast from 'react-native-easy-toast'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import SendBird from 'sendbird';
 import PageLabel from '../components/PageLabel'
 import FormInput from '../components/FormInput'
 import Button from '../components/Button'
@@ -18,12 +19,13 @@ import Label from '../components/Label'
 import RoundButton from '../components/RoundButton'
 import Messages from '../theme/Messages'
 import LoadingOverlay from '../components/LoadingOverlay'
-import { TOAST_SHOW_TIME, Status, PASSWORD_MIN_LENGTH } from '../constants.js'
+import { TOAST_SHOW_TIME, Status, PASSWORD_MIN_LENGTH, SENDBIRD_APP_ID } from '../constants.js'
 import actionTypes from '../actions/actionTypes';
 import * as Storage from '../services/Storage'
 import { isValidEmail } from '../functions'
 import Colors from '../theme/Colors'
 
+var sb = new SendBird({ appId: SENDBIRD_APP_ID });
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 class SignUpScreen extends Component {
@@ -111,7 +113,9 @@ class SignUpScreen extends Component {
     this.props.navigation.navigate('Terms');
   }
 
-  onMoveHome() {
+  async onMoveHome() {
+    await this.connectSendBird();
+    this.setState({isLoading: false});
     this.props.navigation.navigate("MainTab");
   }
 
@@ -210,7 +214,6 @@ class SignUpScreen extends Component {
   }
 
   async registerUserSuccess() {
-    this.setState({isLoading: false});
     Storage.USERID.set(this.props.currentUser._id);
     this.onMoveHome();
   }
@@ -218,6 +221,56 @@ class SignUpScreen extends Component {
   onFailure() {
     this.setState({isLoading: false});
     this.refs.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);    
+  }
+
+  connectSendBird() {
+    const currentUser = this.props.currentUser;
+    console.log("connectSendBird: ", currentUser);
+    var _SELF = this;
+
+    return new Promise(function(resolve, reject) {
+      if (sb && currentUser._id != "undefined" && currentUser._id?.length > 0) {
+        const userId = currentUser._id;
+        const username = currentUser.firstName + " " + currentUser.lastName;
+        var profileUrl = '';
+        if (currentUser.avatar && currentUser.avatar.length > 0) {
+          profileUrl = currentUser.avatar;
+        }
+        
+        if (userId) {
+          sb.connect(userId, function (user, error) {
+            if (_SELF.props.pushToken && _SELF.props.pushToken.length > 0) {
+              if (Platform.OS === 'ios') {
+                sb.registerAPNSPushTokenForCurrentUser(_SELF.props.pushToken, function(result, error) {
+                });
+              } else {
+                sb.registerGCMPushTokenForCurrentUser(_SELF.props.pushToken, function(result, error) {
+                });
+              }
+            }     
+            sb.updateCurrentUserInfo(username, profileUrl, function(response, error) {
+            });
+  
+            sb.getTotalUnreadMessageCount(function(number, error) {
+              _SELF.props.dispatch({
+                type: actionTypes.SET_UNREAD_MESSAGE,
+                number: number
+              });
+            });
+  
+            var UserEventHandler = new sb.UserEventHandler();
+            UserEventHandler.onTotalUnreadMessageCountUpdated = function(totalCount, countByCustomTypes) {
+              _SELF.props.dispatch({
+                type: actionTypes.SET_UNREAD_MESSAGE,
+                number: totalCount
+              });
+            };
+            sb.addUserEventHandler("USER_EVENT_HANDLER", UserEventHandler);
+            resolve();
+          });
+        }    
+      }
+    });
   }
 
   render() {

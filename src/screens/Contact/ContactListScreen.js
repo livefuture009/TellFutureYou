@@ -11,6 +11,9 @@ import {
 
 import {connect} from 'react-redux';
 import Toast from 'react-native-easy-toast'
+import ActionSheet from 'react-native-actionsheet'
+import Mailer from 'react-native-mail';
+import SendSMS from 'react-native-sms';
 import Contacts from 'react-native-contacts';
 import HeaderInfoBar from '../../components/HeaderInfoBar'
 import SearchBox from '../../components/SearchBox'
@@ -32,7 +35,10 @@ class ContactListScreen extends Component {
       isLoading: false,
       contacts: [],
       originalContacts: [],
+
       isShowAddContactDialog: false,
+      inviteOptions: [],
+      selectedContact: null
     }    
   }
 
@@ -191,17 +197,96 @@ class ContactListScreen extends Component {
   }
 
   onSendInvite=(data)=> {
-    const { currentUser } = this.props;
-    console.log("data:" , data);
-    const sender = currentUser.firstName + " " + currentUser.lastName;
-    const receiver = data.firstName + " " + data.lastName;
+    var options = [];
+    if (data.email && data.email.length > 0) {
+      options.push('Via Email');
+    }
 
+    if (data.phone && data.phone.length > 0) {
+      options.push('Via SMS');
+    }
+
+    if (options.length > 0) {
+      options.push('Cancel');
+      this.setState({selectedContact: data, inviteOptions: options}, () => {
+        this.ActionSheet.show();
+      });
+    }
+
+    /*
     this.setState({isLoading: true});
     this.props.dispatch({
       type: actionTypes.SEND_INVITE,
       email: data.email,
       sender: sender,
       receiver: receiver
+    });
+    */
+  }
+
+  selectActionSheet(index) {
+    const { inviteOptions } = this.state;
+    console.log("index: ", index);
+
+    if (inviteOptions[index] == "Via Email") {
+      this.sendEmail();
+    } 
+    else if (inviteOptions[index] == "Via SMS") {
+      this.sendSMS();
+    }
+    
+  }
+
+  sendEmail() {
+    const { currentUser } = this.props;
+    const { selectedContact } = this.state;
+    const sender = currentUser.firstName + " " + currentUser.lastName;
+    const receiver = selectedContact.firstName + " " + selectedContact.lastName;
+
+    var content = `
+      Hello ${receiver}, <br/><br/>
+      ${sender} invited you to use <b>TellFutureYou</b> app. Please download the app in below link and start chartting. <br/><br/>
+      https://apps.apple.com/us/app/chat-in/id1083597720
+    `;
+
+    Mailer.mail({
+      subject: 'TellFutureYou Invite',
+      recipients: [selectedContact.email],
+      body: content,
+      isHTML: true,
+    }, (error, event) => {
+      Alert.alert(
+        error,
+        event,
+        [
+          {text: 'Ok', onPress: () => console.log('OK: Email Error Response')},
+          {text: 'Cancel', onPress: () => console.log('CANCEL: Email Error Response')}
+        ],
+        { cancelable: true }
+      )
+    });
+  }
+
+  sendSMS() {
+    const { currentUser } = this.props;
+    const { selectedContact } = this.state;
+
+    const sender = currentUser.firstName + " " + currentUser.lastName;
+    const receiver = selectedContact.firstName + " " + selectedContact.lastName;
+
+    var content = `
+      Hello ${receiver},\r\n
+      ${sender} invited you to use TellFutureYou app. Please download the app in below link and start chartting. \r\n
+      https://apps.apple.com/us/app/chat-in/id1083597720
+    `;
+
+    SendSMS.send({
+      body: content,
+      recipients: [selectedContact.phone],
+      successTypes: ['sent', 'queued'],
+      allowAndroidSendWithoutReadPermission: true
+    }, (completed, cancelled, error) => {
+        console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
     });
   }
 
@@ -228,7 +313,7 @@ class ContactListScreen extends Component {
   }
 
   render() {
-    const { contacts, keyword, isShowAddContactDialog } = this.state;
+    const { contacts, keyword, isShowAddContactDialog, inviteOptions } = this.state;
 
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
@@ -271,6 +356,12 @@ class ContactListScreen extends Component {
           isVisible={isShowAddContactDialog} 
           onClose={() => this.setState({isShowAddContactDialog: false})}
           onSelect={this.onSelectAddContact}
+        />
+        <ActionSheet
+          ref={o => this.ActionSheet = o}
+          options={inviteOptions}
+          cancelButtonIndex={inviteOptions.length - 1}
+          onPress={(index) => this.selectActionSheet(index)}
         />
         <Toast ref="toast"/>
         { this.state.isLoading && <LoadingOverlay /> } 

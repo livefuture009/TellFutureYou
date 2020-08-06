@@ -37,12 +37,19 @@ class ChatScreen extends Component {
       this.initChannelHandler();
       this.getChannelList();
     }
+
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      if (sb && sb.currentUser) {
+        this.getChannelList();
+      }
+    });
   }
 
   componentWillUnmount() {
     sb.removeChannelHandler('ChannelHandler');
+    this.focusListener();
   }
-
+    
   initChannelHandler() {
     var _SELF = this;
     var ChannelHandler = new sb.ChannelHandler();
