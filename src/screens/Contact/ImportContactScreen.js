@@ -38,8 +38,8 @@ class ImportContactScreen extends Component {
         if (contacts && contacts.length > 0) {
             var list = [];
             contacts.forEach(c => {
-                const firstName = c.familyName;
-                const lastName = c.givenName;
+                const firstName = c.givenName;
+                const lastName = c.familyName;
                 const avatar = c.thumbnailPath;
                 var phone = '';
                 if (c.phoneNumbers && c.phoneNumbers.length > 0) {

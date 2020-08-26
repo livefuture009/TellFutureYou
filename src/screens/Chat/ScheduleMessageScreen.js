@@ -13,7 +13,6 @@ import Toast from 'react-native-easy-toast'
 import BackgroundTimer from 'react-native-background-timer';
 import TopNavBar from '../../components/TopNavBar'
 import ScheduledChatCell from '../../components/Cells/ScheduledChatCell'
-import Colors from '../../theme/Colors'
 import { TOAST_SHOW_TIME, Status} from '../../constants.js'
 import LoadingOverlay from '../../components/LoadingOverlay'
 import actionTypes from '../../actions/actionTypes';
@@ -22,8 +21,9 @@ import ActionSheet from 'react-native-actionsheet'
 import ScheduleDialog from '../../components/ScheduleDialog'
 import moment from 'moment';
 import EmptyView from '../../components/EmptyView'
+import Colors from '../../theme/Colors'
+import Messages from '../../theme/Messages'
 
-// Android does keyboard height adjustment natively.
 const ChatView = Platform.select({
   ios: () => KeyboardAvoidingView,
   android: () => View,
@@ -43,25 +43,31 @@ class ScheduleMessageScreen extends Component {
   }
 
   async componentDidMount() {
-    const { currentUser } = this.props;
-    if (this.props.route.params && this.props.route.params.channel) {
-      const { channel } = this.props.route.params;        
-      this.setState({isLoading: true});
-      this.props.dispatch({
-          type: actionTypes.GET_SCHEDULED_MESSAGES,
-          userId: currentUser._id,
-          channelId: channel.name,
-      });
-
-      BackgroundTimer.runBackgroundTimer(() => { 
+    const isConnected = await checkInternetConnectivity();
+    if (isConnected) {
+      if (this.props.route.params && this.props.route.params.channel) {
+        const { channel } = this.props.route.params;        
+        this.setState({isLoading: true});
         this.props.dispatch({
-          type: actionTypes.GET_SCHEDULED_MESSAGES,
-          userId: currentUser._id,
-          channelId: channel.name,
+            type: actionTypes.GET_SCHEDULED_MESSAGES,
+            userId: currentUser._id,
+            channelId: channel.name,
         });
-        }, 
-      1000);
+  
+        BackgroundTimer.runBackgroundTimer(() => { 
+          this.props.dispatch({
+            type: actionTypes.GET_SCHEDULED_MESSAGES,
+            userId: currentUser._id,
+            channelId: channel.name,
+          });
+          }, 
+        1000);
+      }
     }
+    else {
+      this.refs.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
+    }
+    const { currentUser } = this.props;
   }
 
   componentWillUnmount() {

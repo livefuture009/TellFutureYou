@@ -142,6 +142,17 @@ class ContactDetailScreen extends Component {
       isValid = false;
     }
 
+    // Check Email if you have any contact.
+    if (currentUser.contacts && currentUser.contacts.length > 0) {
+      currentUser.contacts.forEach(c => {
+        if (c.email == email) {
+          this.setState({emailError: Messages.ContactIsExisting});
+          isValid = false;
+          return;          
+        }
+      });
+    }
+
     if (phone == null || phone.length == 0) {
       this.setState({phoneError: Messages.InvalidPhone});
       isValid = false;

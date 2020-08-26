@@ -14,31 +14,31 @@ import SendBird from 'sendbird';
 import Toast from 'react-native-easy-toast'
 import ImagePicker from 'react-native-image-crop-picker';
 import ActionSheet from 'react-native-actionsheet'
+import ImageResizer from 'react-native-image-resizer';
+import ImageView from 'react-native-image-view';
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import TopNavBar from '../../components/TopNavBar'
 import ChatCell from '../../components/Cells/ChatCell'
-import Colors from '../../theme/Colors'
 import CommentInput from '../../components/CommentInput';
-import ImageResizer from 'react-native-image-resizer';
 import RNFS from 'react-native-fs';
-import ImageView from 'react-native-image-view';
 import { TOAST_SHOW_TIME, Status, PULLDOWN_DISTANCE, IMAGE_COMPRESS_QUALITY, MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT } from '../../constants.js'
 import EmptyText from '../../components/Decoration/EmptyText'
 import LoadingOverlay from '../../components/LoadingOverlay'
 import actionTypes from '../../actions/actionTypes';
-import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import {checkInternetConnectivity} from '../../functions'
 import moment from 'moment';
 import ScheduleDialog from '../../components/ScheduleDialog'
+import Colors from '../../theme/Colors'
+import Messages from '../../theme/Messages'
 
 const OPEN_CAMERA=0;
 const OPEN_GALLERY=1;
 
-// Android does keyboard height adjustment natively.
 const ChatView = Platform.select({
   ios: () => KeyboardAvoidingView,
   android: () => View,
 })();
-  const emptyText="Direct messages will show up here."
+const emptyText="Direct messages will show up here."
 
 var sb = null;
 
@@ -99,7 +99,7 @@ class ChatScreen extends Component {
         });
       }
     } else {
-      this.refs.toast.show(Messages.NoInternet, TOAST_SHOW_TIME);
+      this.refs.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
     }
   }
 
@@ -351,7 +351,7 @@ class ChatScreen extends Component {
         },
       });
     } else {
-      this.refs.toast.show(Messages.NoInternet, TOAST_SHOW_TIME);
+      this.refs.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
     }
   }
 
@@ -442,7 +442,7 @@ class ChatScreen extends Component {
       });
     } else {
       Keyboard.dismiss();
-      this.refs.toast.show(Messages.NoInternet, TOAST_SHOW_TIME);
+      this.refs.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
     }
   }
 

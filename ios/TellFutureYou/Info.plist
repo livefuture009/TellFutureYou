@@ -27,7 +27,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb636397710292136</string>
+				<string>fb2749211011990286</string>
 			</array>
 		</dict>
 		<dict>
@@ -44,7 +44,7 @@
 	<key>FacebookAdvertiserIDCollectionEnabled</key>
 	<false/>
 	<key>FacebookAppID</key>
-	<string>636397710292136</string>
+	<string>2749211011990286</string>
 	<key>FacebookAutoLogAppEventsEnabled</key>
 	<false/>
 	<key>FacebookDisplayName</key>
@@ -69,7 +69,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) requires to access camera for taking profile picture.</string>
 	<key>NSContactsUsageDescription</key>
-	<string>$(PRODUCT_NAME) allow contact access</string>
+	<string>$(PRODUCT_NAME) requires to access contact list to invite friends.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>$(PRODUCT_NAME) required to access your geo location for push notification.</string>
 	<key>NSLocationAlwaysUsageDescription</key>

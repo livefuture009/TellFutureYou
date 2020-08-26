@@ -37,7 +37,6 @@ import {
   TOAST_SHOW_TIME, 
   ONE_SIGNAL_APP_ID, 
   RELOAD_GLOBAL_TIME, 
-  NOTIFICATION_TYPE, 
   GOOGLE_SIGNIN_WEB_CLIENT_ID,
   GOOGLE_SIGNIN_IOS_CLIENT_ID,
   SENDBIRD_APP_ID,
@@ -55,7 +54,6 @@ import appleAuth, {
 var sb = new SendBird({ appId: SENDBIRD_APP_ID });
 
 class LoginScreen extends Component {
-  notification_type = -1;
   constructor(props) {
     super(props)
     this.state = {
@@ -156,52 +154,9 @@ class LoginScreen extends Component {
   }
 
   onOpened = (openResult) => {
-    if (openResult.notification.payload.additionalData) {
-      const notification_type = openResult.notification.payload.additionalData.notification_type;
-      const notification_id = openResult.notification.payload.additionalData.notification_id;
-      const job_id = openResult.notification.payload.additionalData.job_id;  
-      const receiver_type = openResult.notification.payload.additionalData.receiver_type;  
-
-      if (this.props.currentUser && this.props.currentUser.type == receiver_type) {
-        this.notification_type = notification_type;
-
-        // Mark Read for selected notification.
-        this.props.dispatch({
-          type: actionTypes.MARK_READ_NOTIFICATION,
-          notification_id: notification_id,
-        }); 
-
-        // Get Job.
-        this.props.dispatch({
-          type: actionTypes.GET_JOB,
-          job_id: job_id,
-        }); 
-      }
-    }
   }
 
   onMoveNotificationPage(notification_type, job) {
-    if (notification_type == NOTIFICATION_TYPE.SENT_OFFER) {
-      if (job.status >= JOB_STATUS.PROGRESSING) {
-        this.props.navigation.navigate('ProviderOrderDetail', {job: job});
-      } else {
-        this.props.navigation.navigate('ProviderJobDetail', {job: job});
-      }      
-    } else if (notification_type == NOTIFICATION_TYPE.CANCEL_OFFER) {
-      this.props.navigation.navigate('ProviderOrderDetail', {job: job});
-    } else if (notification_type == NOTIFICATION_TYPE.ACCEPT_OFFER) {
-      this.props.navigation.navigate('CustomerJobDetail', {job: job, needRefresh: true});
-    } else if (notification_type == NOTIFICATION_TYPE.DECLINE_OFFER) {
-      this.props.navigation.navigate('CustomerJobDetail', {job: job, needRefresh: true});
-    } else if (notification_type == NOTIFICATION_TYPE.COMPLETE_JOB) {
-      this.props.navigation.navigate('ProviderOrderDetail', {job: job});
-    } else if (notification_type == NOTIFICATION_TYPE.CANCEL_JOB) {
-      this.props.navigation.navigate('ProviderOrderDetail', {job: job});
-    } else if (notification_type == NOTIFICATION_TYPE.PAY_JOB) {
-      this.props.navigation.navigate('ProviderOrderDetail', {job: job});
-    } else if (notification_type == NOTIFICATION_TYPE.GIVE_REVIEW) {
-      this.props.navigation.navigate('ProviderOrderDetail', {job: job});
-    } 
   }
 
   onIds = (device) => {

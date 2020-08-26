@@ -62,6 +62,10 @@ class MyAccountScreen extends Component {
   render() {
     const { currentUser } = this.props;
     const avatar = (currentUser && currentUser.avatar)  ? currentUser.avatar : '';
+    const firstName = (currentUser && currentUser.firstName)  ? currentUser.firstName : '';
+    const lastName = (currentUser && currentUser.lastName)  ? currentUser.lastName : '';
+    const email = (currentUser && currentUser.email)  ? currentUser.email : '';
+
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
         <View style={styles.container}>
@@ -76,8 +80,8 @@ class MyAccountScreen extends Component {
               <View style={styles.avatarContainer}>
                 <FastImage source={avatar ? {uri: avatar} : Images.account_icon} style={styles.avatarImage}/>
               </View>              
-              <Text style={styles.nameText}>{currentUser.firstName} {currentUser.lastName}</Text>
-              <Text style={styles.emailText}>{currentUser.email}</Text>
+              <Text style={styles.nameText}>{firstName} {lastName}</Text>
+              <Text style={styles.emailText}>{email}</Text>
             </View>
 
             <View style={{paddingHorizontal: 20}}>

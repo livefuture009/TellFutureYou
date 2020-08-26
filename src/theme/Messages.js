@@ -17,6 +17,7 @@ const Messages = {
 	SuccessAddContact: 'You have added a new contact succesfully!',
 	SuccessEditContact: 'You have updated a contact succesfully!',
 	InvalidSelectedContacts: 'Please select contacts to import.',
+	ContactIsExisting: 'You have a contact with same email address already.',
 	NetWorkError: 'No internet connection.',	
 };
 

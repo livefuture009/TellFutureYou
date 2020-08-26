@@ -66,8 +66,14 @@ class ContactListScreen extends Component {
 
   sortContacts(contacts) {
     contacts.sort((a, b) => {
-      const nameA = filterName(a.firstName.trim(), a.lastName.trim());
-      const nameB = filterName(b.firstName.trim(), b.lastName.trim());
+      const firstNameA = a.firstName ? a.firstName.trim() : '';
+      const lastNameA = a.lastName ? a.lastName.trim() : '';
+
+      const firstNameB = b.firstName ? b.firstName.trim() : '';
+      const lastNameB = b.lastName ? b.lastName.trim() : '';
+
+      const nameA = filterName(firstNameA, lastNameA);
+      const nameB = filterName(firstNameB, lastNameB);
       return nameA > nameB ? 1 : -1;
     })
   }
@@ -106,7 +112,6 @@ class ContactListScreen extends Component {
   searchContacts(keyword) {
     var text = keyword.toLowerCase().trim();
     const { originalContacts } = this.state;
-    console.log("originalContacts: ", originalContacts);
     if (text && text.length > 0) {
         var list = [];
         if (originalContacts && originalContacts.length > 0) {
@@ -295,7 +300,9 @@ class ContactListScreen extends Component {
   }
 
   onSelect=(data)=> {
-    this.props.navigation.navigate('ContactDetail', {contact: data});
+    if (data.status == 0) {
+      this.props.navigation.navigate('ContactDetail', {contact: data});
+    }    
   }
 
   showResultMessage(message, isBack) {

@@ -15,7 +15,7 @@ import LoadingOverlay from '../../components/LoadingOverlay'
 import EmptyView from '../../components/EmptyView'
 import Colors from '../../theme/Colors'
 import ChannelCell from '../../components/Cells/ChannelCell'
-import { TOAST_SHOW_TIME, NOTIFICATION_TYPE, Status } from '../../constants.js'
+import { TOAST_SHOW_TIME, Status } from '../../constants.js'
 import actionTypes from '../../actions/actionTypes';
 
 var sb = null;
