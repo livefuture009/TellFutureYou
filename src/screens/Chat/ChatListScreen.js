@@ -126,7 +126,9 @@ class ChatScreen extends Component {
         var channelList = [];
         for (var i = 0; i < response.length; i++) {
           var channel = response[i];
-          channelList.push(channel);
+          if (channel.memberCount >= 2 && channel.lastMessage != null) {
+            channelList.push(channel);
+          } 
         }
 
         _SELF.setState({ 

@@ -45,6 +45,8 @@ class ScheduleMessageScreen extends Component {
   async componentDidMount() {
     const isConnected = await checkInternetConnectivity();
     if (isConnected) {
+      const { currentUser } = this.props;
+
       if (this.props.route.params && this.props.route.params.channel) {
         const { channel } = this.props.route.params;        
         this.setState({isLoading: true});
@@ -67,7 +69,6 @@ class ScheduleMessageScreen extends Component {
     else {
       this.refs.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
     }
-    const { currentUser } = this.props;
   }
 
   componentWillUnmount() {

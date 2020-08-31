@@ -19,7 +19,7 @@ import Label from '../components/Label'
 import RoundButton from '../components/RoundButton'
 import Messages from '../theme/Messages'
 import LoadingOverlay from '../components/LoadingOverlay'
-import { TOAST_SHOW_TIME, Status, PASSWORD_MIN_LENGTH, SENDBIRD_APP_ID } from '../constants.js'
+import { TOAST_SHOW_TIME, Status, PASSWORD_MIN_LENGTH, SENDBIRD_APP_ID, WEB_PAGE_TYPE } from '../constants.js'
 import actionTypes from '../actions/actionTypes';
 import * as Storage from '../services/Storage'
 import { isValidEmail } from '../functions'
@@ -110,7 +110,7 @@ class SignUpScreen extends Component {
   }
 
   onTerms=()=> {
-    this.props.navigation.navigate('Terms');
+    this.props.navigation.navigate('Terms', {page: WEB_PAGE_TYPE.TERMS});
   }
 
   async onMoveHome() {
@@ -407,7 +407,7 @@ class SignUpScreen extends Component {
 	                  onChange={(value) => {this.setState({agreeTerms: value})}} 
 	                />
 	                <Label title="I agree to the " style={{marginLeft: 10}}/>
-	                <Button title="Terms of Service" bold={true} onPress={this.onTerms}/>
+	                <Button title="Terms and Conditions" bold={true} onPress={this.onTerms}/>
 	              </View>          
 
                 <View>

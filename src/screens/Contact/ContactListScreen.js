@@ -23,10 +23,9 @@ import ContactCell from '../../components/Cells/ContactCell'
 import actionTypes from '../../actions/actionTypes';
 import EmptyView from '../../components/EmptyView'
 import { TOAST_SHOW_TIME, Status } from '../../constants.js'
+import { filterName, getInviteMessage } from '../../functions';
 import Colors from '../../theme/Colors'
 import Messages from '../../theme/Messages'
-import { filterName } from '../../functions';
-
 
 class ContactListScreen extends Component {
   constructor(props) {
@@ -173,7 +172,7 @@ class ContactListScreen extends Component {
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           Contacts.getAll((err, contacts) => {
             if (err === 'denied'){
-              // error
+              this.refs.toast.show("Read Contacts Permission Denied", TOAST_SHOW_TIME);
             } else {
               this.parseContacts(contacts);
             }
@@ -248,11 +247,7 @@ class ContactListScreen extends Component {
     const sender = currentUser.firstName + " " + currentUser.lastName;
     const receiver = selectedContact.firstName + " " + selectedContact.lastName;
 
-    var content = `
-      Hello ${receiver}, <br/><br/>
-      ${sender} invited you to use <b>TellFutureYou</b> app. Please download the app in below link and start chartting. <br/><br/>
-      https://apps.apple.com/us/app/chat-in/id1083597720
-    `;
+    var content = getInviteMessage(receiver, sender);
 
     Mailer.mail({
       subject: 'TellFutureYou Invite',
@@ -272,16 +267,41 @@ class ContactListScreen extends Component {
     });
   }
 
-  sendSMS() {
+  async sendSMS() {
+    if (Platform.OS == 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_SMS,
+          {
+            'title': 'SMS',
+            'message': Messages.SMSAskPermission,
+            'buttonPositive': 'Accept'
+          }
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          this.processSMS();
+        } else {
+          this.refs.toast.show(Messages.SMSPermissionDenied, TOAST_SHOW_TIME);
+        }
+      }
+      catch (err) {
+        console.warn(err)
+      }
+    }
+    else {
+      this.processSMS();
+    }
+  }
+
+  processSMS() {
     const { currentUser } = this.props;
     const { selectedContact } = this.state;
 
     const sender = currentUser.firstName + " " + currentUser.lastName;
     const receiver = selectedContact.firstName + " " + selectedContact.lastName;
 
-    var content = `
-      Hello ${receiver},\r\n
-      ${sender} invited you to use TellFutureYou app. Please download the app in below link and start chartting. \r\n
+    var content = `Hello ${receiver},\r\n
+      ${sender} invited you to use TellFutureYou app. Please download the app using the link below. \r\n
       https://apps.apple.com/us/app/chat-in/id1083597720
     `;
 
@@ -294,7 +314,6 @@ class ContactListScreen extends Component {
         console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
     });
   }
-
   onSendMessage=(data)=> {
     this.props.navigation.navigate('Chat', {contact: data});
   }

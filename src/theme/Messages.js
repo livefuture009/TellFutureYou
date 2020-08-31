@@ -18,6 +18,8 @@ const Messages = {
 	SuccessEditContact: 'You have updated a contact succesfully!',
 	InvalidSelectedContacts: 'Please select contacts to import.',
 	ContactIsExisting: 'You have a contact with same email address already.',
+	SMSAskPermission: 'TellFutureYou would like to send SMS',
+	SMSPermissionDenied: 'SMS Permission Denied',
 	NetWorkError: 'No internet connection.',	
 };
 

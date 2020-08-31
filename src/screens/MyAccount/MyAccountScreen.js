@@ -3,13 +3,14 @@ import {
   View,
   StyleSheet,
   Text,
+  ScrollView,
   SafeAreaView
 } from 'react-native';
 
 import {connect} from 'react-redux';
 import HeaderInfoBar from '../../components/HeaderInfoBar'
 import SettingsInfoCell from '../../components/SettingsInfoCell'
-import { TOAST_SHOW_TIME, Status } from '../../constants.js'
+import { TOAST_SHOW_TIME, Status, WEB_PAGE_TYPE } from '../../constants.js'
 import actionTypes from '../../actions/actionTypes';
 import * as Storage from '../../services/Storage'
 import Colors from '../../theme/Colors'
@@ -47,16 +48,12 @@ class MyAccountScreen extends Component {
     }, 1000);
   }
 
-  onNotification() {
-    this.props.navigation.navigate('Notification');  
+  onTerms() {
+    this.props.navigation.navigate('Terms', {page: WEB_PAGE_TYPE.TERMS});
   }
 
-  onProfile() {
-    this.props.navigation.navigate('EditProfile');  
-  }
-
-  onChat() {
-    this.props.navigation.navigate('ChatList');  
+  onPrivacy() {
+    this.props.navigation.navigate('Terms', {page: WEB_PAGE_TYPE.PRIVACY});
   }
   
   render() {
@@ -74,37 +71,50 @@ class MyAccountScreen extends Component {
             rightButton="logout"
             onRight={this.onLogout}
           />
+          <ScrollView>
+            <View style={styles.contentView}>
+              <View style={styles.profileBox}>
+                <View style={styles.avatarContainer}>
+                  <FastImage source={avatar ? {uri: avatar} : Images.account_icon} style={styles.avatarImage}/>
+                </View>              
+                <Text style={styles.nameText}>{firstName} {lastName}</Text>
+                <Text style={styles.emailText}>{email}</Text>
+              </View>
 
-          <View style={styles.contentView}>
-            <View style={styles.profileBox}>
-              <View style={styles.avatarContainer}>
-                <FastImage source={avatar ? {uri: avatar} : Images.account_icon} style={styles.avatarImage}/>
-              </View>              
-              <Text style={styles.nameText}>{firstName} {lastName}</Text>
-              <Text style={styles.emailText}>{email}</Text>
+              <View style={{paddingHorizontal: 20}}>
+                <SettingsInfoCell 
+                  label="Edit Profile" 
+                  type="submenu" 
+                  icon={Images.icon_profile}
+                  onPress={() => this.onMoveEditProfile()}
+                />
+                <SettingsInfoCell 
+                  label="Change Password" 
+                  type="submenu" 
+                  icon={Images.icon_password}
+                  onPress={() => this.onMoveChangePassword()}
+                />
+                <SettingsInfoCell 
+                  label="My Subscription" 
+                  type="submenu" 
+                  icon={Images.icon_subscription}
+                  onPress={() => this.onSubscription()}
+                />
+                <SettingsInfoCell 
+                  label="Terms and Conditions" 
+                  type="submenu" 
+                  icon={Images.icon_terms}
+                  onPress={() => this.onTerms()}
+                />
+                <SettingsInfoCell 
+                  label="Privacy Policy" 
+                  type="submenu" 
+                  icon={Images.icon_privacy}
+                  onPress={() => this.onPrivacy()}
+                />
+              </View>
             </View>
-
-            <View style={{paddingHorizontal: 20}}>
-              <SettingsInfoCell 
-                label="Edit Profile" 
-                type="submenu" 
-                icon={Images.icon_profile}
-                onPress={() => this.onMoveEditProfile()}
-              />
-              <SettingsInfoCell 
-                label="Change Password" 
-                type="submenu" 
-                icon={Images.icon_password}
-                onPress={() => this.onMoveChangePassword()}
-              />
-              <SettingsInfoCell 
-                label="My Subscription" 
-                type="submenu" 
-                icon={Images.icon_subscription}
-                onPress={() => this.onSubscription()}
-              />
-            </View>
-          </View>
+          </ScrollView>
         </View>
       </SafeAreaView>
     );
@@ -122,6 +132,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     marginTop: 60,
+    paddingBottom: 20,
   },
 
   profileBox: {

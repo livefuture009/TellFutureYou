@@ -217,40 +217,6 @@ class LoginScreen extends Component {
     });
   }
 
-  getUnreadMessageCount() {
-    if (sb && sb.currentUser) {
-      var _SELF = this;
-      var listQuery = sb.GroupChannel.createMyGroupChannelListQuery();
-      listQuery.includeEmpty = true;
-      listQuery.next(function(response, error) {
-        if (response) {
-          var unReadCount = 0;
-          for (var i = 0; i < response.length; i++) {
-            var channel = response[i];
-            if (channel.members.length >= 2) {
-              unReadCount += channel.unreadMessageCount;
-            }
-          }
-
-          _SELF.props.dispatch({
-            type: actionTypes.SET_UNREAD_MESSAGE,
-            number: unReadCount
-          });
-        }
-      });
-    }
-  }
-
-  getUnreadNotificationCount() {
-    const { currentUser } = this.props;
-    if (currentUser) {
-      this.props.dispatch({
-        type: actionTypes.GET_UNREADNUMBER,
-        user_id: currentUser._id
-      });
-    }
-  }
-
   async onMoveHome(animate) {
     await this.connectSendBird();
     const { currentUser } = this.props;
@@ -258,12 +224,6 @@ class LoginScreen extends Component {
     // Move Next Page.
     var nextScreen = "MainTab"
     this.props.navigation.navigate(nextScreen);
-    setInterval(() => {
-      SplashScreen.hide();    
-
-      // Get Unread Messages and Notification Count.
-      this.getUnreadMessageCount();
-    }, 1000);
 
     const user_id = currentUser._id;
     this.props.dispatch({

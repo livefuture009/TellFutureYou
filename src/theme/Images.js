@@ -31,38 +31,8 @@ const Images = {
     send_icon: require('../../assets/images/send_icon.png'),
     icon_clock: require('../../assets/images/icon_clock.png'),
     icon_calendar: require('../../assets/images/icon_calendar.png'),
-
-    // 
-    // bank_icon: require('../../assets/images/bank_icon.png'),
-    // red_close_button: require('../../assets/images/red_close_button.png'),
-    // tick: require('../../assets/images/tick.png'),    
-    // tick_white: require('../../assets/images/tick_white.png'),    
-    // notification_icon: require('../../assets/images/notification_icon.png'),        
-
-    // paypal: require('../../assets/images/paypal.png'),
-    // small_bank_icon: require('../../assets/images/small_bank_icon.png'),          
-    // credit_card: require('../../assets/images/credit-card.png'),    
-    // star_selected: require('../../assets/images/star_selected.png'),    
-    // star_icon: require('../../assets/images/star_icon.png'),    
-    // white_photo_icon: require('../../assets/images/white_photo_icon.png'),    
-    // dollar_icon: require('../../assets/images/dollar_icon.png'),    
-    // timer_icon: require('../../assets/images/timer_icon.png'),    
-    // placeholder_image: require('../../assets/images/placeholder_image.png'),
-    // type_customer_selected: require('../../assets/images/type_customer_selected.png'),
-    // type_customer: require('../../assets/images/type_customer.png'),    
-    // type_provider_selected: require('../../assets/images/type_provider_selected.png'),
-    // type_provider: require('../../assets/images/type_provider.png'),
-    // map_pin: require('../../assets/images/map_pin.png'),
-    // pin_icon: require('../../assets/images/pin_icon.png'),
-
-    // walkie_talkie_icon: require('../../assets/images/walkie_talkie_icon.png'),
-    // play_black: require('../../assets/images/play_black.png'),
-    // play_white: require('../../assets/images/play_white.png'),
-    // stop_black: require('../../assets/images/stop_black.png'),
-    // stop_white: require('../../assets/images/stop_white.png'),
-    // ico_address: require('../../assets/images/ico_address.png'),
-    // ico_mail: require('../../assets/images/ico_mail.png'),
-    // ico_phone: require('../../assets/images/ico_phone.png'),
+    icon_privacy: require('../../assets/images/icon_privacy.png'),
+    icon_terms: require('../../assets/images/icon_terms.png'),
 };
 
 export default Images;

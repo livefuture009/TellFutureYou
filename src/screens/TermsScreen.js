@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   View,
-  TextInput,
   StyleSheet,
   StatusBar,
   ActivityIndicator
@@ -11,12 +10,22 @@ import TopNavBar from '../components/TopNavBar'
 import { WebView } from 'react-native-webview';
 import Colors from '../theme/Colors'
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
+import { WEB_PAGE_TYPE, TERMS_LINK, PRIVACY_LINK } from '../constants'
 
 class TermsScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      
+      page: -1,
+    }
+  }
+
+  componentDidMount() {
+    StatusBar.setBarStyle('dark-content', true);
+    if (this.props.route.params && this.props.route.params.page) {
+      const { page } = this.props.route.params;
+      console.log("page: ", page);
+      this.setState({page: page});
     }
   }
 
@@ -24,9 +33,6 @@ class TermsScreen extends Component {
     this.props.navigation.goBack();
   }
 
-  componentDidMount() {
-    StatusBar.setBarStyle('dark-content', true);
-  }
 
   ActivityIndicatorLoadingView() {
     return (
@@ -40,21 +46,41 @@ class TermsScreen extends Component {
  
 
   render() {
+    var title = "";
+    var link = "";
+
+    const { page } = this.state;
+    if (page == WEB_PAGE_TYPE.TERMS) {
+      title = "Terms and Conditions";
+      link = TERMS_LINK;
+    } 
+    else if (page == WEB_PAGE_TYPE.PRIVACY) {
+      title = "Privacy Policy";
+      link = PRIVACY_LINK;
+    }
+
+    console.log("title: ", title);
+    console.log("link: ", link);
+
     return (
       <View style={{flex: 1, backgroundColor: 'white'}}>
         <SafeAreaConsumer>
           {insets => 
             <View style={{flex: 1, paddingTop: insets.top }} >
-              <TopNavBar title="Terms of Service" align="left" onBack={() => this.onBack()}/>                      
+              <TopNavBar title={title} onBack={() => this.onBack()}/>                      
               <View style={styles.container}>
-                <WebView 
-                  style={{ flex: 1 }}
-                  javaScriptEnabled={true}
-                  domStorageEnabled={true}
-                  renderLoading={this.ActivityIndicatorLoadingView} 
-                  startInLoadingState={true}  
-                  source={{ uri: 'http://12helpme.com/terms-and-conditions.html' }} 
-                />
+                {
+                  (link && link.length > 0) 
+                    ? <WebView 
+                        style={{ flex: 1 }}
+                        javaScriptEnabled={true}
+                        domStorageEnabled={true}
+                        renderLoading={this.ActivityIndicatorLoadingView} 
+                        startInLoadingState={true}  
+                        source={{ uri: link }} 
+                      />                  
+                    : null
+                }
               </View>
             </View>
           }
