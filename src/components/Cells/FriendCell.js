@@ -1,13 +1,14 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, Image, Platform } from 'react-native';
 import FastImage from 'react-native-fast-image'
+import RoundButton from '../../components/RoundButton'
 import Colors from '../../theme/Colors'
 import Fonts from '../../theme/Fonts'
 import Images from '../../theme/Images';
 
 export default class FriendCell extends React.Component {
   	render() {
-        const { data, currentUser, onSelect } = this.props;
+        const { data, currentUser, onSelect, onAccept, onDecline } = this.props;
         var status = 0;
         var friend = data.user1; 
         if (data.user1._id == currentUser._id) {
@@ -33,10 +34,19 @@ export default class FriendCell extends React.Component {
                     </View>
                     <View style={{width: '50%', alignItems: 'flex-end'}}>
                         {
-                            status == 0 && <View />
+                            status == 0 && <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                <TouchableOpacity style={styles.actionButton} onPress={() => onAccept(data)}>
+                                    <Image source={Images.checkbox_selected} style={styles.actionIcon} />
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.actionButton} onPress={() => onDecline(data)}>
+                                    <Image source={Images.circle_close} style={styles.actionIcon} />
+                                </TouchableOpacity>
+                            </View>
                         }
                         {
-                            status == 1 && <View />
+                            status == 1 && <View>
+                                <RoundButton title="Accept"/>
+                            </View>
                         }
                         {
                             status == 2 && <Text style={styles.statusText}>Request Sent</Text>
@@ -99,6 +109,10 @@ const styles = StyleSheet.create({
     },
 
     actionButton: {
+        marginLeft: 5,
+    },
+
+    messageButton: {
         width: 110,
         backgroundColor: Colors.appColor,
         paddingVertical: 5,
@@ -119,9 +133,9 @@ const styles = StyleSheet.create({
         color: 'white',
     },
 
-    checkboxIcon: {
-        width: 22,
-		height: 22,
+    actionIcon: {
+        width: 30,
+		height: 30,
 		resizeMode: 'contain',
     },
 

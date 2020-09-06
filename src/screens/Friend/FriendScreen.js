@@ -60,36 +60,7 @@ class FriendScreen extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.getMyFriendsStatus != this.props.getMyFriendsStatus) {
       if (this.props.getMyFriendsStatus == Status.SUCCESS) {
-        const { currentUser } = this.props;
-        const { friends } = this.props;
-
-        console.log("friends: ", friends);
-        const list = [];
-        const requests = [];
-        const sents = [];
-
-        if (friends) {
-          friends.forEach(f => {
-            if (f.status == 1) {
-              list.push(f);
-            }
-            else {
-              if (f.creator == currentUser._id) {
-                sents.push(f);
-              }
-              else {
-                requests.push(f);
-              }
-            }
-          });
-        }
-
-        this.setState({
-          isLoading: false, 
-          friends: list,
-          requests: requests,
-          sents: sents
-        });
+        this.filterFriends();
       } 
       else if (this.props.getMyFriendsStatus == Status.FAILURE) {
         this.onFailure();
@@ -105,6 +76,61 @@ class FriendScreen extends Component {
         this.onFailure();
       }      
     }
+
+    // Accept Friend Request
+    if (prevProps.acceptFriendRequestStatus != this.props.acceptFriendRequestStatus) {
+      if (this.props.acceptFriendRequestStatus == Status.SUCCESS) {
+        this.setState({isLoading: false});
+        this.filterFriends();
+        this.onSelectPage(0);
+      } 
+      else if (this.props.acceptFriendRequestStatus == Status.FAILURE) {
+        this.onFailure();
+      }      
+    }
+
+    // Decline Friend Request
+    if (prevProps.declineFriendRequestStatus != this.props.declineFriendRequestStatus) {
+      if (this.props.declineFriendRequestStatus == Status.SUCCESS) {
+        this.setState({isLoading: false});
+        this.filterFriends();
+      } 
+      else if (this.props.declineFriendRequestStatus == Status.FAILURE) {
+        this.onFailure();
+      }      
+    }
+  }
+
+  filterFriends() {
+    const { currentUser } = this.props;
+    const { friends } = this.props;
+
+    const list = [];
+    const requests = [];
+    const sents = [];
+
+    if (friends) {
+      friends.forEach(f => {
+        if (f.status == 1) {
+          list.push(f);
+        }
+        else {
+          if (f.creator == currentUser._id) {
+            sents.push(f);
+          }
+          else {
+            requests.push(f);
+          }
+        }
+      });
+    }
+
+    this.setState({
+      isLoading: false, 
+      friends: list,
+      requests: requests,
+      sents: sents
+    });
   }
 
   onFailure() {
@@ -181,7 +207,30 @@ class FriendScreen extends Component {
     this.setState({currentPage: index});
   }
 
+  onAcceptFriend=(friend)=> {
+    const { currentUser } = this.props;
+    this.setState({isLoading: true}, () => {
+      this.props.dispatch({
+        type: actionTypes.ACCEPT_FRIEND_REQUEST,
+        userId: currentUser._id,
+        friendId: friend._id
+      });
+    });
+  }
+
+  onDeclineFriend=(friend)=> {
+    const { currentUser } = this.props;
+    this.setState({isLoading: true}, () => {
+      this.props.dispatch({
+        type: actionTypes.DECLINE_FRIEND_REQUEST,
+        userId: currentUser._id,
+        friendId: friend._id
+      });
+    });
+  }
+
   _renderFriends() {
+    const { currentUser } = this.props;
     const { friends } = this.state;
     return (
       <View style={styles.slide}>
@@ -192,11 +241,9 @@ class FriendScreen extends Component {
               keyExtractor={(item, index) => index.toString()}
               ListFooterComponent={() => (<View style={{height: 70}}/>)}
               renderItem={({ item, index }) => (
-              <ContactCell 
-                  data={item}
-                  onSendInvite={this.onSendInvite}
-                  onSendMessage={this.onSendMessage}
-                  onSelect={this.onSelect}
+              <FriendCell 
+                data={item}
+                currentUser={currentUser}
               />
               )}
           />
@@ -207,6 +254,7 @@ class FriendScreen extends Component {
   }
 
   _renderRequests() {
+    const { currentUser } = this.props;
     const { requests } = this.state;
     return (
       <View style={styles.slide}>
@@ -217,11 +265,11 @@ class FriendScreen extends Component {
               keyExtractor={(item, index) => index.toString()}
               ListFooterComponent={() => (<View style={{height: 70}}/>)}
               renderItem={({ item, index }) => (
-              <ContactCell 
+              <FriendCell 
                   data={item}
-                  onSendInvite={this.onSendInvite}
-                  onSendMessage={this.onSendMessage}
-                  onSelect={this.onSelect}
+                  currentUser={currentUser}
+                  onAccept={this.onAcceptFriend}
+                  onDecline={this.onDeclineFriend}
               />
               )}
           />
@@ -246,7 +294,6 @@ class FriendScreen extends Component {
               <FriendCell 
                   data={item}
                   currentUser={currentUser}
-                  onSelect={this.onSelect}
               />
               )}
           />
@@ -324,6 +371,8 @@ function mapStateToProps(state) {
     errorMessage: state.user.errorMessage,
     getMyFriendsStatus: state.user.getMyFriendsStatus,
     sendFriendRequestStatus: state.user.sendFriendRequestStatus,
+    acceptFriendRequestStatus: state.user.acceptFriendRequestStatus,
+    declineFriendRequestStatus: state.user.declineFriendRequestStatus,
   };  
 }
 

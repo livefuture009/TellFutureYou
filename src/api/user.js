@@ -395,3 +395,57 @@ export const sendFriendRequest = (userId, friendId) => {
   return fetch(request_url, { method, body, headers})
     .then((res) => res.json());
 };
+
+//////////////////////////////////////////////////////////////////
+//////////////////// Accept Friend Request ///////////////////////
+//////////////////////////////////////////////////////////////////
+export const acceptFriendRequest = (userId, friendId) => {
+  const method = 'POST';
+  const request_url = `${url}/user/accept_friend`
+  const headers = {
+    'Content-Type': 'application/json',
+  }
+  const body = JSON.stringify({ 
+    user_id: userId,   
+    friend_id: friendId
+  });
+
+  return fetch(request_url, { method, body, headers})
+    .then((res) => res.json());
+};
+
+//////////////////////////////////////////////////////////////////
+///////////////////// Decline Friend Request /////////////////////
+//////////////////////////////////////////////////////////////////
+export const declineFriendRequest = (userId, friendId) => {
+  const method = 'POST';
+  const request_url = `${url}/user/decline_friend`
+  const headers = {
+    'Content-Type': 'application/json',
+  }
+  const body = JSON.stringify({ 
+    user_id: userId,   
+    friend_id: friendId
+  });
+
+  return fetch(request_url, { method, body, headers})
+    .then((res) => res.json());
+};
+
+//////////////////////////////////////////////////////////////////
+//////////////////////// Remove Friend ///////////////////////////
+//////////////////////////////////////////////////////////////////
+export const removeFriend = (userId, friendId) => {
+  const method = 'POST';
+  const request_url = `${url}/user/remove_friend`
+  const headers = {
+    'Content-Type': 'application/json',
+  }
+  const body = JSON.stringify({ 
+    user_id: userId,   
+    friend_id: friendId
+  });
+
+  return fetch(request_url, { method, body, headers})
+    .then((res) => res.json());
+};

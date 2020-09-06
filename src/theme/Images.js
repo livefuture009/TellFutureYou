@@ -40,6 +40,7 @@ const Images = {
     icon_privacy: require('../../assets/images/icon_privacy.png'),
     icon_terms: require('../../assets/images/icon_terms.png'),
     icon_search: require('../../assets/images/icon_search.png'),
+    circle_close: require('../../assets/images/circle_close.png')
 };
 
 export default Images;

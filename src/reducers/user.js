@@ -34,6 +34,9 @@ export const initialState = {
 
   getMyFriendsStatus: Status.NONE,
   sendFriendRequestStatus: Status.NONE,
+  acceptFriendRequestStatus: Status.NONE,
+  declineFriendRequestStatus: Status.NONE,
+  removeFriendStatus: Status.NONE,
 };
 
 //////////////////////////////////////////////////////////////////
@@ -403,6 +406,38 @@ const sendFriendRequestFailure = (state, action) => ({
 });
 
 //////////////////////////////////////////////////////////////////
+//////////////////// Accept Friend Request ///////////////////////
+//////////////////////////////////////////////////////////////////
+const acceptFriendRequestRequest = (state) => ({
+  ...state,
+  acceptFriendRequestStatus: Status.REQUEST,
+});
+
+const acceptFriendRequestSuccess = (state, action) => {
+  state.acceptFriendRequestStatus = Status.SUCCESS;
+  const { friend } = action.payload;
+  var friends = [...state.friends];
+
+  for (var i = 0; i < friends.length; i++) {
+    if (friends[i]._id === friend._id) {
+      friends[i] = friend;
+      break;
+    }
+  }
+
+  state.friends = friends;
+  return {
+    ...state,
+  };
+};
+
+const acceptFriendRequestFailure = (state, action) => ({
+  ...state,
+  errorMessage: action.error,
+  acceptFriendRequestStatus: Status.FAILURE,
+});
+
+//////////////////////////////////////////////////////////////////
 ///////////////////// Set Current User ///////////////////////////
 //////////////////////////////////////////////////////////////////
 const setCurrentUser = (state, action) => ({
@@ -519,6 +554,10 @@ const actionHandlers = {
   [Types.SEND_FRIEND_REQUEST_REQUEST]: sendFriendRequestRequest,
   [Types.SEND_FRIEND_REQUEST_SUCCESS]: sendFriendRequestSuccess,
   [Types.SEND_FRIEND_REQUEST_FAILURE]: sendFriendRequestFailure,
+
+  [Types.ACCEPT_FRIEND_REQUEST_REQUEST]: acceptFriendRequestRequest,
+  [Types.ACCEPT_FRIEND_REQUEST_SUCCESS]: acceptFriendRequestSuccess,
+  [Types.ACCEPT_FRIEND_REQUEST_FAILURE]: acceptFriendRequestFailure,
 
   [Types.SET_CURRENT_USER]: setCurrentUser,
   [Types.SET_PLAYER_ID]: setPlayerId, 

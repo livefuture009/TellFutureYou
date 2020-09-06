@@ -25,6 +25,8 @@ const {
 
   getMyFriends,
   sendFriendRequest,
+  acceptFriendRequest,
+  declineFriendRequest,
 } = api;
 
 function* GetCurrentUser(action) {
@@ -308,6 +310,21 @@ function* SendFriendRequest(action) {
   }
 }
 
+function* AcceptFriendRequest(action) {
+  yield put({ type: Types.ACCEPT_FRIEND_REQUEST_REQUEST });
+  try {
+    const res = yield call(acceptFriendRequest, action.userId, action.friendId);
+    if (res.result) {
+      yield put({ type: Types.ACCEPT_FRIEND_REQUEST_SUCCESS, payload: res });
+    } else {
+      yield put({ type: Types.ACCEPT_FRIEND_REQUEST_FAILURE, error: res.error });      
+    }
+  } catch (error) {
+    console.log(error);
+    yield put({ type: Types.ACCEPT_FRIEND_REQUEST_FAILURE, error: Messages.NetWorkError });
+  }
+}
+
 export default [
   takeLatest(Types.LOGIN_USER, LoginUser),
   takeLatest(Types.LOGIN_WITH_SOCIAL, LoginWithSocial),
@@ -328,4 +345,5 @@ export default [
 
   takeLatest(Types.GET_MY_FRIENDS, GetMyFriends),
   takeLatest(Types.SEND_FRIEND_REQUEST, SendFriendRequest),
+  takeLatest(Types.ACCEPT_FRIEND_REQUEST, AcceptFriendRequest),
 ];

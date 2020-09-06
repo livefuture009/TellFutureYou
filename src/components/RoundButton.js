@@ -5,50 +5,51 @@ import Fonts from "../theme/Fonts"
 
 export default class RoundButton extends React.Component {
   render() {
+	const { theme, title, onPress } = this.props;
     return (
-	    <TouchableOpacity style={this.props.style} onPress={() => this.props.onPress()}>
+	    <TouchableOpacity style={this.props.style} onPress={() => onPress()}>
 	    	{
-	    		this.props.theme == "blue" 
+	    		theme == "blue" 
 	    		? <View style={[styles.buttonContainer, styles.mainButton]}>
-					<Text style={[styles.buttonText, styles.whiteText]}>{this.props.title}</Text>
+					<Text style={[styles.buttonText, styles.whiteText]}>{title}</Text>
 	    		  </View>
 	    		: null
 	    	}
 	    	{	
-	    		this.props.theme == "red" 
+	    		theme == "red" 
 	    		? <View style={[styles.buttonContainer, styles.redButton]}>
-					<Text style={[styles.buttonText, styles.whiteText]}>{this.props.title}</Text>
+					<Text style={[styles.buttonText, styles.whiteText]}>{title}</Text>
 	    		  </View>
 	    		: null
 	    	}
 	    	{
-	    		this.props.theme == "outline" 
+	    		theme == "outline" 
 	    		? <View style={[styles.buttonContainer, styles.outlineButton]}>
-					<Text style={[styles.buttonText, styles.outlineText]}>{this.props.title}</Text>
+					<Text style={[styles.buttonText, styles.outlineText]}>{title}</Text>
 	    		  </View>
 	    		: null	
 	    	}
 
 	    	{
-	    		this.props.theme == "white" 
+	    		theme == "white" 
 	    		? <View style={[styles.buttonContainer, styles.whiteButton]}>
-					<Text style={[styles.buttonText, styles.whiteText]}>{this.props.title}</Text>
+					<Text style={[styles.buttonText, styles.whiteText]}>{title}</Text>
 	    		  </View>
 	    		: null
 	    	}
 
 	    	{ 
-	    		this.props.theme == "orange"
+	    		theme == "orange"
 	    		? <View style={[styles.buttonContainer, styles.orangeButton]}>
-					<Text style={[styles.buttonText, styles.blackText]}>{this.props.title}</Text>
+					<Text style={[styles.buttonText, styles.blackText]}>{title}</Text>
 	    		  </View>
 	    		: null
 	    	}
 
 	    	{ 
-	    		this.props.theme == "black"
+	    		theme == "black"
 	    		? <View style={[styles.buttonContainer, styles.blackButton]}>
-					<Text style={[styles.buttonText, styles.whiteText]}>{this.props.title}</Text>
+					<Text style={[styles.buttonText, styles.whiteText]}>{title}</Text>
 	    		  </View>
 	    		: null
 	    	}
