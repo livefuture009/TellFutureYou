@@ -99,6 +99,26 @@ class FriendScreen extends Component {
         this.onFailure();
       }      
     }
+
+    // Remove Friend
+    if (prevProps.removeFriendStatus != this.props.removeFriendStatus) {
+      if (this.props.removeFriendStatus == Status.SUCCESS) {
+        this.setState({isLoading: false});
+        this.filterFriends();
+      } 
+      else if (this.props.removeFriendStatus == Status.FAILURE) {
+        this.onFailure();
+      }      
+    }
+
+    // Change Active Page.
+    if (prevProps.changeActiveFriendPageStatus != this.props.changeActiveFriendPageStatus) {
+      if (this.props.changeActiveFriendPageStatus == Status.SUCCESS) {
+        const { activePage } = this.props;
+        this.onSelectPage(activePage);
+      } 
+    }
+    
   }
 
   filterFriends() {
@@ -229,6 +249,21 @@ class FriendScreen extends Component {
     });
   }
 
+  onSendMessage=(friend)=> {
+    this.props.navigation.navigate("Chat", {user: friend});
+  }
+
+  onRemoveFriend=(friend)=> {
+    const { currentUser } = this.props;
+    this.setState({isLoading: true}, () => {
+      this.props.dispatch({
+        type: actionTypes.REMOVE_FRIEND,
+        userId: currentUser._id,
+        friendId: friend._id
+      });
+    });
+  }
+
   _renderFriends() {
     const { currentUser } = this.props;
     const { friends } = this.state;
@@ -244,6 +279,8 @@ class FriendScreen extends Component {
               <FriendCell 
                 data={item}
                 currentUser={currentUser}
+                onSendMessage={this.onSendMessage}
+                onRemove={this.onRemoveFriend}
               />
               )}
           />
@@ -294,6 +331,7 @@ class FriendScreen extends Component {
               <FriendCell 
                   data={item}
                   currentUser={currentUser}
+                  onRemove={this.onRemoveFriend}
               />
               )}
           />
@@ -368,11 +406,15 @@ function mapStateToProps(state) {
   return {
     currentUser: state.user.currentUser,
     friends: state.user.friends,
+    activePage: state.user.activePage,
+
     errorMessage: state.user.errorMessage,
     getMyFriendsStatus: state.user.getMyFriendsStatus,
     sendFriendRequestStatus: state.user.sendFriendRequestStatus,
     acceptFriendRequestStatus: state.user.acceptFriendRequestStatus,
     declineFriendRequestStatus: state.user.declineFriendRequestStatus,
+    removeFriendStatus: state.user.removeFriendStatus,
+    changeActiveFriendPageStatus: state.user.changeActiveFriendPageStatus,
   };  
 }
 

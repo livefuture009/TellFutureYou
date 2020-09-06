@@ -2,7 +2,7 @@ const Colors = {
   appColor: '#38baf6',
   appColor2: '#fbc200',
   navColor: '#0f0d3c',
-	redColor: '#f12121',
+	redColor: 'rgba(255, 0, 0, 0.8)',
   pageColor: '#fcfcfc',
   roundTextInputPlaceColor: '#7e7db8',
   placeholderColor: 'rgba(0, 0, 0, 0.2)',

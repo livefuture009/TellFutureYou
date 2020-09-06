@@ -68,33 +68,33 @@ class NotificationScreen extends Component {
       notification_id: n._id,
     });
     
-    const job = n.job;
+    if (n.type == NOTIFICATION_TYPE.SENT_FRIEND_REQUEST) {
+      this.props.navigation.navigate("FriendStack");
+      this.props.dispatch({
+        type: actionTypes.CHANGE_FRIEND_ACTIVE_PAGE,
+        page: 1,
+      }); 
+    }
+    else if (n.type == NOTIFICATION_TYPE.ACCEPT_FRIEND_REQUEST) {
+      this.props.navigation.navigate("FriendStack");
+      this.props.dispatch({
+        type: actionTypes.CHANGE_FRIEND_ACTIVE_PAGE,
+        page: 0,
+      }); 
+    }
+    else if (n.type == NOTIFICATION_TYPE.DECLINE_FRIEND_REQUEST) {
+      this.props.navigation.navigate("FriendStack");
+      this.props.dispatch({
+        type: actionTypes.CHANGE_FRIEND_ACTIVE_PAGE,
+        page: 1,
+      }); 
+    }
 
-    if (n.type == NOTIFICATION_TYPE.SENT_OFFER) {
-      // // this.props.navigation.navigate('UmpireOrderDetail', {job: job});
-      // // Move Home's Offer Tab.
-      // this.onBack();
-      // this.props.navigation.navigate('UmpireHome', {activePage: 2});
-      if (job.status >= JOB_STATUS.PROGRESSING) {
-        this.props.navigation.navigate('UmpireOrderDetail', {job: job});
-      } else {
-        this.props.navigation.navigate('UmpireJobDetail', {job: job});
-      }      
-    } else if (n.type == NOTIFICATION_TYPE.CANCEL_OFFER) {
-      this.props.navigation.navigate('UmpireOrderDetail', {job: job});
-    } else if (n.type == NOTIFICATION_TYPE.ACCEPT_OFFER) {
-      this.props.navigation.navigate('GameAssignerJobDetail', {job: job, needRefresh: true});
-    } else if (n.type == NOTIFICATION_TYPE.DECLINE_OFFER) {
-      this.props.navigation.navigate('GameAssignerJobDetail', {job: job, needRefresh: true});
-    } else if (n.type == NOTIFICATION_TYPE.COMPLETE_JOB) {
-      this.props.navigation.navigate('UmpireOrderDetail', {job: job});
-    } else if (n.type == NOTIFICATION_TYPE.CANCEL_JOB) {
-      this.props.navigation.navigate('UmpireOrderDetail', {job: job});
-    } else if (n.type == NOTIFICATION_TYPE.PAY_JOB) {
-      this.props.navigation.navigate('UmpireOrderDetail', {job: job});
-    } else if (n.type == NOTIFICATION_TYPE.GIVE_REVIEW) {
-      this.props.navigation.navigate('UmpireOrderDetail', {job: job});
-    } 
+    setTimeout(() => {
+      this.props.dispatch({
+        type: actionTypes.RESET_FRIEND_PAGE,
+      });
+    }, 1000);
   }
 
   getMyNotifications() {
@@ -122,7 +122,7 @@ class NotificationScreen extends Component {
   render() {
     const { notifications } = this.state;
     return (
-      <View style={{flex: 1, backgroundColor: Colors.appColor}}>
+      <View style={{flex: 1, backgroundColor: Colors.pageColor}}>
         <SafeAreaConsumer>
           {
             insets => 
@@ -173,6 +173,9 @@ const styles = StyleSheet.create({
   contentView: {
     flex: 1,
     backgroundColor: '#f2f2f5',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    paddingTop: 15,
   },
 
   listView: {

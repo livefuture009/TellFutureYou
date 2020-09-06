@@ -12,6 +12,7 @@ export const initialState = {
   errorMessage: '',
   resultMessage: '',
   unreadMessages: 0,
+  activePage: 0,
 
   loginUserStatus: Status.NONE,
   loginWithSocialStatus: Status.NONE,
@@ -37,6 +38,8 @@ export const initialState = {
   acceptFriendRequestStatus: Status.NONE,
   declineFriendRequestStatus: Status.NONE,
   removeFriendStatus: Status.NONE,
+
+  changeActiveFriendPageStatus: Status.NONE,
 };
 
 //////////////////////////////////////////////////////////////////
@@ -434,7 +437,71 @@ const acceptFriendRequestSuccess = (state, action) => {
 const acceptFriendRequestFailure = (state, action) => ({
   ...state,
   errorMessage: action.error,
-  acceptFriendRequestStatus: Status.FAILURE,
+  declineFriendRequestStatus: Status.FAILURE,
+});
+
+//////////////////////////////////////////////////////////////////
+//////////////////// Decline Friend Request //////////////////////
+//////////////////////////////////////////////////////////////////
+const declineFriendRequestRequest = (state) => ({
+  ...state,
+  declineFriendRequestStatus: Status.REQUEST,
+});
+
+const declineFriendRequestSuccess = (state, action) => {
+  state.declineFriendRequestStatus = Status.SUCCESS;
+  const { friend_id } = action.payload;
+  var friends = [...state.friends];
+
+  for (var i = 0; i < friends.length; i++) {
+    if (friends[i]._id === friend_id) {
+      friends.splice(i, 1);
+      break;
+    }
+  }
+
+  state.friends = friends;
+  return {
+    ...state,
+  };
+};
+
+const declineFriendRequestFailure = (state, action) => ({
+  ...state,
+  errorMessage: action.error,
+  declineFriendRequestStatus: Status.FAILURE,
+});
+
+//////////////////////////////////////////////////////////////////
+//////////////////////// Remove Friend ///////////////////////////
+//////////////////////////////////////////////////////////////////
+const removeFriendRequest = (state) => ({
+  ...state,
+  removeFriendStatus: Status.REQUEST,
+});
+
+const removeFriendSuccess = (state, action) => {
+  state.removeFriendStatus = Status.SUCCESS;
+  const { friend_id } = action.payload;
+  var friends = [...state.friends];
+
+  for (var i = 0; i < friends.length; i++) {
+    if (friends[i]._id === friend_id) {
+      friends.splice(i, 1);
+      break;
+    }
+  }
+
+  state.friends = friends;
+  return {
+    ...state,
+  };
+};
+
+const removeFriendFailure = (state, action) => ({
+  ...state,
+  errorMessage: action.error,
+  removeFriendStatus: Status.FAILURE,
 });
 
 //////////////////////////////////////////////////////////////////
@@ -465,6 +532,25 @@ const setUnreadMessage = (state, action) => {
 };
 
 //////////////////////////////////////////////////////////////////
+///////////////// Change Friend Active Page //////////////////////
+//////////////////////////////////////////////////////////////////
+
+const changeFriendActivePage = (state, action) => {
+  state.activePage = action.page;
+  state.changeActiveFriendPageStatus = Status.SUCCESS;
+  return {
+    ...state,
+  };
+};
+
+const resetFriendPage = (state, action) => {
+  state.changeActiveFriendPageStatus = Status.NONE;
+  return {
+    ...state,
+  };
+};
+
+//////////////////////////////////////////////////////////////////
 ////////////////////// RESET /////////////////////////////////////
 //////////////////////////////////////////////////////////////////
 const resetUser = (state, action) => {
@@ -476,6 +562,34 @@ const resetUser = (state, action) => {
   state.playerId = null;
   state.errorMessage = '';
   state.resultMessage = '';
+  state.activePage = 0;
+
+  state.loginUserStatus = Status.NONE;
+  state.loginWithSocialStatus = Status.NONE;
+  state.checkEmailStatus = Status.NONE;
+  state.registerUserStatus = Status.NONE;
+  state.forgotPasswordStatus = Status.NONE;
+  state.verifyCodePasswordStatus = Status.NONE;
+  state.resetPasswordStatus = Status.NONE;
+  state.changePasswordStatus = Status.NONE;
+  state.getUserStatus = Status.NONE;
+  state.getUserByEmailStatus = Status.NONE;
+  state.restoreUserStatus = Status.NONE;
+  state.updateProfileStatus = Status.NONE;
+
+  state.importContactsStatus = Status.NONE;
+  state.sendInviteStatus = Status.NONE;
+  state.addContactStatus = Status.NONE;
+  state.editContactStatus = Status.NONE;
+  state.getContactsStatus = Status.NONE;
+
+  state.getMyFriendsStatus = Status.NONE;
+  state.sendFriendRequestStatus = Status.NONE;
+  state.acceptFriendRequestStatus = Status.NONE;
+  state.declineFriendRequestStatus = Status.NONE;
+  state.removeFriendStatus = Status.NONE;
+
+  state.changeActiveFriendPageStatus= Status.NONE;
   return {
     ...state,
   };
@@ -559,9 +673,19 @@ const actionHandlers = {
   [Types.ACCEPT_FRIEND_REQUEST_SUCCESS]: acceptFriendRequestSuccess,
   [Types.ACCEPT_FRIEND_REQUEST_FAILURE]: acceptFriendRequestFailure,
 
+  [Types.DECLINE_FRIEND_REQUEST_REQUEST]: declineFriendRequestRequest,
+  [Types.DECLINE_FRIEND_REQUEST_SUCCESS]: declineFriendRequestSuccess,
+  [Types.DECLINE_FRIEND_REQUEST_FAILURE]: declineFriendRequestFailure,
+
+  [Types.REMOVE_FRIEND_REQUEST]: removeFriendRequest,
+  [Types.REMOVE_FRIEND_SUCCESS]: removeFriendSuccess,
+  [Types.REMOVE_FRIEND_FAILURE]: removeFriendFailure,
+
   [Types.SET_CURRENT_USER]: setCurrentUser,
   [Types.SET_PLAYER_ID]: setPlayerId, 
   [Types.SET_UNREAD_MESSAGE]: setUnreadMessage,
+  [Types.CHANGE_FRIEND_ACTIVE_PAGE]: changeFriendActivePage,
+  [Types.RESET_FRIEND_PAGE]: resetFriendPage,
   [Types.RESET_USER]: resetUser,
 };
 

@@ -3,13 +3,17 @@ import { connect } from 'react-redux';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import Fonts from '../theme/Fonts'
 
-function TabBarItem({unreadMessages, icon, page}) {
+function TabBarItem({unreadMessages, unreadNumber, icon, page}) {
     return (
         <View>
             <Image source={icon} style={{width: 40, height: 40 }} />
             {
                 (page === 'ChatStack' && unreadMessages > 0) &&
                 <Text style={styles.badgeText}>{unreadMessages}</Text>
+            }
+            {
+                (page === 'NotificationStack' && unreadNumber > 0) &&
+                <Text style={styles.badgeText}>{unreadNumber}</Text>
             }
         </View>
     );
@@ -33,6 +37,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     unreadMessages: state.user.unreadMessages,
+    unreadNumber: state.notifications.unreadNumber,
 });
 
 export default connect(mapStateToProps)(TabBarItem);

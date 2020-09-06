@@ -21,19 +21,25 @@ class NotificationCell extends Component {
     }
 
     render() {
+        const { data } = this.props;
+        const avatar = (data && data.creator && data.creator.avatar) ? {uri: data.creator.avatar} : Images.account_icon;
+        const message = (data && data.message) ? data.message : "";
+        const time = (data && data.createdAt) ? Moment(this.props.data.createdAt).fromNow(true) + " ago" : "";
+        const name = (data && data.creator) ? this.getName(data.creator.firstName, data.creator.lastName) : "";
+
         return (
             <TouchableOpacity style={[this.props.style, styles.container]} onPress={() => this.props.onSelectNotification(this.props.data)}>
                 <View style={styles.contentView}>
                     <FastImage
                       style={styles.image}
-                      source={this.props.data.creator.avatar ? {uri: this.props.data.creator.avatar} : Images.account_icon}
+                      source={avatar}
                     />
                     <View style={{ flex: 1}}>
                         <Text style={styles.reviewText}>
-                            <Text style={{fontFamily: Fonts.bold}}>{this.getName(this.props.data.creator.firstName, this.props.data.creator.lastName)}</Text>
-                            {this.props.data.message}
+                            <Text style={{fontFamily: Fonts.bold}}>{name}</Text>
+                            {message}
                         </Text>
-                        <Text style={styles.timeText}>{Moment(this.props.data.createdAt).fromNow(true)} ago</Text>
+                        <Text style={styles.timeText}>{time}</Text>
                     </View>
                 </View>
                 {
@@ -52,19 +58,20 @@ export default NotificationCell;
 
 const styles = StyleSheet.create({
     container: {
+        marginHorizontal: 10,
         flex: 1,
         flexDirection: 'row',
-        borderBottomWidth: 1,
-        borderBottomColor: Colors.borderColor,
         backgroundColor: 'white',
+        marginBottom: 10,
+        borderRadius: 10,
     },
 
     contentView: {
-        width: screenWidth - 50,
-        paddingLeft: 15,
-        paddingRight: 15,
-        paddingTop: 15,
-        paddingBottom: 15,        
+        width: screenWidth - 70,
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingTop: 10,
+        paddingBottom: 10,        
         flexDirection: 'row',
         flexWrap: 'wrap',
     },
@@ -102,10 +109,10 @@ const styles = StyleSheet.create({
     },
 
     unReadView: {
-        backgroundColor: 'red',
-        width: 15,
-        height: 15,
-        borderRadius: 7,
+        backgroundColor: Colors.appColor,
+        width: 10,
+        height: 10,
+        borderRadius: 5,
     }
 
 });

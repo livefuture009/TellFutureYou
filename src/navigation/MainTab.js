@@ -94,15 +94,4 @@ class CustomerTab extends React.Component {
   }
 }
 
-const styles = StyleSheet.create({
-  iconImage: {
-    width: 40,
-    height: 40
-  },
-
-  inactiveIcon: {
-    opacity: 0.3,
-  },
-})
-
 export default CustomerTab;

@@ -27,7 +27,7 @@ import Button from '../components/Button'
 import Label from '../components/Label'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
 import {isValidEmail, checkInternetConnectivity} from '../functions'
-
+import { NOTIFICATION_TYPE } from '../constants'
 import LoadingOverlay from '../components/LoadingOverlay'
 import Messages from '../theme/Messages'
 import Images from '../theme/Images'
@@ -157,6 +157,33 @@ class LoginScreen extends Component {
   }
 
   onMoveNotificationPage(notification_type, job) {
+    if (notification_type == NOTIFICATION_TYPE.SENT_FRIEND_REQUEST) {
+      this.props.navigation.navigate("FriendStack");
+      this.props.dispatch({
+        type: actionTypes.CHANGE_FRIEND_ACTIVE_PAGE,
+        page: 2,
+      }); 
+    }
+    else if (notification_type == NOTIFICATION_TYPE.ACCEPT_FRIEND_REQUEST) {
+      this.props.navigation.navigate("FriendStack");
+      this.props.dispatch({
+        type: actionTypes.CHANGE_FRIEND_ACTIVE_PAGE,
+        page: 0,
+      }); 
+    }
+    else if (notification_type == NOTIFICATION_TYPE.DECLINE_FRIEND_REQUEST) {
+      this.props.navigation.navigate("FriendStack");
+      this.props.dispatch({
+        type: actionTypes.CHANGE_FRIEND_ACTIVE_PAGE,
+        page: 1,
+      }); 
+    }
+
+    setTimeout(() => {
+      this.props.dispatch({
+        type: actionTypes.RESET_FRIEND_PAGE,
+      });
+    }, 1000);
   }
 
   onIds = (device) => {

@@ -61,7 +61,6 @@ class ContactListScreen extends Component {
     const { currentUser } = this.props;
     if (currentUser && currentUser.contacts && currentUser.contacts.length > 0) {
       this.sortContacts(currentUser.contacts);
-      console.log("currentUser.contacts: ", currentUser.contacts);
       var list = [];
       currentUser.contacts.forEach(c => {
         if (c.status < 2) {
@@ -109,7 +108,16 @@ class ContactListScreen extends Component {
     if (prevProps.sendFriendRequestStatus != this.props.sendFriendRequestStatus) {
       if (this.props.sendFriendRequestStatus == Status.SUCCESS) {
         this.setState({isLoading: false});
-        this.props.navigation.navigate('FriendStack')
+        this.props.navigation.navigate('FriendStack');
+        this.props.dispatch({
+          type: actionTypes.CHANGE_FRIEND_ACTIVE_PAGE,
+          page: 2,
+        });
+        setTimeout(() => {
+          this.props.dispatch({
+            type: actionTypes.RESET_FRIEND_PAGE,
+          });
+        }, 1000);
       } 
       else if (this.props.sendFriendRequestStatus == Status.FAILURE) {
         this.onFailure();
@@ -130,16 +138,16 @@ class ContactListScreen extends Component {
     var text = keyword.toLowerCase().trim();
     const { originalContacts } = this.state;
     if (text && text.length > 0) {
-        var list = [];
-        if (originalContacts && originalContacts.length > 0) {
-          originalContacts.forEach(item => {
-            const name = item.firstName + " " + item.lastName;
-            if (name.toLowerCase().indexOf(text) >= 0) {
-                list.push(item);
-            }
-          });
-          this.setState({contacts: list});
-        }
+      var list = [];
+      if (originalContacts && originalContacts.length > 0) {
+        originalContacts.forEach(item => {
+          const name = item.firstName + " " + item.lastName;
+          if (name.toLowerCase().indexOf(text) >= 0) {
+              list.push(item);
+          }
+        });
+        this.setState({contacts: list});
+      }
     } 
     else {
         this.setState({contacts: originalContacts});

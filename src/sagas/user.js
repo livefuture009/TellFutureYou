@@ -27,6 +27,7 @@ const {
   sendFriendRequest,
   acceptFriendRequest,
   declineFriendRequest,
+  removeFriend,
 } = api;
 
 function* GetCurrentUser(action) {
@@ -238,7 +239,6 @@ function* AddContact(action) {
   yield put({ type: Types.ADD_CONTACT_REQUEST });
   try {
     const res = yield call(addContact, action.contact, action.userId);
-    console.log("addContact: ", res);
     if (res.result) {
       yield put({ type: Types.ADD_CONTACT_SUCCESS, payload: res.user });
     } else {
@@ -325,6 +325,36 @@ function* AcceptFriendRequest(action) {
   }
 }
 
+function* DeclineFriendRequest(action) {
+  yield put({ type: Types.DECLINE_FRIEND_REQUEST_REQUEST });
+  try {
+    const res = yield call(declineFriendRequest, action.userId, action.friendId);
+    if (res.result) {
+      yield put({ type: Types.DECLINE_FRIEND_REQUEST_SUCCESS, payload: res });
+    } else {
+      yield put({ type: Types.DECLINE_FRIEND_REQUEST_FAILURE, error: res.error });      
+    }
+  } catch (error) {
+    console.log(error);
+    yield put({ type: Types.DECLINE_FRIEND_REQUEST_FAILURE, error: Messages.NetWorkError });
+  }
+}
+
+function* RemoveFriend(action) {
+  yield put({ type: Types.REMOVE_FRIEND_REQUEST });
+  try {
+    const res = yield call(removeFriend, action.userId, action.friendId);
+    if (res.result) {
+      yield put({ type: Types.REMOVE_FRIEND_SUCCESS, payload: res });
+    } else {
+      yield put({ type: Types.REMOVE_FRIEND_FAILURE, error: res.error });      
+    }
+  } catch (error) {
+    console.log(error);
+    yield put({ type: Types.REMOVE_FRIEND_FAILURE, error: Messages.NetWorkError });
+  }
+}
+
 export default [
   takeLatest(Types.LOGIN_USER, LoginUser),
   takeLatest(Types.LOGIN_WITH_SOCIAL, LoginWithSocial),
@@ -346,4 +376,6 @@ export default [
   takeLatest(Types.GET_MY_FRIENDS, GetMyFriends),
   takeLatest(Types.SEND_FRIEND_REQUEST, SendFriendRequest),
   takeLatest(Types.ACCEPT_FRIEND_REQUEST, AcceptFriendRequest),
+  takeLatest(Types.DECLINE_FRIEND_REQUEST, DeclineFriendRequest),
+  takeLatest(Types.REMOVE_FRIEND, RemoveFriend),
 ];

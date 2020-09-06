@@ -8,13 +8,12 @@ import Images from '../../theme/Images';
 
 export default class FriendCell extends React.Component {
   	render() {
-        const { data, currentUser, onSelect, onAccept, onDecline } = this.props;
-        var status = 0;
+        const { data, currentUser, onSendMessage, onAccept, onDecline, onRemove } = this.props;
+        var status = data.status;
         var friend = data.user1; 
         if (data.user1._id == currentUser._id) {
             friend = data.user2;
         } 
-
         if (data.creator == currentUser._id) {
             status = 2;
         }
@@ -22,49 +21,54 @@ export default class FriendCell extends React.Component {
         const avatar = friend.avatar ? {uri: friend.avatar} : Images.account_icon;
 
     	return (
-	   		<TouchableOpacity style={styles.container} onPress={() => onSelect(data)}>
-                <View style={[styles.contentView, Platform.OS == "ios" ? styles.shadowView: {}]}>
-                    <View style={styles.leftView}>
-                        <FastImage source={avatar} style={styles.avatarPhoto} />
-                        <View>
-                            <Text style={styles.nameText}>{friend.firstName} {friend.lastName}</Text>
-                            <Text style={styles.phoneText}>{friend.phone}</Text>
-                            <Text style={styles.phoneText}>{friend.email}</Text>
-                        </View>                    
-                    </View>
-                    <View style={{width: '50%', alignItems: 'flex-end'}}>
-                        {
-                            status == 0 && <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                <TouchableOpacity style={styles.actionButton} onPress={() => onAccept(data)}>
-                                    <Image source={Images.checkbox_selected} style={styles.actionIcon} />
-                                </TouchableOpacity>
-                                <TouchableOpacity style={styles.actionButton} onPress={() => onDecline(data)}>
-                                    <Image source={Images.circle_close} style={styles.actionIcon} />
-                                </TouchableOpacity>
-                            </View>
-                        }
-                        {
-                            status == 1 && <View>
-                                <RoundButton title="Accept"/>
-                            </View>
-                        }
-                        {
-                            status == 2 && <Text style={styles.statusText}>Request Sent</Text>
-                        }
-                    </View>
+            <View style={[styles.contentView, Platform.OS == "ios" ? styles.shadowView: {}]}>
+                <View style={styles.leftView}>
+                    <FastImage source={avatar} style={styles.avatarPhoto} />
+                    <View>
+                        <Text style={styles.nameText}>{friend.firstName} {friend.lastName}</Text>
+                        <Text style={styles.phoneText}>{friend.phone}</Text>
+                        <Text style={styles.phoneText}>{friend.email}</Text>
+                    </View>                    
                 </View>
-            </TouchableOpacity>
+                <View style={{width: '50%', alignItems: 'flex-end'}}>
+                    {
+                        status == 0 && <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <TouchableOpacity style={styles.actionButton} onPress={() => onAccept(data)}>
+                                <Image source={Images.checkbox_selected} style={styles.actionIcon} />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.actionButton} onPress={() => onDecline(data)}>
+                                <Image source={Images.circle_close} style={styles.actionIcon} />
+                            </TouchableOpacity>
+                        </View>
+                    }
+                    {
+                        status == 1 && <TouchableOpacity onPress={() => onSendMessage(friend)}>
+                            <TouchableOpacity style={styles.messageButton} onPress={() => onSendMessage(friend)}>
+                                <Text style={styles.actionButtonText}>Send Message</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.removeButton} onPress={() => onRemove(data)}>
+                                <Text style={styles.actionButtonText}>Remove</Text>
+                            </TouchableOpacity>
+                        </TouchableOpacity>
+                    }
+                    {
+                        status == 2 && <View style={{alignItems: 'center'}}>
+                            <Text style={styles.statusText}>Request Sent</Text>
+                            <TouchableOpacity style={styles.removeButton} onPress={() => onRemove(data)}>
+                                <Text style={styles.actionButtonText}>Remove</Text>
+                            </TouchableOpacity>
+                        </View>
+                    }
+                </View>
+            </View>
         );
   }
 }
 
 const styles = StyleSheet.create({
-    container: {
+    contentView: {
         marginBottom: 15,
         marginHorizontal: 15,
-    },
-
-    contentView: {
         backgroundColor: 'white',
         padding: 15,
         borderRadius: 10,
@@ -128,9 +132,27 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 
+    removeButton: {
+        marginTop: 7,
+        width: 110,
+        backgroundColor: Colors.redColor,
+        paddingVertical: 5,
+        borderRadius: 15,
+        shadowColor: Colors.redColor,
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.3,
+		shadowRadius: 10,
+        elevation: 5,
+        alignItems: 'center',
+    },
+
     actionButtonText: {
         fontFamily: Fonts.regular,
         color: 'white',
+        fontSize: 13,
     },
 
     actionIcon: {
@@ -142,6 +164,7 @@ const styles = StyleSheet.create({
     statusText: {
         fontFamily: Fonts.light,
         fontStyle: 'italic',
-        fontSize: 14,
+        fontSize: 13,
+        color: 'black'
     },
 });
