@@ -14,7 +14,7 @@ import HeaderInfoBar from '../../components/HeaderInfoBar'
 import TopTabBar from '../../components/TopTabBar'
 import SearchBox from '../../components/SearchBox'
 import LoadingOverlay from '../../components/LoadingOverlay'
-import ContactCell from '../../components/Cells/ContactCell'
+import FriendCell from '../../components/Cells/FriendCell'
 import actionTypes from '../../actions/actionTypes';
 import EmptyView from '../../components/EmptyView'
 import { TOAST_SHOW_TIME, Status } from '../../constants.js'
@@ -36,12 +36,20 @@ class FriendScreen extends Component {
   }
 
   componentDidMount() {
-    const { currentUser } = this.props;
+    this.setState({isLoading: true}, () => {
+      this.fetchFriends();
+    });
+
     this.focusListener = this.props.navigation.addListener('focus', () => {
-      this.props.dispatch({
-        type: actionTypes.GET_MY_FRIENDS,
-        userId: currentUser._id,
-      });
+      this.fetchFriends();    
+    });
+  }
+
+  fetchFriends() {
+    const { currentUser } = this.props;
+    this.props.dispatch({
+      type: actionTypes.GET_MY_FRIENDS,
+      userId: currentUser._id,
     });
   }
 
@@ -52,10 +60,48 @@ class FriendScreen extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.getMyFriendsStatus != this.props.getMyFriendsStatus) {
       if (this.props.getMyFriendsStatus == Status.SUCCESS) {
+        const { currentUser } = this.props;
         const { friends } = this.props;
-        this.setState({isLoading: false, friends: friends});
+
+        console.log("friends: ", friends);
+        const list = [];
+        const requests = [];
+        const sents = [];
+
+        if (friends) {
+          friends.forEach(f => {
+            if (f.status == 1) {
+              list.push(f);
+            }
+            else {
+              if (f.creator == currentUser._id) {
+                sents.push(f);
+              }
+              else {
+                requests.push(f);
+              }
+            }
+          });
+        }
+
+        this.setState({
+          isLoading: false, 
+          friends: list,
+          requests: requests,
+          sents: sents
+        });
       } 
       else if (this.props.getMyFriendsStatus == Status.FAILURE) {
+        this.onFailure();
+      }      
+    }
+
+    // Send Friend Request
+    if (prevProps.sendFriendRequestStatus != this.props.sendFriendRequestStatus) {
+      if (this.props.sendFriendRequestStatus == Status.SUCCESS) {
+        this.onSelectPage(2);
+      } 
+      else if (this.props.sendFriendRequestStatus == Status.FAILURE) {
         this.onFailure();
       }      
     }
@@ -186,6 +232,7 @@ class FriendScreen extends Component {
   }
 
   _renderSent() {
+    const { currentUser } = this.props;
     const { sents } = this.state;
     return (
       <View style={styles.slide}>
@@ -196,10 +243,9 @@ class FriendScreen extends Component {
               keyExtractor={(item, index) => index.toString()}
               ListFooterComponent={() => (<View style={{height: 70}}/>)}
               renderItem={({ item, index }) => (
-              <ContactCell 
+              <FriendCell 
                   data={item}
-                  onSendInvite={this.onSendInvite}
-                  onSendMessage={this.onSendMessage}
+                  currentUser={currentUser}
                   onSelect={this.onSelect}
               />
               )}
@@ -211,7 +257,7 @@ class FriendScreen extends Component {
   }
 
   render() {
-    const { friends, keyword, isShowSearch, currentPage } = this.state;
+    const { currentPage } = this.state;
 
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
@@ -261,6 +307,7 @@ const styles = StyleSheet.create({
 
   slide: {
     flex: 1,
+    paddingTop: 15,
   },
 })
 
@@ -273,8 +320,10 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
   return {
     currentUser: state.user.currentUser,
+    friends: state.user.friends,
     errorMessage: state.user.errorMessage,
     getMyFriendsStatus: state.user.getMyFriendsStatus,
+    sendFriendRequestStatus: state.user.sendFriendRequestStatus,
   };  
 }
 

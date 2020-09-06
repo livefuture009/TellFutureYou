@@ -17,7 +17,6 @@ import RoundButton from '../../components/RoundButton'
 import actionTypes from '../../actions/actionTypes';
 import EmptyView from '../../components/EmptyView'
 import { TOAST_SHOW_TIME, Status } from '../../constants.js'
-import Colors from '../../theme/Colors'
 import Messages from '../../theme/Messages'
 import { filterName } from '../../functions';
 

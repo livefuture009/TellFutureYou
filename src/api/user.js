@@ -377,3 +377,21 @@ export const getMyFriends = (userId) => {
   return fetch(request_url, { method, body, headers})
     .then((res) => res.json());
 };
+
+//////////////////////////////////////////////////////////////////
+///////////////////// Send Friend Request ////////////////////////
+//////////////////////////////////////////////////////////////////
+export const sendFriendRequest = (userId, friendId) => {
+  const method = 'POST';
+  const request_url = `${url}/user/send_friend_request`
+  const headers = {
+    'Content-Type': 'application/json',
+  }
+  const body = JSON.stringify({ 
+    user_id: userId,   
+    friend_id: friendId
+  });
+
+  return fetch(request_url, { method, body, headers})
+    .then((res) => res.json());
+};

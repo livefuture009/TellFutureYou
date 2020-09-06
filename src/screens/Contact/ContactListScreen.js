@@ -42,16 +42,10 @@ class ContactListScreen extends Component {
   }
 
   componentDidMount() {
-    const { currentUser } = this.props;
-    if (currentUser && currentUser.contacts && currentUser.contacts.length > 0) {
-      this.sortContacts(currentUser.contacts);
-      this.setState({
-        contacts: currentUser.contacts, 
-        originalContacts: currentUser.contacts
-      });
-    }
+    this.getContacts();
 
     this.focusListener = this.props.navigation.addListener('focus', () => {
+      const { currentUser } = this.props;
       this.props.dispatch({
         type: actionTypes.GET_CONTACT_STATUS,
         userId: currentUser._id,
@@ -61,6 +55,24 @@ class ContactListScreen extends Component {
 
   componentWillUnmount() {
     this.focusListener();
+  }
+
+  getContacts() {
+    const { currentUser } = this.props;
+    if (currentUser && currentUser.contacts && currentUser.contacts.length > 0) {
+      this.sortContacts(currentUser.contacts);
+      console.log("currentUser.contacts: ", currentUser.contacts);
+      var list = [];
+      currentUser.contacts.forEach(c => {
+        if (c.status < 2) {
+          list.push(c);
+        }
+      });
+      this.setState({
+        contacts: list, 
+        originalContacts: list
+      });
+    }
   }
 
   sortContacts(contacts) {
@@ -79,21 +91,27 @@ class ContactListScreen extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.currentUser != this.props.currentUser) {
-      if (this.props.currentUser.contacts && this.props.currentUser.contacts.length > 0) {
-        this.sortContacts(this.props.currentUser.contacts);
-        this.setState({
-          contacts: this.props.currentUser.contacts,
-          originalContacts: this.props.currentUser.contacts,
-        });
-      }  
+      this.getContacts();
     }
 
+    // Send Invite.
     if (prevProps.sendInviteStatus != this.props.sendInviteStatus) {
       if (this.props.sendInviteStatus == Status.SUCCESS) {
         this.setState({isLoading: false});
         this.showResultMessage(Messages.SuccessInvite, false);
       } 
       else if (this.props.sendInviteStatus == Status.FAILURE) {
+        this.onFailure();
+      }      
+    }
+
+    // Send Friend Request.
+    if (prevProps.sendFriendRequestStatus != this.props.sendFriendRequestStatus) {
+      if (this.props.sendFriendRequestStatus == Status.SUCCESS) {
+        this.setState({isLoading: false});
+        this.props.navigation.navigate('FriendStack')
+      } 
+      else if (this.props.sendFriendRequestStatus == Status.FAILURE) {
         this.onFailure();
       }      
     }
@@ -314,8 +332,18 @@ class ContactListScreen extends Component {
         console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
     });
   }
+
   onSendMessage=(data)=> {
-    this.props.navigation.navigate('Chat', {contact: data});
+    if (data.userId) {
+      this.setState({isLoading: true}, () => {
+        const { currentUser } = this.props;
+        this.props.dispatch({
+          type: actionTypes.SEND_FRIEND_REQUEST,
+          userId: currentUser._id,
+          friendId: data.userId
+        });
+      });
+    }
   }
 
   onSelect=(data)=> {
@@ -420,6 +448,7 @@ function mapStateToProps(state) {
     currentUser: state.user.currentUser,
     errorMessage: state.user.errorMessage,
     sendInviteStatus: state.user.sendInviteStatus,
+    sendFriendRequestStatus: state.user.sendFriendRequestStatus,
   };  
 }
 

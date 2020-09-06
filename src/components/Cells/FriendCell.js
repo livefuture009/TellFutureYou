@@ -1,15 +1,24 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, Image, Platform } from 'react-native';
 import FastImage from 'react-native-fast-image'
-import CheckBox from '../CheckBox'
 import Colors from '../../theme/Colors'
 import Fonts from '../../theme/Fonts'
 import Images from '../../theme/Images';
 
-export default class ContactCell extends React.Component {
+export default class FriendCell extends React.Component {
   	render() {
-        const { data, isImport, onSelect, onSendInvite, onSendMessage } = this.props;
-        const avatar = data.avatar ? {uri: data.avatar} : Images.account_icon;
+        const { data, currentUser, onSelect } = this.props;
+        var status = 0;
+        var friend = data.user1; 
+        if (data.user1._id == currentUser._id) {
+            friend = data.user2;
+        } 
+
+        if (data.creator == currentUser._id) {
+            status = 2;
+        }
+
+        const avatar = friend.avatar ? {uri: friend.avatar} : Images.account_icon;
 
     	return (
 	   		<TouchableOpacity style={styles.container} onPress={() => onSelect(data)}>
@@ -17,31 +26,21 @@ export default class ContactCell extends React.Component {
                     <View style={styles.leftView}>
                         <FastImage source={avatar} style={styles.avatarPhoto} />
                         <View>
-                            <Text style={styles.nameText}>{data.firstName} {data.lastName}</Text>
-                            <Text style={styles.phoneText}>{data.phone}</Text>
-                            <Text style={styles.phoneText}>{data.email}</Text>
+                            <Text style={styles.nameText}>{friend.firstName} {friend.lastName}</Text>
+                            <Text style={styles.phoneText}>{friend.phone}</Text>
+                            <Text style={styles.phoneText}>{friend.email}</Text>
                         </View>                    
                     </View>
                     <View style={{width: '50%', alignItems: 'flex-end'}}>
-                    {
-                        isImport
-                        ? <Image source={data.selected ? Images.checkbox_selected : Images.checkbox_normal} style={styles.checkboxIcon}/>
-                        : <TouchableOpacity onPress={() => {
-                            if (data.status === 0) {
-                                onSendInvite(data);
-                            } else {
-                                onSendMessage(data);
-                            }
-                            }}>
-                            <View style={styles.actionButton}>
-                                {
-                                    data.status === 0
-                                    ? <Text style={styles.actionButtonText}>Send Invite</Text>
-                                    : <Text style={styles.actionButtonText}>Add Friend</Text>
-                                }
-                            </View>
-                        </TouchableOpacity>
-                    }
+                        {
+                            status == 0 && <View />
+                        }
+                        {
+                            status == 1 && <View />
+                        }
+                        {
+                            status == 2 && <Text style={styles.statusText}>Request Sent</Text>
+                        }
                     </View>
                 </View>
             </TouchableOpacity>
@@ -124,5 +123,11 @@ const styles = StyleSheet.create({
         width: 22,
 		height: 22,
 		resizeMode: 'contain',
+    },
+
+    statusText: {
+        fontFamily: Fonts.light,
+        fontStyle: 'italic',
+        fontSize: 14,
     },
 });

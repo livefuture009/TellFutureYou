@@ -33,6 +33,7 @@ export const initialState = {
   getContactsStatus: Status.NONE,
 
   getMyFriendsStatus: Status.NONE,
+  sendFriendRequestStatus: Status.NONE,
 };
 
 //////////////////////////////////////////////////////////////////
@@ -383,6 +384,25 @@ const getMyFriendsFailure = (state, action) => ({
 });
 
 //////////////////////////////////////////////////////////////////
+///////////////////// Send Friend Request ////////////////////////
+//////////////////////////////////////////////////////////////////
+const sendFriendRequestRequest = (state) => ({
+  ...state,
+  sendFriendRequestStatus: Status.REQUEST,
+});
+
+const sendFriendRequestSuccess = (state, action) => ({
+  ...state,
+  sendFriendRequestStatus: Status.SUCCESS,
+});
+
+const sendFriendRequestFailure = (state, action) => ({
+  ...state,
+  errorMessage: action.error,
+  sendFriendRequestStatus: Status.FAILURE,
+});
+
+//////////////////////////////////////////////////////////////////
 ///////////////////// Set Current User ///////////////////////////
 //////////////////////////////////////////////////////////////////
 const setCurrentUser = (state, action) => ({
@@ -417,6 +437,7 @@ const resetUser = (state, action) => {
   state.currentUser = null;
   state.needToSignUp = false;
   state.user = {};
+  state.friends = [];
   state.playerId = null;
   state.errorMessage = '';
   state.resultMessage = '';
@@ -494,6 +515,10 @@ const actionHandlers = {
   [Types.GET_MY_FRIENDS_REQUEST]: getMyFriendsRequest,
   [Types.GET_MY_FRIENDS_SUCCESS]: getMyFriendsSuccess,
   [Types.GET_MY_FRIENDS_FAILURE]: getMyFriendsFailure,
+
+  [Types.SEND_FRIEND_REQUEST_REQUEST]: sendFriendRequestRequest,
+  [Types.SEND_FRIEND_REQUEST_SUCCESS]: sendFriendRequestSuccess,
+  [Types.SEND_FRIEND_REQUEST_FAILURE]: sendFriendRequestFailure,
 
   [Types.SET_CURRENT_USER]: setCurrentUser,
   [Types.SET_PLAYER_ID]: setPlayerId, 

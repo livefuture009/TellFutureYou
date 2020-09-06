@@ -21,6 +21,8 @@ const Images = {
     tab_profile_selected: require('../../assets/images/tab_profile_selected.png'),    
     tab_settings: require('../../assets/images/tab_settings.png'),    
     tab_settings_selected: require('../../assets/images/tab_settings_selected.png'),    
+    tab_notification: require('../../assets/images/tab_notification.png'),    
+    tab_notification_selected: require('../../assets/images/tab_notification_selected.png'),    
     search_icon: require('../../assets/images/search_icon.png'),  
     arrow_right: require('../../assets/images/arrow_right.png'),    
     icon_notification: require('../../assets/images/icon_notification.png'),

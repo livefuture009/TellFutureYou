@@ -8,6 +8,8 @@ import ContactListScreen from '../screens/Contact/ContactListScreen';
 import ChatListScreen from '../screens/Chat/ChatListScreen';
 import FriendScreen from '../screens/Friend/FriendScreen';
 import MyAccountScreen from '../screens/MyAccount/MyAccountScreen';
+import NotificationScreen from '../screens/NotificationScreen'
+
 import TabBarItem from './TabBarItem';
 
 const Tab = createBottomTabNavigator();
@@ -37,6 +39,14 @@ function FriendStack() {
   );
 }
 
+function NotificationStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Notification" component={NotificationScreen} options={{ headerShown: false, gestureEnabled: false }}/>
+    </Stack.Navigator>
+  );
+}
+
 function MyAccountStack() {
   return (
     <Stack.Navigator>
@@ -61,6 +71,9 @@ class CustomerTab extends React.Component {
                   else if (route.name === 'ContactStack') {
                     iconImage = focused ? Images.tab_contact_selected : Images.tab_contact;
                   } 
+                  else if (route.name === 'NotificationStack') {
+                    iconImage = focused ? Images.tab_notification_selected : Images.tab_notification;
+                  } 
                   else if (route.name === 'MyAccountStack') {
                     iconImage = focused ? Images.tab_settings_selected : Images.tab_settings;
                   }
@@ -74,6 +87,7 @@ class CustomerTab extends React.Component {
               <Tab.Screen name="ChatStack" component={ChatStack} />
               <Tab.Screen name="FriendStack" component={FriendStack} />
               <Tab.Screen name="ContactStack" component={ContactStack} />
+              <Tab.Screen name="NotificationStack" component={NotificationStack} />
               <Tab.Screen name="MyAccountStack" component={MyAccountStack} />
             </Tab.Navigator>
       );      

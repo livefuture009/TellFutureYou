@@ -23,7 +23,8 @@ const {
   editContact,
   getContactStatus,
 
-  getMyFriends
+  getMyFriends,
+  sendFriendRequest,
 } = api;
 
 function* GetCurrentUser(action) {
@@ -292,6 +293,20 @@ function* GetMyFriends(action) {
   }
 }
 
+function* SendFriendRequest(action) {
+  yield put({ type: Types.SEND_FRIEND_REQUEST_REQUEST });
+  try {
+    const res = yield call(sendFriendRequest, action.userId, action.friendId);
+    if (res.result) {
+      yield put({ type: Types.SEND_FRIEND_REQUEST_SUCCESS, payload: res });
+    } else {
+      yield put({ type: Types.SEND_FRIEND_REQUEST_FAILURE, error: res.error });      
+    }
+  } catch (error) {
+    console.log(error);
+    yield put({ type: Types.SEND_FRIEND_REQUEST_FAILURE, error: Messages.NetWorkError });
+  }
+}
 
 export default [
   takeLatest(Types.LOGIN_USER, LoginUser),
@@ -312,4 +327,5 @@ export default [
   takeLatest(Types.GET_CONTACT_STATUS, GetContactStatus),
 
   takeLatest(Types.GET_MY_FRIENDS, GetMyFriends),
+  takeLatest(Types.SEND_FRIEND_REQUEST, SendFriendRequest),
 ];
