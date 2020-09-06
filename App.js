@@ -25,10 +25,7 @@ class Root extends Component {
     return (
       <Provider store={store}>
         <PersistGate loading={<View><Text>Loading</Text></View>} persistor={persistor}>
-          <AppNavigator
-            ref={(myRef) => { this.navigator = myRef; }}
-            screenProps={{}}
-          />
+          <AppNavigator />
         </PersistGate>
       </Provider>
     );

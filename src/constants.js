@@ -7,8 +7,8 @@ export const GOOGLE_SIGNIN_WEB_CLIENT_ID = '389020544990-v7jscnad80i684d8tid52p4
 export const GOOGLE_SIGNIN_IOS_CLIENT_ID = '389020544990-8uohd3jvl00dvo5c9rao5g9cmvcekocs.apps.googleusercontent.com';
 export const SENDBIRD_APP_ID = '83A1D87C-EAA9-460A-AAF9-6D224B27E793';
 
-export const TERMS_LINK = "https://docs.google.com/document/d/1Wjll4I9l5VUVOaD8WxxqxGiRfjRL_bidxap4c-ms6A4/edit?usp=sharing";
-export const PRIVACY_LINK = "https://docs.google.com/document/d/1tpTKCJzUzzCNspWvYAYy1PqhF2kolAfy_8nkgSUX25g/edit?usp=sharing";
+export const TERMS_LINK = "http://dukeheartaudrey.gadaiweb.com/terms-and-conditions.html";
+export const PRIVACY_LINK = "http://dukeheartaudrey.gadaiweb.com/privacy-policy.html";
 
 export const WEB_PAGE_TYPE = {
   TERMS: 1,
