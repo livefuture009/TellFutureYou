@@ -360,3 +360,20 @@ export const getContactStatus = (userId) => {
   return fetch(request_url, { method, body, headers})
     .then((res) => res.json());
 };
+
+//////////////////////////////////////////////////////////////////
+//////////////////////// Get My Friends //////////////////////////
+//////////////////////////////////////////////////////////////////
+export const getMyFriends = (userId) => {
+  const method = 'POST';
+  const request_url = `${url}/user/get_my_friends`
+  const headers = {
+    'Content-Type': 'application/json',
+  }
+  const body = JSON.stringify({ 
+    user_id: userId,   
+  });
+
+  return fetch(request_url, { method, body, headers})
+    .then((res) => res.json());
+};

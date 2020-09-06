@@ -6,6 +6,7 @@ import Images from '../theme/Images'
 
 import ContactListScreen from '../screens/Contact/ContactListScreen';
 import ChatListScreen from '../screens/Chat/ChatListScreen';
+import FriendScreen from '../screens/Friend/FriendScreen';
 import MyAccountScreen from '../screens/MyAccount/MyAccountScreen';
 import TabBarItem from './TabBarItem';
 
@@ -28,6 +29,14 @@ function ContactStack() {
   );
 }
 
+function FriendStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Friend" component={FriendScreen} options={{ headerShown: false, gestureEnabled: false }}/>
+    </Stack.Navigator>
+  );
+}
+
 function MyAccountStack() {
   return (
     <Stack.Navigator>
@@ -46,11 +55,14 @@ class CustomerTab extends React.Component {
                   if (route.name === 'ChatStack') {
                     iconImage = focused ? Images.tab_message_selected : Images.tab_message;
                   }
+                  else if (route.name === 'FriendStack') {
+                    iconImage = focused ? Images.tab_friend_selected : Images.tab_friend;
+                  } 
                   else if (route.name === 'ContactStack') {
-                    iconImage = focused ? Images.tab_contacts_selected : Images.tab_contacts;
+                    iconImage = focused ? Images.tab_contact_selected : Images.tab_contact;
                   } 
                   else if (route.name === 'MyAccountStack') {
-                    iconImage = focused ? Images.tab_profile_selected : Images.tab_profile;
+                    iconImage = focused ? Images.tab_settings_selected : Images.tab_settings;
                   }
                   return <TabBarItem icon={iconImage} page={route.name} />;
                 },
@@ -60,6 +72,7 @@ class CustomerTab extends React.Component {
               }}
             >
               <Tab.Screen name="ChatStack" component={ChatStack} />
+              <Tab.Screen name="FriendStack" component={FriendStack} />
               <Tab.Screen name="ContactStack" component={ContactStack} />
               <Tab.Screen name="MyAccountStack" component={MyAccountStack} />
             </Tab.Navigator>

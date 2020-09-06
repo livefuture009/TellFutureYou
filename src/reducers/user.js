@@ -7,6 +7,7 @@ export const initialState = {
   currentUser: null,
   needToSignUp: false,
   selectedUser: {},
+  friends: [],
   playerId: null,
   errorMessage: '',
   resultMessage: '',
@@ -24,16 +25,19 @@ export const initialState = {
   getUserByEmailStatus: Status.NONE,
   restoreUserStatus: Status.NONE,
   updateProfileStatus: Status.NONE,
+
   importContactsStatus: Status.NONE,
   sendInviteStatus: Status.NONE,
   addContactStatus: Status.NONE,
   editContactStatus: Status.NONE,
   getContactsStatus: Status.NONE,
+
+  getMyFriendsStatus: Status.NONE,
 };
 
 //////////////////////////////////////////////////////////////////
 /////////////////////////// Login //// ///////////////////////////
-//////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
 const loginUserRequest = (state) => ({
   ...state,
   loginUserStatus: Status.REQUEST,
@@ -359,6 +363,26 @@ const getContactStatusFailure = (state, action) => ({
 });
 
 //////////////////////////////////////////////////////////////////
+/////////////////////// Get My Friends ///////////////////////////
+//////////////////////////////////////////////////////////////////
+const getMyFriendsRequest = (state) => ({
+  ...state,
+  getMyFriendsStatus: Status.REQUEST,
+});
+
+const getMyFriendsSuccess = (state, action) => ({
+  ...state,
+  friends: action.payload,
+  getMyFriendsStatus: Status.SUCCESS,
+});
+
+const getMyFriendsFailure = (state, action) => ({
+  ...state,
+  errorMessage: action.error,
+  getMyFriendsStatus: Status.FAILURE,
+});
+
+//////////////////////////////////////////////////////////////////
 ///////////////////// Set Current User ///////////////////////////
 //////////////////////////////////////////////////////////////////
 const setCurrentUser = (state, action) => ({
@@ -466,6 +490,10 @@ const actionHandlers = {
   [Types.GET_CONTACT_STATUS_REQUEST]: getContactStatusRequest,
   [Types.GET_CONTACT_STATUS_SUCCESS]: getContactStatusSuccess,
   [Types.GET_CONTACT_STATUS_FAILURE]: getContactStatusFailure,
+
+  [Types.GET_MY_FRIENDS_REQUEST]: getMyFriendsRequest,
+  [Types.GET_MY_FRIENDS_SUCCESS]: getMyFriendsSuccess,
+  [Types.GET_MY_FRIENDS_FAILURE]: getMyFriendsFailure,
 
   [Types.SET_CURRENT_USER]: setCurrentUser,
   [Types.SET_PLAYER_ID]: setPlayerId, 

@@ -11,12 +11,16 @@ const Images = {
     back_arrow: require('../../assets/images/back_arrow.png'),
     dropdown_icon: require('../../assets/images/dropdown_icon.png'),
     account_icon: require('../../assets/images/account_icon.png'),
-    tab_contacts: require('../../assets/images/tab_contacts.png'),    
-    tab_contacts_selected: require('../../assets/images/tab_contacts_selected.png'),    
+    tab_friend: require('../../assets/images/tab_friend.png'),    
+    tab_friend_selected: require('../../assets/images/tab_friend_selected.png'),    
+    tab_contact: require('../../assets/images/tab_contact.png'),    
+    tab_contact_selected: require('../../assets/images/tab_contact_selected.png'),    
     tab_message: require('../../assets/images/tab_message.png'),    
     tab_message_selected: require('../../assets/images/tab_message_selected.png'),   
     tab_profile: require('../../assets/images/tab_profile.png'),    
     tab_profile_selected: require('../../assets/images/tab_profile_selected.png'),    
+    tab_settings: require('../../assets/images/tab_settings.png'),    
+    tab_settings_selected: require('../../assets/images/tab_settings_selected.png'),    
     search_icon: require('../../assets/images/search_icon.png'),  
     arrow_right: require('../../assets/images/arrow_right.png'),    
     icon_notification: require('../../assets/images/icon_notification.png'),
@@ -33,6 +37,7 @@ const Images = {
     icon_calendar: require('../../assets/images/icon_calendar.png'),
     icon_privacy: require('../../assets/images/icon_privacy.png'),
     icon_terms: require('../../assets/images/icon_terms.png'),
+    icon_search: require('../../assets/images/icon_search.png'),
 };
 
 export default Images;

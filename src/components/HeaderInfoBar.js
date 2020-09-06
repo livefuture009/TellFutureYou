@@ -31,6 +31,13 @@ export default class HeaderInfoBar extends React.Component {
 					  </TouchableOpacity>
 					: null
 				}
+				{
+					rightButton == "search"
+					? <TouchableOpacity onPress={() => onRight()}>
+						<Image source={Images.icon_search} style={styles.plusIcon}/>
+					  </TouchableOpacity>
+					: null
+				}
 	    	</View>
 	    </View>
     );
