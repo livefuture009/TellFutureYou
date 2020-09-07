@@ -33,14 +33,24 @@ export default class ContactCell extends React.Component {
                                 onSendMessage(data);
                             }
                             }}>
-                            <View style={styles.actionButton}>
-                                {
-                                    data.status === 0
-                                    ? <Text style={styles.actionButtonText}>Send Invite</Text>
-                                    : <Text style={styles.actionButtonText}>Add Friend</Text>
-                                }
-                            </View>
+                            {
+                                data.status == 0 &&
+                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                    <View style={styles.actionButton}>
+                                        <Text style={styles.actionButtonText}>Send Invite</Text>
+                                    </View>        
+                                    <Image source={Images.arrow_right} style={styles.arrowIcon}/>
+                                </View>
+                            }
+                            
+                            {
+                                data.status === 1 &&
+                                <View style={styles.addFriendButton}>
+                                    <Text style={styles.actionButtonText}>Add Friend</Text>
+                                </View>        
+                            }
                         </TouchableOpacity>
+
                     }
                     </View>
                 </View>
@@ -115,6 +125,23 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 
+    addFriendButton: {
+        width: 110,
+        backgroundColor: Colors.appColor,
+        paddingVertical: 5,
+        borderRadius: 15,
+        shadowColor: Colors.appColor,
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.3,
+		shadowRadius: 10,
+        elevation: 5,
+        alignItems: 'center',
+        marginRight: 20,
+    },
+
     actionButtonText: {
         fontFamily: Fonts.regular,
         color: 'white',
@@ -124,5 +151,13 @@ const styles = StyleSheet.create({
         width: 22,
 		height: 22,
 		resizeMode: 'contain',
+    },
+
+    arrowIcon: {
+        width: 20,
+        height: 20,
+        resizeMode: 'contain',
+        marginLeft: 5,
+        marginRight: -5,
     },
 });

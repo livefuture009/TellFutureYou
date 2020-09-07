@@ -3,14 +3,16 @@ import {
   View,
   StyleSheet,
   StatusBar,
+  TouchableOpacity,
+  Image,
   ActivityIndicator
 } from 'react-native';
 
-import TopNavBar from '../components/TopNavBar'
 import { WebView } from 'react-native-webview';
-import Colors from '../theme/Colors'
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
 import { WEB_PAGE_TYPE, TERMS_LINK, PRIVACY_LINK } from '../constants'
+import Images from '../theme/Images'
+import Colors from '../theme/Colors'
 
 class TermsScreen extends Component {
   constructor(props) {
@@ -59,15 +61,14 @@ class TermsScreen extends Component {
       link = PRIVACY_LINK;
     }
 
-    console.log("title: ", title);
-    console.log("link: ", link);
-
     return (
       <View style={{flex: 1, backgroundColor: 'white'}}>
         <SafeAreaConsumer>
           {insets => 
             <View style={{flex: 1, paddingTop: insets.top }} >
-              <TopNavBar title={title} onBack={() => this.onBack()}/>                      
+              <TouchableOpacity style={styles.btnBack} onPress={() => this.onBack()}>
+                <Image source={Images.icon_white_back} style={styles.backIcon}/>
+              </TouchableOpacity>
               <View style={styles.container}>
                 {
                   (link && link.length > 0) 
@@ -106,6 +107,19 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignItems: 'center',
     justifyContent: 'center'
-  
+  },
+
+  btnBack: {
+    position: 'absolute',
+    left: 10,
+    top: 10,
+    zIndex: 2,
+  },
+
+  backIcon: {
+    width: 30,
+    height: 30,
+    resizeMode: 'contain'
   }
+
 })
