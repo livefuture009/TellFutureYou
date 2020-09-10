@@ -1,6 +1,7 @@
 import { url } from '../constants';
 import { Platform } from 'react-native';
-import { filterFileUri, filterFileName, makeRandomText } from '../functions';
+import { filterFileUri, filterFileName, makeRandomText, compressImage } from '../functions';
+import RNFS from 'react-native-fs';
 
 //////////////////////////////////////////////////////////////////
 ////////////////////////// Login /////////////////////////////////
@@ -20,7 +21,7 @@ export const loginUser = (email, password, player_id, lat, lng) => {
     lng: lng,
     os: Platform.OS,    
   });
-
+  
   return fetch(request_url, { method, body, headers})
     .then((res) => res.json());
 };
@@ -220,47 +221,76 @@ export const updateProfile = (user) => {
 //////////////////////////////////////////////////////////////////
 /////////////////////// Import Contacts //////////////////////////
 //////////////////////////////////////////////////////////////////
-export const importContacts = (userId, contacts) => {
-  const formData = new FormData();
-
-  formData.append("userId", userId);
-  if (contacts && contacts.length > 0) {
-    formData.append("count", contacts.length);
-    var index = 0;
-    contacts.forEach(c => {
-      formData.append("firstName" + index, c.firstName);
-      formData.append("lastName" + index, c.lastName);
-      formData.append("phone" + index, c.phone);
-      formData.append("email" + index, c.email);
-
-      if (c.avatar && c.avatar.length > 0) {
-        // Get extension from name.
-        var extension = c.avatar.split('.').pop().toLowerCase();
-        var filename = makeRandomText(20) + "." + extension;
-        var filetype = "image/jpeg";
-        if (extension == "png") {
-          filetype = "image/png";
-        }
-        const fileUri = filterFileUri(c.avatar, Platform.OS);
-        const params = {
-          name: filename,
-          type: filetype,
-          uri: fileUri
-        };
-        formData.append("avatar" + index, params);
-      }
-
-      index ++;
-    });
-  }
-
+export const importContacts = async (userId, contacts) => {
+  const formData = await makeFormData(userId, contacts);
   const request_url = `${url}/user/import_contacts`
+  console.log("request_url: ", request_url);
   return fetch(request_url, {
       method: "POST",
-      body: formData
+      body: formData,
+      header: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+      },
   })
   .then(response => response.json())
 };
+
+function makeFormData(userId, contacts) {
+  return new Promise(async function (resolve, reject){
+    var formData = new FormData();
+    formData.append("userId", userId);
+    formData.append("count", contacts.length);
+    if (contacts && contacts.length > 0) {
+      for (var i = 0; i < contacts.length; i++) {
+        const c = contacts[i];
+        if (c.firstName) {
+          formData.append("firstName" + i, c.firstName);
+        }
+        
+        if (c.lastName) {
+          formData.append("lastName" + i, c.lastName);
+        }
+        
+        if (c.phone) {
+          formData.append("phone" + i, c.phone);
+        }
+        
+        if (c.email) {
+          formData.append("email" + i, c.email);
+        }
+
+        if (c.avatar && c.avatar.length > 0) {
+          var url = c.avatar;
+
+          // Get extension from name.
+          var extension = c.avatar.split('.').pop().toLowerCase();
+          var filename = makeRandomText(20) + "." + extension;
+          var filetype = "image/jpeg";
+          if (extension == "png") {
+            filetype = "image/png";
+          }
+
+          var params = {
+            name: filename,
+            type: filetype,
+            uri: url
+          };
+
+          var photo = await compressImage(params);
+          const fileUri = filterFileUri(photo.uri, Platform.OS);
+          var data = {
+            name: photo.name,
+            type: filetype,
+            uri: fileUri
+          };
+          formData.append("avatar" + i, data);
+        }
+      }
+    }
+    resolve(formData);
+  });
+}
 
 //////////////////////////////////////////////////////////////////
 ////////////////////////// Send Invite ///////////////////////////
@@ -345,6 +375,24 @@ export const editContact = (contact, userId) => {
 };
 
 //////////////////////////////////////////////////////////////////
+/////////////////////// Remove Contact ///////////////////////////
+//////////////////////////////////////////////////////////////////
+export const removeContact = (userId, contactId) => {
+  const method = 'POST';
+  const request_url = `${url}/user/remove_contact`
+  const headers = {
+    'Content-Type': 'application/json',
+  }
+  const body = JSON.stringify({ 
+    userId: userId,
+    contactId: contactId,
+  });
+
+  return fetch(request_url, { method, body, headers})
+    .then((res) => res.json());
+};
+
+//////////////////////////////////////////////////////////////////
 ////////////////////// Get Contact Status ////////////////////////
 //////////////////////////////////////////////////////////////////
 export const getContactStatus = (userId) => {
@@ -381,7 +429,7 @@ export const getMyFriends = (userId) => {
 //////////////////////////////////////////////////////////////////
 ///////////////////// Send Friend Request ////////////////////////
 //////////////////////////////////////////////////////////////////
-export const sendFriendRequest = (userId, friendId) => {
+export const sendFriendRequest = (userId, friendId, contactId) => {
   const method = 'POST';
   const request_url = `${url}/user/send_friend_request`
   const headers = {
@@ -389,7 +437,8 @@ export const sendFriendRequest = (userId, friendId) => {
   }
   const body = JSON.stringify({ 
     user_id: userId,   
-    friend_id: friendId
+    friend_id: friendId,
+    contact_id: contactId
   });
 
   return fetch(request_url, { method, body, headers})

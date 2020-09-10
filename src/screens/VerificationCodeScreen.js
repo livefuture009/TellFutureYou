@@ -90,7 +90,7 @@ class VerificationCodeScreen extends Component {
           <View style={styles.contentView}>
             <LabelFormInput
               label="Verification Code" 
-              type="text"
+              type="number"
               autoFocus={true}
               placeholder="******" 
               placeholderTextColor="#939393"

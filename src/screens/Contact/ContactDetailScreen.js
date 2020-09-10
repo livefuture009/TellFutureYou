@@ -40,12 +40,18 @@ class ContactDetailScreen extends Component {
         phoneError: '',
         isLoading: false,
         isEditing: false,
+        isDisabled: false,
     }
   }
 
   componentDidMount() {
     if (this.props.route.params && this.props.route.params.contact) {
       const { contact } = this.props.route.params;
+      var isDisabled = false;
+      if (contact.status > 0) {
+        isDisabled = true;
+      }
+
       this.setState({
         id: contact._id,
         avatar: contact.avatar,
@@ -53,7 +59,8 @@ class ContactDetailScreen extends Component {
         lastName: contact.lastName,
         email: contact.email,
         phone: contact.phone,
-        isEditing: true
+        isEditing: true,
+        isDisabled: isDisabled
       });
     }     
   }
@@ -77,7 +84,17 @@ class ContactDetailScreen extends Component {
       } else if (this.props.editContactStatus == Status.FAILURE) {
         this.onFailure(this.props.errorMessage);
       }      
-    }    
+    }
+    
+    // Remove Contact.
+    if (prevProps.removeContactStatus != this.props.removeContactStatus) {
+      if (this.props.removeContactStatus == Status.SUCCESS) {
+        this.setState({isLoading: false});
+        this.showMessage(Messages.SuccessRemoveContact, true);
+      } else if (this.props.removeContactStatus == Status.FAILURE) {
+        this.onFailure(this.props.errorMessage);
+      }      
+    }
   }
 
   showMessage(message, isBack) {
@@ -186,7 +203,22 @@ class ContactDetailScreen extends Component {
     }
   }
 
+  onRemoveContact() {
+    const { currentUser } = this.props;
+    const { id } = this.state;
+    this.setState({isLoading: true}, () => {
+      this.props.dispatch({
+        type: actionTypes.REMOVE_CONTACT,
+        userId: currentUser._id,
+        contactId: id,
+      });
+    });
+  }
+
   onTakePicture() {
+    const { isDisabled } = this.state;
+    if (isDisabled) return;
+    
     const options = {
       title: 'Select Photo',
       storageOptions: {
@@ -228,14 +260,26 @@ class ContactDetailScreen extends Component {
   }
 
   render() {
-    const { currentUser } = this.props;
-    const { isEditing } = this.state;
+    const { isEditing, isDisabled } = this.state;
     var title = "ADD CONTACT";
-    if (isEditing) title = "EDIT CONTACT";
+    if (isEditing) {
+      if (isDisabled) {
+        title = "VIEW CONTACT";
+      } else {
+        title = "EDIT CONTACT";
+      }      
+    }
+    
 
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
-        <TopNavBar title={title} align="left" onBack={() => this.onBack()}/>
+        <TopNavBar 
+          title={title} 
+          align="left" 
+          rightButton={isEditing ? "remove" : null}
+          onBack={() => this.onBack()}
+          onRight={() => this.onRemoveContact()}
+        />
         <View style={styles.container}>
               <View style={styles.profileBox}>
               <KeyboardAwareScrollView style={{paddingHorizontal: 20}}>      
@@ -247,6 +291,7 @@ class ContactDetailScreen extends Component {
                     type="text"
                     placeholder="John"
                     placeholderTextColor={Colors.placeholderColor}
+                    editable={!isDisabled}
                     value={this.state.firstName} 
                     errorMessage={this.state.firstNameError}
                     returnKeyType="next"                                       
@@ -260,6 +305,7 @@ class ContactDetailScreen extends Component {
                     type="text"
                     placeholder="Doe"
                     placeholderTextColor={Colors.placeholderColor}
+                    editable={!isDisabled}
                     value={this.state.lastName} 
                     errorMessage={this.state.lastNameError}
                     returnKeyType="next"                                       
@@ -273,6 +319,7 @@ class ContactDetailScreen extends Component {
                   type="email"
                   placeholder="john@email.com"
                   placeholderTextColor={Colors.placeholderColor}
+                  editable={!isDisabled}
                   value={this.state.email} 
                   errorMessage={this.state.emailError}
                   returnKeyType="next"                                       
@@ -286,6 +333,7 @@ class ContactDetailScreen extends Component {
                   type="phone"
                   placeholder="123-456-7890"
                   placeholderTextColor={Colors.placeholderColor}
+                  editable={!isDisabled}
                   value={this.state.phone} 
                   errorMessage={this.state.phoneError}
                   returnKeyType="done"                                       
@@ -293,13 +341,17 @@ class ContactDetailScreen extends Component {
                   onSubmitEditing={() => { this.onMakeChanges() }}
                   onChangeText={(text) => this.setState({phone: text, phoneError: null})} />
 
-                <View style={styles.centerView}>
-                  <RoundButton 
-                    title="Save" 
-                    theme="blue" 
-                    style={styles.blueButton} 
-                    onPress={() => this.onMakeChanges()} />
-                </View>
+                {
+                  !isDisabled &&
+                  <View style={styles.centerView}>
+                    <RoundButton 
+                      title="Save" 
+                      theme="blue" 
+                      style={styles.blueButton} 
+                      onPress={() => this.onMakeChanges()} />
+                  </View>
+                }
+                
                 </KeyboardAwareScrollView>
             </View>
         </View>
@@ -354,6 +406,7 @@ function mapStateToProps(state) {
     errorMessage: state.user.errorMessage,    
     addContactStatus: state.user.addContactStatus,    
     editContactStatus: state.user.editContactStatus,    
+    removeContactStatus: state.user.removeContactStatus,
   };  
 }
 

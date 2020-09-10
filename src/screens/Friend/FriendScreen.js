@@ -58,6 +58,11 @@ class FriendScreen extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if (prevProps.friends != this.props.friends) {
+      this.filterFriends();
+    }
+
+    // Get My Friends.
     if (prevProps.getMyFriendsStatus != this.props.getMyFriendsStatus) {
       if (this.props.getMyFriendsStatus == Status.SUCCESS) {
         this.filterFriends();

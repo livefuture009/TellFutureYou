@@ -20,6 +20,7 @@ class NotificationScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      isFirst: true,
       isLoading: false,
       refreshing: false,
       notifications: [],
@@ -27,21 +28,40 @@ class NotificationScreen extends Component {
   }
 
   componentDidMount() {
-    const { currentUser } = this.props;
-    this.props.dispatch({
-      type: actionTypes.GET_MY_NOTIFICATIONS,
-      user_id: currentUser._id,
-    });  
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      const { isFirst } = this.state;
+      if (isFirst) {
+        this.setState({isLoading: true}, () => {
+          this.fetchNotifications();
+        });
+      } 
+      else {
+        this.fetchNotifications();
+      }      
+    });
+  }
+
+  componentWillUnmount() {
+    this.focusListener();
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.getMyNotificationsStatus != this.props.getMyNotificationsStatus) {
       if (this.props.getMyNotificationsStatus == Status.SUCCESS) {
         this.getMyNotifications();
-      } else if (this.props.getMyNotificationsStatus == Status.FAILURE) {
+      } 
+      else if (this.props.getMyNotificationsStatus == Status.FAILURE) {
         this.onFailure();
       }      
     }
+  }
+
+  fetchNotifications() {
+    const { currentUser } = this.props;
+    this.props.dispatch({
+      type: actionTypes.GET_MY_NOTIFICATIONS,
+      user_id: currentUser._id,
+    });  
   }
 
   onBack() {
@@ -83,11 +103,7 @@ class NotificationScreen extends Component {
       }); 
     }
     else if (n.type == NOTIFICATION_TYPE.DECLINE_FRIEND_REQUEST) {
-      this.props.navigation.navigate("FriendStack");
-      this.props.dispatch({
-        type: actionTypes.CHANGE_FRIEND_ACTIVE_PAGE,
-        page: 1,
-      }); 
+      this.props.navigation.navigate("ContactStack");
     }
 
     setTimeout(() => {
@@ -98,11 +114,16 @@ class NotificationScreen extends Component {
   }
 
   getMyNotifications() {
-    this.setState({isLoading: false, refreshing: false, notifications: this.props.notifications}); 
+    this.setState({
+      isLoading: false, 
+      refreshing: false, 
+      isFirst: false,
+      notifications: this.props.notifications
+    }); 
   }
 
   onFailure() {
-    this.setState({isLoading: false, refreshing: false});
+    this.setState({isLoading: false, refreshing: false, isFirst: false});
     this.refs.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);
   }
 
@@ -120,7 +141,7 @@ class NotificationScreen extends Component {
   }
 
   render() {
-    const { notifications } = this.state;
+    const { notifications, isFirst, isLoading } = this.state;
     return (
       <View style={{flex: 1, backgroundColor: Colors.pageColor}}>
         <SafeAreaConsumer>
@@ -148,7 +169,7 @@ class NotificationScreen extends Component {
                               onRefresh={this.onRefresh}
                               refreshing={this.state.refreshing}
                             />
-                          : <EmptyView title="No notifications." />
+                          : !isFirst && <EmptyView title="No notifications." />
                         }
                       </View>
                     </View>
@@ -156,7 +177,7 @@ class NotificationScreen extends Component {
           }
           </SafeAreaConsumer>
           <Toast ref="toast"/>
-          { this.state.isLoading && <LoadingOverlay /> }
+          { isLoading && <LoadingOverlay /> }
         </View>
     );
   }

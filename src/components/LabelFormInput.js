@@ -20,113 +20,131 @@ class LabelFormInput extends Component {
     }
 
     render() {
+        const { 
+            type, 
+            label, 
+            value, 
+            placeholder, 
+            placeholderTextColor,
+            onChangeText, 
+            onRefInput, 
+            returnKeyType, 
+            onSubmitEditing, 
+            editable
+        } = this.props;
+
         return (
             <View style={
                 [
                     this.props.style, 
-                    (this.props.type == "textview" || this.props.type == "address") ? styles.containerTextView : styles.container]
+                    (type == "textview" || type == "address") ? styles.containerTextView : styles.container]
             }>
                 <View>
-                <Text style={styles.labelText}>{this.props.label}</Text>
+                <Text style={styles.labelText}>{label}</Text>
                 {
-                    (this.props.type === "text")
+                    (type === "text")
                     ? <TextInput
-                        style={styles.textInput}
-                        placeholderTextColor={this.props.placeholderTextColor ? this.props.placeholderTextColor : "#fff"}
+                        style={[styles.textInput, editable ? {} : styles.disabledTextInput]}
+                        placeholderTextColor={placeholderTextColor ? placeholderTextColor : "#fff"}
                         underlineColorAndroid='transparent'
-                        onChangeText={this.props.onChangeText}
-                        value={this.props.value}
-                        placeholder={this.props.placeholder}
-                        ref={this.props.onRefInput}
-                        returnKeyType={this.props.returnKeyType}
-                        onSubmitEditing={this.props.onSubmitEditing}
+                        onChangeText={onChangeText}
+                        value={value}
+                        placeholder={placeholder}
+                        editable={editable}
+                        ref={onRefInput}
+                        returnKeyType={returnKeyType}
+                        onSubmitEditing={onSubmitEditing}
                     />
                     : null
                 }
                 {
-                    (this.props.type === "phone")
+                    (type === "phone")
                     ? <TextInput
-                        style={styles.textInput}
-                        placeholderTextColor={this.props.placeholderTextColor ? this.props.placeholderTextColor : "#fff"}
+                        style={[styles.textInput, editable ? {} : styles.disabledTextInput]}
+                        placeholderTextColor={placeholderTextColor ? placeholderTextColor : "#fff"}
                         underlineColorAndroid='transparent'
                         keyboardType='phone-pad'
-                        onChangeText={this.props.onChangeText}
-                        value={this.props.value}
-                        placeholder={this.props.placeholder}
-                        ref={this.props.onRefInput}
-                        returnKeyType={this.props.returnKeyType}
-                        onSubmitEditing={this.props.onSubmitEditing}
+                        onChangeText={onChangeText}
+                        value={value}
+                        placeholder={placeholder}
+                        editable={editable}
+                        ref={onRefInput}
+                        returnKeyType={returnKeyType}
+                        onSubmitEditing={onSubmitEditing}
                     />
                     : null
                 }
                 {
-                    (this.props.type === "number")
+                    (type === "number")
                     ? <TextInput
-                        style={styles.textInput}
+                        style={[styles.textInput, editable ? {} : styles.disabledTextInput]}
                         keyboardType={'numeric'}
-                        placeholderTextColor={this.props.placeholderTextColor ? this.props.placeholderTextColor : "#fff"}
+                        placeholderTextColor={placeholderTextColor ? placeholderTextColor : "#fff"}
                         underlineColorAndroid='transparent'
-                        onChangeText={this.props.onChangeText}
-                        value={this.props.value}
-                        placeholder={this.props.placeholder}
-                        ref={this.props.onRefInput}
-                        returnKeyType={this.props.returnKeyType}
-                        onSubmitEditing={this.props.onSubmitEditing}
+                        onChangeText={onChangeText}
+                        value={value}
+                        placeholder={placeholder}
+                        editable={editable}
+                        ref={onRefInput}
+                        returnKeyType={returnKeyType}
+                        onSubmitEditing={onSubmitEditing}
                     />
                     : null
                 }
                 {
-                    (this.props.type === "email")
+                    (type === "email")
                     ? <TextInput
                         autoCapitalize='none'
                         keyboardType={'email-address'}
                         autoCorrect={false}
-                        style={styles.textInput}
-                        placeholderTextColor={this.props.placeholderTextColor ? this.props.placeholderTextColor : "#fff"}
+                        style={[styles.textInput, editable ? {} : styles.disabledTextInput]}
+                        placeholderTextColor={placeholderTextColor ? placeholderTextColor : "#fff"}
                         underlineColorAndroid='transparent'
-                        onChangeText={this.props.onChangeText}
-                        value={this.props.value}
-                        placeholder={this.props.placeholder}
-                        ref={this.props.onRefInput}
-                        returnKeyType={this.props.returnKeyType}
-                        onSubmitEditing={this.props.onSubmitEditing}
+                        onChangeText={onChangeText}
+                        value={value}
+                        placeholder={placeholder}
+                        editable={editable}
+                        ref={onRefInput}
+                        returnKeyType={returnKeyType}
+                        onSubmitEditing={onSubmitEditing}
                     />
                     : null
                 }
 
                 {
-                    (this.props.type === "password")
+                    (type === "password")
                         ?<TextInput
                             secureTextEntry={true}
                             autoCapitalize='none'
                             autoCorrect={false}
-                            style={styles.textInput}
-                            placeholderTextColor={this.props.placeholderTextColor ? this.props.placeholderTextColor : "#fff"}
+                            style={[styles.textInput, editable ? {} : styles.disabledTextInput]}
+                            placeholderTextColor={placeholderTextColor ? placeholderTextColor : "#fff"}
                             underlineColorAndroid='transparent'
-                            onChangeText={this.props.onChangeText}
-                            value={this.props.value}
-                            placeholder={this.props.placeholder}
-                            ref={this.props.onRefInput}
-                            returnKeyType={this.props.returnKeyType}
-                            onSubmitEditing={this.props.onSubmitEditing}
+                            onChangeText={onChangeText}
+                            value={value}
+                            placeholder={placeholder}
+                            editable={editable}
+                            ref={onRefInput}
+                            returnKeyType={returnKeyType}
+                            onSubmitEditing={onSubmitEditing}
                         />
                         : null
                 }
                 {
-                    (this.props.type === "address")
+                    (type === "address")
                     ? <GoogleAutoComplete apiKey={GOOGLE_API_KEY} debounce={300} queryTypes="address">
                           {({ inputValue, handleTextChange, locationResults, fetchDetails }) => (
                             <React.Fragment>
                               <TextInput
-                                value={this.props.value}
+                                value={value}
                                 onChangeText={(text) => {
                                     handleTextChange(text);
-                                    this.props.onChangeText(text);
+                                    onChangeText(text);
                                 }}
-                                returnKeyType={this.props.returnKeyType}
-                                onSubmitEditing={this.props.onSubmitEditing}
+                                returnKeyType={returnKeyType}
+                                onSubmitEditing={onSubmitEditing}
                                 onFocus={ () => this.setState({showAddressList: true}) }
-                                ref={this.props.onRefInput}
+                                ref={onRefInput}
                                 style={{
                                     fontFamily: Fonts.regular,
                                     height: 50,
@@ -165,7 +183,7 @@ class LabelFormInput extends Component {
                     : null
                 }
                 {
-                    (this.props.type === "dropdown")
+                    (type === "dropdown")
                     ? <View style={[styles.boxContainer, Platform.OS === 'ios' ? { paddingVertical: 15, paddingLeft: 15 } : { }]}>
                         <RNPickerSelect
                             style={{
@@ -175,9 +193,9 @@ class LabelFormInput extends Component {
                                     right: 12,
                                 },
                             }}
-                            value={this.props.value}
-                            ref={this.props.onRefInput}
-                            onValueChange={(value) => this.props.onChangeText(value)}
+                            value={value}
+                            ref={onRefInput}
+                            onValueChange={(value) => onChangeText(value)}
                             items={this.props.data}
                             Icon={() => {
                             return <Image
@@ -191,19 +209,20 @@ class LabelFormInput extends Component {
                 }
 
                 {
-                    (this.props.type === "textview")
+                    (type === "textview")
                     ? <TextInput
                         style={styles.textView}
-                        placeholderTextColor={this.props.placeholderTextColor ? this.props.placeholderTextColor : "#fff"}
+                        placeholderTextColor={placeholderTextColor ? placeholderTextColor : "#fff"}
                         underlineColorAndroid='transparent'
                         numberOfLines={6}
                         multiline={true}
-                        onChangeText={this.props.onChangeText}
-                        value={this.props.value}
-                        placeholder={this.props.placeholder}
-                        ref={this.props.onRefInput}
-                        returnKeyType={this.props.returnKeyType}
-                        onSubmitEditing={this.props.onSubmitEditing}
+                        onChangeText={onChangeText}
+                        value={value}
+                        placeholder={placeholder}
+                        editable={editable}
+                        ref={onRefInput}
+                        returnKeyType={returnKeyType}
+                        onSubmitEditing={onSubmitEditing}
                     />
                     : null
                 }
@@ -330,6 +349,11 @@ const styles = StyleSheet.create({
         paddingRight: 0,
         borderRadius: 25,    
         marginTop: 10,
+    },
+
+    disabledTextInput: {
+        backgroundColor: 'lightgray', 
+        color: 'gray'
     }
 });
 

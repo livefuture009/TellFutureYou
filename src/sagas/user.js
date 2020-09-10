@@ -17,10 +17,12 @@ const {
   getUser,
   getUserByEmail,
   updateProfile,
+
   importContacts,
   sendInvite,
   addContact,
   editContact,
+  removeContact,
   getContactStatus,
 
   getMyFriends,
@@ -49,8 +51,8 @@ function* LoginUser(action) {
       yield put({ type: Types.LOGIN_FAILURE, error: res.error });      
     }
   } catch (error) {
+    console.log("login error: ", error);
     yield put({ type: Types.LOGIN_FAILURE, error: Messages.NetWorkError });
-    console.log(error);
   }
 }
 
@@ -208,6 +210,7 @@ function* ImportContacts(action) {
   yield put({ type: Types.IMPORT_CONTACTS_REQUEST });
   try {
     const res = yield call(importContacts, action.userId, action.contacts);
+    console.log("ImportContacts: ", res);
     if (res.result) {
       yield put({ type: Types.IMPORT_CONTACTS_SUCCESS, payload: res.user });
     } else {
@@ -265,6 +268,21 @@ function* EditContact(action) {
   }
 }
 
+function* RemoveContact(action) {
+  yield put({ type: Types.REMOVE_CONTACT_REQUEST });
+  try {
+    const res = yield call(removeContact, action.userId, action.contactId);
+    if (res.result) {
+      yield put({ type: Types.REMOVE_CONTACT_SUCCESS, payload: res.user });
+    } else {
+      yield put({ type: Types.REMOVE_CONTACT_FAILURE, error: res.error });      
+    }
+  } catch (error) {
+    yield put({ type: Types.REMOVE_CONTACT_FAILURE, error: Messages.NetWorkError });
+    console.log(error);
+  }
+}
+
 function* GetContactStatus(action) {
   yield put({ type: Types.GET_CONTACT_STATUS_REQUEST });
   try {
@@ -298,7 +316,7 @@ function* GetMyFriends(action) {
 function* SendFriendRequest(action) {
   yield put({ type: Types.SEND_FRIEND_REQUEST_REQUEST });
   try {
-    const res = yield call(sendFriendRequest, action.userId, action.friendId);
+    const res = yield call(sendFriendRequest, action.userId, action.friendId, action.contactId);
     if (res.result) {
       yield put({ type: Types.SEND_FRIEND_REQUEST_SUCCESS, payload: res });
     } else {
@@ -367,10 +385,12 @@ export default [
   takeLatest(Types.GET_USER, GetUser),
   takeLatest(Types.GET_USER_BY_EMAIL, GetUserByEmail),
   takeLatest(Types.UPDATE_PROFILE, UpdateProfile),
+
   takeLatest(Types.IMPORT_CONTACTS, ImportContacts),
   takeLatest(Types.SEND_INVITE, SendInvite),
   takeLatest(Types.ADD_CONTACT, AddContact),
   takeLatest(Types.EDIT_CONTACT, EditContact),
+  takeLatest(Types.REMOVE_CONTACT, RemoveContact),
   takeLatest(Types.GET_CONTACT_STATUS, GetContactStatus),
 
   takeLatest(Types.GET_MY_FRIENDS, GetMyFriends),

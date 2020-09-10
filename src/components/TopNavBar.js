@@ -9,11 +9,11 @@ const screenWidth = Dimensions.get('window').width;
 
 export default class TopNavBar extends React.Component {
   render() {
-	const { shadow, rightLabel, rightValue, rightButton, onBack, rightIcon} = this.props;
+	const { rightLabel, rightButton, onBack, rightIcon, onRight} = this.props;
     return (
 	    <View 
 	    	style={[
-	    		shadow ? styles.containerWithShadow : styles.container, 
+	    		styles.container, 
 	    		(rightLabel || rightButton || rightIcon) ? styles.containerWithRight : null
 	    	]}
 	    >
@@ -26,9 +26,16 @@ export default class TopNavBar extends React.Component {
 			<Text numberOfLines={1} style={styles.titleText}>{this.props.title}</Text>	    	
 			{
 				rightButton === "schedule"
-				? <TouchableOpacity style={styles.rightButton} onPress={() => this.props.onRight()}>
+				? <TouchableOpacity style={styles.rightButton} onPress={() => onRight()}>
 					<Image source={Images.icon_calendar} style={styles.rightIcon}/>
 				  </TouchableOpacity>	    	
+				: null
+			}
+			{
+				rightButton == "remove"
+				? <TouchableOpacity style={styles.rightButton} onPress={() => onRight()}>
+					<Image source={Images.icon_red_trash} style={styles.trashIcon}/>
+				</TouchableOpacity>
 				: null
 			}
 	    </View>
@@ -38,22 +45,9 @@ export default class TopNavBar extends React.Component {
 
 const styles = StyleSheet.create({
 	container: {
+		paddingTop: 10,
+		paddingBottom: 10,
 		zIndex: 3,
-	},
-
-	containerWithShadow: {
-		paddingTop: 20,
-		paddingBottom: 20,
-		backgroundColor: 'white',
-		zIndex: 3,
-		shadowColor: 'black',
-		shadowOffset: {
-			width: 0,
-			height: 10,
-		},
-		shadowOpacity: 0.1,
-		shadowRadius: 10,
-		elevation: 5,
 	},
 
 	containerWithRight: {
@@ -77,7 +71,7 @@ const styles = StyleSheet.create({
 		width: 30,
 		height: 30,
 		left: 15,
-		top: 7, 
+		top: 18, 
 		zIndex: 2
 	},
 
@@ -101,6 +95,12 @@ const styles = StyleSheet.create({
 	rightIcon: {
 		width: 30,
 		height: 30,
+		resizeMode: 'contain',
+	},
+
+	trashIcon: {
+		width: 25,
+		height: 25,
 		resizeMode: 'contain',
 	},
 });

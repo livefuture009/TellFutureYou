@@ -1,14 +1,36 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Text, Image, Platform } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text, Image, Platform, Dimensions } from 'react-native';
 import FastImage from 'react-native-fast-image'
-import CheckBox from '../CheckBox'
+import { CONTACT_STATUS } from '../../constants';
 import Colors from '../../theme/Colors'
 import Fonts from '../../theme/Fonts'
 import Images from '../../theme/Images';
 
+const win = Dimensions.get('window');
+
 export default class ContactCell extends React.Component {
+    onAction(data) {
+        const { onSendInvite, onSendMessage, onCancelRequest, onRemoveFriend, onAcceptRequest } = this.props;
+
+        if (data.status == CONTACT_STATUS.NONE) {
+            onSendInvite(data);
+        } 
+        else if (data.status == CONTACT_STATUS.EXIST_ACCOUNT) {
+            onSendMessage(data);
+        }
+        else if (data.status == CONTACT_STATUS.SENT_REQUEST) {
+            onCancelRequest(data);
+        }
+        else if (data.status == CONTACT_STATUS.FRIEND) {
+            onRemoveFriend(data);
+        }
+        else if (data.status == CONTACT_STATUS.RECEIVE_REQUEST) {
+            onAcceptRequest(data);
+        }
+    }
+
   	render() {
-        const { data, isImport, onSelect, onSendInvite, onSendMessage } = this.props;
+        const { data, isImport, onSelect } = this.props;
         const avatar = data.avatar ? {uri: data.avatar} : Images.account_icon;
 
     	return (
@@ -16,25 +38,19 @@ export default class ContactCell extends React.Component {
                 <View style={[styles.contentView, Platform.OS == "ios" ? styles.shadowView: {}]}>
                     <View style={styles.leftView}>
                         <FastImage source={avatar} style={styles.avatarPhoto} />
-                        <View>
+                        <View style={styles.infoView}>
                             <Text style={styles.nameText}>{data.firstName} {data.lastName}</Text>
                             <Text style={styles.phoneText}>{data.phone}</Text>
                             <Text style={styles.phoneText}>{data.email}</Text>
                         </View>                    
                     </View>
-                    <View style={{width: '50%', alignItems: 'flex-end'}}>
+                    <View style={styles.rightView}>
                     {
                         isImport
                         ? <Image source={data.selected ? Images.checkbox_selected : Images.checkbox_normal} style={styles.checkboxIcon}/>
-                        : <TouchableOpacity onPress={() => {
-                            if (data.status === 0) {
-                                onSendInvite(data);
-                            } else {
-                                onSendMessage(data);
-                            }
-                            }}>
+                        : <TouchableOpacity onPress={() => this.onAction(data)}>
                             {
-                                data.status == 0 &&
+                                data.status == CONTACT_STATUS.NONE &&
                                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                                     <View style={styles.actionButton}>
                                         <Text style={styles.actionButtonText}>Send Invite</Text>
@@ -44,10 +60,40 @@ export default class ContactCell extends React.Component {
                             }
                             
                             {
-                                data.status === 1 &&
-                                <View style={styles.addFriendButton}>
-                                    <Text style={styles.actionButtonText}>Add Friend</Text>
-                                </View>        
+                                data.status === CONTACT_STATUS.EXIST_ACCOUNT &&
+                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                    <View style={styles.actionButton}>
+                                        <Text style={styles.actionButtonText}>Add Friend</Text>
+                                    </View>        
+                                    <Image source={Images.arrow_right} style={styles.arrowIcon}/>
+                                </View>
+                            }
+                            {
+                                data.status === CONTACT_STATUS.SENT_REQUEST &&
+                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                    <View style={[styles.actionButton, {backgroundColor: Colors.redColor}]}>
+                                        <Text style={styles.actionButtonText}>Cancel Request</Text>
+                                    </View>        
+                                    <Image source={Images.arrow_right} style={styles.arrowIcon}/>
+                                </View>
+                            }
+                            {
+                                data.status === CONTACT_STATUS.FRIEND &&
+                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                    <View style={[styles.actionButton, {backgroundColor: Colors.redColor}]}>
+                                        <Text style={styles.actionButtonText}>Remove Friend</Text>
+                                    </View>        
+                                    <Image source={Images.arrow_right} style={styles.arrowIcon}/>
+                                </View>
+                            }
+                            {
+                                data.status === CONTACT_STATUS.RECEIVE_REQUEST &&
+                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                    <View style={[styles.actionButton]}>
+                                        <Text style={styles.actionButtonText}>Accept Request</Text>
+                                    </View>        
+                                    <Image source={Images.arrow_right} style={styles.arrowIcon}/>
+                                </View>
                             }
                         </TouchableOpacity>
 
@@ -87,7 +133,12 @@ const styles = StyleSheet.create({
 
     leftView: {
         flexDirection: 'row',
-        width: '45%',
+        width: win.width - 190,
+    },
+
+    rightView: {
+        width: 135, 
+        alignItems: 'flex-end',
     },
 
     avatarPhoto: {
@@ -96,6 +147,10 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         backgroundColor: 'lightgray',
         marginRight: 10,
+    },
+
+    infoView: {
+        width: win.width - 250,
     },
 
     nameText: {

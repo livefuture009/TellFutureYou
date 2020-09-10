@@ -142,14 +142,21 @@ class LoginScreen extends Component {
   }
 
   onReceived=(notification)=> {
-    console.log("Notification received: ", notification);
     const { currentUser } = this.props;
     if (currentUser && currentUser._id) {
+
+      // Get Unread Number for notification.
       const user_id = this.props.currentUser._id;
       this.props.dispatch({
         type: actionTypes.GET_UNREADNUMBER,
         user_id: user_id,
       });
+
+      // Update My Notifications.
+      this.props.dispatch({
+        type: actionTypes.GET_MY_NOTIFICATIONS,
+        user_id: user_id,
+      });  
     }
   }
 
@@ -172,11 +179,7 @@ class LoginScreen extends Component {
       }); 
     }
     else if (notification_type == NOTIFICATION_TYPE.DECLINE_FRIEND_REQUEST) {
-      this.props.navigation.navigate("FriendStack");
-      this.props.dispatch({
-        type: actionTypes.CHANGE_FRIEND_ACTIVE_PAGE,
-        page: 1,
-      }); 
+      this.props.navigation.navigate("ContactStack");
     }
 
     setTimeout(() => {

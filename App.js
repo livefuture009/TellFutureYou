@@ -11,16 +11,17 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import {store, persistor} from './src/store';
 import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
+  YellowBox,
   View,
   Text,
-  StatusBar,
 } from 'react-native';
 import AppNavigator from './src/navigation/AppNavigator'
 
 class Root extends Component {
+  componentDidMount() {
+    YellowBox.ignoreWarnings(['Animated: `useNativeDriver`']);
+  }
+
   render() {
     return (
       <Provider store={store}>

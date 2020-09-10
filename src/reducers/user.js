@@ -31,6 +31,7 @@ export const initialState = {
   sendInviteStatus: Status.NONE,
   addContactStatus: Status.NONE,
   editContactStatus: Status.NONE,
+  removeContactStatus: Status.NONE,
   getContactsStatus: Status.NONE,
 
   getMyFriendsStatus: Status.NONE,
@@ -350,6 +351,26 @@ const editContactFailure = (state, action) => ({
 });
 
 //////////////////////////////////////////////////////////////////
+/////////////////////// Remove Contact ///////////////////////////
+//////////////////////////////////////////////////////////////////
+const removeContactRequest = (state) => ({
+  ...state,
+  removeContactStatus: Status.REQUEST,
+});
+
+const removeContactSuccess = (state, action) => ({
+  ...state,
+  currentUser: action.payload,
+  removeContactStatus: Status.SUCCESS,
+});
+
+const removeContactFailure = (state, action) => ({
+  ...state,
+  errorMessage: action.error,
+  removeContactStatus: Status.FAILURE,
+});
+
+//////////////////////////////////////////////////////////////////
 ////////////////////// Get Contact Status ////////////////////////
 //////////////////////////////////////////////////////////////////
 const getContactStatusRequest = (state) => ({
@@ -397,10 +418,35 @@ const sendFriendRequestRequest = (state) => ({
   sendFriendRequestStatus: Status.REQUEST,
 });
 
-const sendFriendRequestSuccess = (state, action) => ({
-  ...state,
-  sendFriendRequestStatus: Status.SUCCESS,
-});
+const sendFriendRequestSuccess = (state, action) => {
+  state.sendFriendRequestStatus = Status.SUCCESS;
+  const { friend, contact_id } = action.payload;
+  var friends = [...state.friends];
+  if (!friends) {
+    friends = [];
+  }
+
+  friends.push(friend);
+  state.friends = friends;
+
+  // Update Contacts.
+  const { currentUser } = state;
+  var contacts = currentUser.contacts;
+  if (contacts) {
+    contacts.forEach(c => {
+      if (c._id == contact_id) {
+        c.status = 2;
+        c.friendId = friend._id;
+        return;
+      }
+    });
+    currentUser.contacts = contacts;
+  }
+  state.currentUser = currentUser;
+  return {
+    ...state,
+  };
+};
 
 const sendFriendRequestFailure = (state, action) => ({
   ...state,
@@ -429,6 +475,20 @@ const acceptFriendRequestSuccess = (state, action) => {
   }
 
   state.friends = friends;
+
+  // Update Contacts.
+  const { currentUser } = state;
+  var contacts = currentUser.contacts;
+  if (contacts) {
+    contacts.forEach(c => {
+      if (c.friendId == friend._id) {
+        c.status = 3;
+        return;
+      }
+    });
+    currentUser.contacts = contacts;
+  }
+  state.currentUser = currentUser;
   return {
     ...state,
   };
@@ -461,6 +521,20 @@ const declineFriendRequestSuccess = (state, action) => {
   }
 
   state.friends = friends;
+
+  // Update Contacts.
+  const { currentUser } = state;
+  var contacts = currentUser.contacts;
+  if (contacts) {
+    contacts.forEach(c => {
+      if (c.friendId == friend_id) {
+        c.status = 1;
+        return;
+      }
+    });
+    currentUser.contacts = contacts;
+  }
+  state.currentUser = currentUser;
   return {
     ...state,
   };
@@ -493,6 +567,22 @@ const removeFriendSuccess = (state, action) => {
   }
 
   state.friends = friends;
+
+  // Update Contacts.
+  const { currentUser } = state;
+  var contacts = currentUser.contacts;
+  if (contacts) {
+    contacts.forEach(c => {
+      if (c.friendId && c.friendId == friend_id) {
+        c.friendId = null;
+        c.status = 1;
+      }
+    });
+  }
+
+  currentUser.contacts = contacts;
+  state.currentUser = currentUser;
+
   return {
     ...state,
   };
@@ -656,6 +746,10 @@ const actionHandlers = {
   [Types.EDIT_CONTACT_REQUEST]: editContactRequest,
   [Types.EDIT_CONTACT_SUCCESS]: editContactSuccess,
   [Types.EDIT_CONTACT_FAILURE]: editContactFailure,
+
+  [Types.REMOVE_CONTACT_REQUEST]: removeContactRequest,
+  [Types.REMOVE_CONTACT_SUCCESS]: removeContactSuccess,
+  [Types.REMOVE_CONTACT_FAILURE]: removeContactFailure,
 
   [Types.GET_CONTACT_STATUS_REQUEST]: getContactStatusRequest,
   [Types.GET_CONTACT_STATUS_SUCCESS]: getContactStatusSuccess,

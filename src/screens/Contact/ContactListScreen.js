@@ -63,9 +63,7 @@ class ContactListScreen extends Component {
       this.sortContacts(currentUser.contacts);
       var list = [];
       currentUser.contacts.forEach(c => {
-        if (c.status < 2) {
-          list.push(c);
-        }
+        list.push(c);
       });
       this.setState({
         contacts: list, 
@@ -109,10 +107,13 @@ class ContactListScreen extends Component {
       if (this.props.sendFriendRequestStatus == Status.SUCCESS) {
         this.setState({isLoading: false});
         this.props.navigation.navigate('FriendStack');
-        this.props.dispatch({
-          type: actionTypes.CHANGE_FRIEND_ACTIVE_PAGE,
-          page: 2,
-        });
+        setTimeout(() => {
+          this.props.dispatch({
+            type: actionTypes.CHANGE_FRIEND_ACTIVE_PAGE,
+            page: 2,
+          });
+        }, 500);
+        
         setTimeout(() => {
           this.props.dispatch({
             type: actionTypes.RESET_FRIEND_PAGE,
@@ -120,6 +121,26 @@ class ContactListScreen extends Component {
         }, 1000);
       } 
       else if (this.props.sendFriendRequestStatus == Status.FAILURE) {
+        this.onFailure();
+      }      
+    }
+
+    // Remove Request.
+    if (prevProps.removeFriendStatus != this.props.removeFriendStatus) {
+      if (this.props.removeFriendStatus == Status.SUCCESS) {
+        this.setState({isLoading: false});
+      } 
+      else if (this.props.removeFriendStatus == Status.FAILURE) {
+        this.onFailure();
+      }      
+    }
+
+    // Accept Friend Request
+    if (prevProps.acceptFriendRequestStatus != this.props.acceptFriendRequestStatus) {
+      if (this.props.acceptFriendRequestStatus == Status.SUCCESS) {
+        this.setState({isLoading: false});
+      } 
+      else if (this.props.acceptFriendRequestStatus == Status.FAILURE) {
         this.onFailure();
       }      
     }
@@ -256,8 +277,6 @@ class ContactListScreen extends Component {
 
   selectActionSheet(index) {
     const { inviteOptions } = this.state;
-    console.log("index: ", index);
-
     if (inviteOptions[index] == "Via Email") {
       this.sendEmail();
     } 
@@ -273,7 +292,7 @@ class ContactListScreen extends Component {
     const sender = currentUser.firstName + " " + currentUser.lastName;
     const receiver = selectedContact.firstName + " " + selectedContact.lastName;
 
-    var content = getInviteMessage(receiver, sender);
+    var content = getInviteMessage(receiver, sender, "email");
 
     Mailer.mail({
       subject: 'TellFutureYou Invite',
@@ -326,11 +345,7 @@ class ContactListScreen extends Component {
     const sender = currentUser.firstName + " " + currentUser.lastName;
     const receiver = selectedContact.firstName + " " + selectedContact.lastName;
 
-    var content = `Hello ${receiver},\r\n
-      ${sender} invited you to use TellFutureYou app. Please download the app using the link below. \r\n
-      https://apps.apple.com/us/app/chat-in/id1083597720
-    `;
-
+    var content = getInviteMessage(receiver, sender, "sms");
     SendSMS.send({
       body: content,
       recipients: [selectedContact.phone],
@@ -348,16 +363,41 @@ class ContactListScreen extends Component {
         this.props.dispatch({
           type: actionTypes.SEND_FRIEND_REQUEST,
           userId: currentUser._id,
-          friendId: data.userId
+          friendId: data.userId,
+          contactId: data._id
+        });
+      });
+    }
+  }
+
+  onRemoveFriend=(data)=> {
+    if (data.friendId) {
+      const { currentUser } = this.props;
+      this.setState({isLoading: true}, () => {
+        this.props.dispatch({
+          type: actionTypes.REMOVE_FRIEND,
+          userId: currentUser._id,
+          friendId: data.friendId
+        });
+      });
+    }
+  }
+
+  acceptRequest=(data)=> {
+    if (data.friendId) {
+      const { currentUser } = this.props;
+      this.setState({isLoading: true}, () => {
+        this.props.dispatch({
+          type: actionTypes.ACCEPT_FRIEND_REQUEST,
+          userId: currentUser._id,
+          friendId: data.friendId
         });
       });
     }
   }
 
   onSelect=(data)=> {
-    if (data.status == 0) {
-      this.props.navigation.navigate('ContactDetail', {contact: data});
-    }    
+    this.props.navigation.navigate('ContactDetail', {contact: data});
   }
 
   showResultMessage(message, isBack) {
@@ -402,9 +442,12 @@ class ContactListScreen extends Component {
                     renderItem={({ item, index }) => (
                       <ContactCell 
                         data={item}
+                        onSelect={this.onSelect}
                         onSendInvite={this.onSendInvite}
                         onSendMessage={this.onSendMessage}
-                        onSelect={this.onSelect}
+                        onCancelRequest={this.onRemoveFriend}
+                        onRemoveFriend={this.onRemoveFriend}
+                        onAcceptRequest={this.acceptRequest}
                       />
                     )}
                   />
@@ -457,6 +500,8 @@ function mapStateToProps(state) {
     errorMessage: state.user.errorMessage,
     sendInviteStatus: state.user.sendInviteStatus,
     sendFriendRequestStatus: state.user.sendFriendRequestStatus,
+    removeFriendStatus: state.user.removeFriendStatus,
+    acceptFriendRequestStatus: state.user.acceptFriendRequestStatus,
   };  
 }
 

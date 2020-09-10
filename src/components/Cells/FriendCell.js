@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Text, Image, Platform } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text, Image, Platform, Dimensions } from 'react-native';
 import FastImage from 'react-native-fast-image'
-import RoundButton from '../../components/RoundButton'
 import Colors from '../../theme/Colors'
 import Fonts from '../../theme/Fonts'
 import Images from '../../theme/Images';
+
+const win = Dimensions.get('window');
 
 export default class FriendCell extends React.Component {
   	render() {
@@ -14,7 +15,7 @@ export default class FriendCell extends React.Component {
         if (data.user1._id == currentUser._id) {
             friend = data.user2;
         } 
-        if (data.creator == currentUser._id) {
+        if (status == 0 && data.creator == currentUser._id) {
             status = 2;
         }
 
@@ -24,13 +25,13 @@ export default class FriendCell extends React.Component {
             <View style={[styles.contentView, Platform.OS == "ios" ? styles.shadowView: {}]}>
                 <View style={styles.leftView}>
                     <FastImage source={avatar} style={styles.avatarPhoto} />
-                    <View>
+                    <View style={styles.infoView}>
                         <Text style={styles.nameText}>{friend.firstName} {friend.lastName}</Text>
                         <Text style={styles.phoneText}>{friend.phone}</Text>
                         <Text style={styles.phoneText}>{friend.email}</Text>
                     </View>                    
                 </View>
-                <View style={{width: '50%', alignItems: 'flex-end'}}>
+                <View style={styles.rightView}>
                     {
                         status == 0 && <View style={{flexDirection: 'row', alignItems: 'center'}}>
                             <TouchableOpacity style={styles.actionButton} onPress={() => onAccept(data)}>
@@ -52,12 +53,10 @@ export default class FriendCell extends React.Component {
                         </TouchableOpacity>
                     }
                     {
-                        status == 2 && <View style={{alignItems: 'center'}}>
-                            <Text style={styles.statusText}>Request Sent</Text>
-                            <TouchableOpacity style={styles.removeButton} onPress={() => onRemove(data)}>
-                                <Text style={styles.actionButtonText}>Remove</Text>
-                            </TouchableOpacity>
-                        </View>
+                        status == 2 && 
+                        <TouchableOpacity style={styles.removeButton} onPress={() => onRemove(data)}>
+                            <Text style={styles.actionButtonText}>Remove</Text>
+                        </TouchableOpacity>
                     }
                 </View>
             </View>
@@ -90,7 +89,16 @@ const styles = StyleSheet.create({
 
     leftView: {
         flexDirection: 'row',
-        width: '45%',
+        width: win.width - 190,
+    },
+
+    infoView: {
+        width: win.width - 250,
+    },
+
+    rightView: {
+        width: 135, 
+        alignItems: 'flex-end',
     },
 
     avatarPhoto: {
@@ -113,7 +121,7 @@ const styles = StyleSheet.create({
     },
 
     actionButton: {
-        marginLeft: 5,
+        marginLeft: 10,
     },
 
     messageButton: {
