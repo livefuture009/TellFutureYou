@@ -67,7 +67,7 @@ class ScheduleMessageScreen extends Component {
       }
     }
     else {
-      this.refs.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
+      this.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
     }
   }
 
@@ -120,7 +120,7 @@ class ScheduleMessageScreen extends Component {
 
   onFailure(message) {
     this.setState({isLoading: false, isFirst: false});
-    this.refs.toast.show(message, TOAST_SHOW_TIME);
+    this.toast.show(message, TOAST_SHOW_TIME);
   }
 
   onBack() {
@@ -203,7 +203,7 @@ class ScheduleMessageScreen extends Component {
             </ChatView>
           : !isFirst && <EmptyView title="No scheduled messages." />
         }
-      <Toast ref="toast"/>
+      <Toast ref={ref => (this.toast = ref)}/>
       { this.state.isLoading
         ? <LoadingOverlay />
         : null

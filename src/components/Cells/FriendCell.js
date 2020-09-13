@@ -55,7 +55,7 @@ export default class FriendCell extends React.Component {
                     {
                         status == 2 && 
                         <TouchableOpacity style={styles.removeButton} onPress={() => onRemove(data)}>
-                            <Text style={styles.actionButtonText}>Remove</Text>
+                            <Text style={styles.actionButtonText}>Cancel Request</Text>
                         </TouchableOpacity>
                     }
                 </View>

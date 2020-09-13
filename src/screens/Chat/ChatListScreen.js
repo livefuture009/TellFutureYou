@@ -86,7 +86,9 @@ class ChatScreen extends Component {
         }        
       }
       if (!isExisting) {
-        list.push(channel);
+        if (channel.lastMessage != null) {
+          list.push(channel);
+        }        
       }
 
       this.setState({
@@ -126,6 +128,7 @@ class ChatScreen extends Component {
         var channelList = [];
         for (var i = 0; i < response.length; i++) {
           var channel = response[i];
+          console.log("channel: ", channel);
           if (channel.memberCount >= 2 && channel.lastMessage != null) {
             channelList.push(channel);
           } 
@@ -226,7 +229,8 @@ class ChatScreen extends Component {
           
           </View>
         </View>
-        <Toast ref="toast"/>
+        
+        <Toast ref={ref => (this.toast = ref)}/>
         { this.state.isLoading && <LoadingOverlay /> }
       </SafeAreaView>
     );

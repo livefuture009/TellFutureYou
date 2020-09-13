@@ -115,7 +115,7 @@ class ContactDetailScreen extends Component {
       message = Messages.NetWorkError;
     }
     this.setState({isLoading: false});
-    this.refs.toast.show(message, TOAST_SHOW_TIME);
+    this.toast.show(message, TOAST_SHOW_TIME);
   }
 
   onSelectedItemsChange = selectedItems => {
@@ -162,7 +162,7 @@ class ContactDetailScreen extends Component {
     // Check Email if you have any contact.
     if (currentUser.contacts && currentUser.contacts.length > 0) {
       currentUser.contacts.forEach(c => {
-        if (c.email == email) {
+        if (c._id != id && c.email == email) {
           this.setState({emailError: Messages.ContactIsExisting});
           isValid = false;
           return;          
@@ -355,7 +355,7 @@ class ContactDetailScreen extends Component {
                 </KeyboardAwareScrollView>
             </View>
         </View>
-        <Toast ref="toast"/>
+        <Toast ref={ref => (this.toast = ref)}/>
         { this.state.isLoading && <LoadingOverlay /> }
       </SafeAreaView>
     );

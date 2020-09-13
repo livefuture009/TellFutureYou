@@ -124,7 +124,7 @@ class NotificationScreen extends Component {
 
   onFailure() {
     this.setState({isLoading: false, refreshing: false, isFirst: false});
-    this.refs.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);
+    this.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);
   }
 
   onRefresh=()=>{
@@ -176,7 +176,7 @@ class NotificationScreen extends Component {
                   </View>
           }
           </SafeAreaConsumer>
-          <Toast ref="toast"/>
+          <Toast ref={ref => (this.toast = ref)}/>
           { isLoading && <LoadingOverlay /> }
         </View>
     );

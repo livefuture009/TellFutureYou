@@ -377,13 +377,13 @@ class LoginScreen extends Component {
             });
           }
         } catch (error) {
-          this.refs.toast.show('Apple sign in has been cancelled.', TOAST_SHOW_TIME);
+          this.toast.show('Apple sign in has been cancelled.', TOAST_SHOW_TIME);
         }
       } else {
-        this.refs.toast.show('AppleAuth is not supported on the device.', TOAST_SHOW_TIME);
+        this.toast.show('AppleAuth is not supported on the device.', TOAST_SHOW_TIME);
       }
     } else {
-      this.refs.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
+      this.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
     }
   }
 
@@ -447,7 +447,7 @@ class LoginScreen extends Component {
   
       } catch (error) {
         _SELF.setState({isLoading: false});
-        _SELF.refs.toast.show("Google Login has been cancelled.", TOAST_SHOW_TIME);      
+        _SELF.toast.show("Google Login has been cancelled.", TOAST_SHOW_TIME);      
   
         console.log("error = ",error);
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -461,7 +461,7 @@ class LoginScreen extends Component {
         }
       }      
     } else {
-      this.refs.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
+      this.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
     }
   }
 
@@ -475,14 +475,14 @@ class LoginScreen extends Component {
         function(result) {
           if (result.isCancelled) {
             _SELF.setState({isLoading: false});
-            _SELF.refs.toast.show('Facebook Login has been cancelled', TOAST_SHOW_TIME);
+            _SELF.toast.show('Facebook Login has been cancelled', TOAST_SHOW_TIME);
           } else {
             AccessToken.getCurrentAccessToken().then((token) => {
               let accessToken = token.accessToken;
               const responseCallback = (error, result) => {
                 if (error) {
                   _SELF.setState({isLoading: false});
-                  _SELF.refs.toast.show(error, TOAST_SHOW_TIME);
+                  _SELF.toast.show(error, TOAST_SHOW_TIME);
                 } else {
                   var socialId = '';
                   var socialType = 'facebook';
@@ -540,11 +540,11 @@ class LoginScreen extends Component {
         },
         function(error) {
           _SELF.setState({isLoading: false});
-          _SELF.refs.toast.show('Facebook Login has been failed.', TOAST_SHOW_TIME);
+          _SELF.toast.show('Facebook Login has been failed.', TOAST_SHOW_TIME);
         }
       );
     } else {
-      this.refs.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
+      this.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
     }
   }
   
@@ -578,7 +578,7 @@ class LoginScreen extends Component {
   
   onFailure() {
     this.setState({isLoading: false});
-    this.refs.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);
+    this.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);
   }
 
   render() {
@@ -666,7 +666,7 @@ class LoginScreen extends Component {
             </KeyboardAwareScrollView>
           </View>
         </SafeAreaView>
-        <Toast ref="toast"/>
+        <Toast ref={ref => (this.toast = ref)}/>
         { this.state.isLoading && <LoadingOverlay /> }
       </View>
     );

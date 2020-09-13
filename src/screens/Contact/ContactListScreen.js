@@ -106,19 +106,6 @@ class ContactListScreen extends Component {
     if (prevProps.sendFriendRequestStatus != this.props.sendFriendRequestStatus) {
       if (this.props.sendFriendRequestStatus == Status.SUCCESS) {
         this.setState({isLoading: false});
-        this.props.navigation.navigate('FriendStack');
-        setTimeout(() => {
-          this.props.dispatch({
-            type: actionTypes.CHANGE_FRIEND_ACTIVE_PAGE,
-            page: 2,
-          });
-        }, 500);
-        
-        setTimeout(() => {
-          this.props.dispatch({
-            type: actionTypes.RESET_FRIEND_PAGE,
-          });
-        }, 1000);
       } 
       else if (this.props.sendFriendRequestStatus == Status.FAILURE) {
         this.onFailure();
@@ -148,7 +135,7 @@ class ContactListScreen extends Component {
 
   onFailure() {
     this.setState({isLoading: false});
-    this.refs.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);
+    this.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);
   }
 
   onBack() {
@@ -219,13 +206,13 @@ class ContactListScreen extends Component {
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           Contacts.getAll((err, contacts) => {
             if (err === 'denied'){
-              this.refs.toast.show("Read Contacts Permission Denied", TOAST_SHOW_TIME);
+              this.toast.show("Read Contacts Permission Denied", TOAST_SHOW_TIME);
             } else {
               this.parseContacts(contacts);
             }
           })
         } else {
-          this.refs.toast.show("Read Contacts Permission Denied", TOAST_SHOW_TIME);
+          this.toast.show("Read Contacts Permission Denied", TOAST_SHOW_TIME);
         }
       }
       catch (err) {
@@ -235,7 +222,7 @@ class ContactListScreen extends Component {
     else {
       Contacts.getAll((err, contacts) => {
         if (err === 'denied'){
-          this.refs.toast.show("Read Contacts Permission Denied", TOAST_SHOW_TIME);
+          this.toast.show("Read Contacts Permission Denied", TOAST_SHOW_TIME);
         } else {
           this.parseContacts(contacts);
         }
@@ -326,7 +313,7 @@ class ContactListScreen extends Component {
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           this.processSMS();
         } else {
-          this.refs.toast.show(Messages.SMSPermissionDenied, TOAST_SHOW_TIME);
+          this.toast.show(Messages.SMSPermissionDenied, TOAST_SHOW_TIME);
         }
       }
       catch (err) {
@@ -468,7 +455,7 @@ class ContactListScreen extends Component {
           cancelButtonIndex={inviteOptions.length - 1}
           onPress={(index) => this.selectActionSheet(index)}
         />
-        <Toast ref="toast"/>
+        <Toast ref={ref => (this.toast = ref)}/>
         { this.state.isLoading && <LoadingOverlay /> } 
       </SafeAreaView>
     );

@@ -102,7 +102,7 @@ class ImportContactScreen extends Component {
 
   onFailure() {
     this.setState({isLoading: false});
-    this.refs.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);
+    this.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);
   }
 
   onBack() {
@@ -128,7 +128,7 @@ class ImportContactScreen extends Component {
       });
     } 
     else {
-      this.refs.toast.show(Messages.InvalidSelectedContacts, TOAST_SHOW_TIME);
+      this.toast.show(Messages.InvalidSelectedContacts, TOAST_SHOW_TIME);
     }
   }
 
@@ -211,7 +211,7 @@ class ImportContactScreen extends Component {
                 </View>
             </View>
         </View>
-        <Toast ref="toast"/>
+        <Toast ref={ref => (this.toast = ref)}/>
         { this.state.isLoading && <LoadingOverlay /> } 
       </SafeAreaView>
     );

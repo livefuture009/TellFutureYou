@@ -78,7 +78,7 @@ class VerificationCodeScreen extends Component {
 
   onFailure() {
     this.setState({isLoading: false});
-    this.refs.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);
+    this.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);
   }
 
   render() {
@@ -111,7 +111,7 @@ class VerificationCodeScreen extends Component {
               onPress={() => this.onVerify()} />
           </View>
         </View>
-        <Toast ref="toast"/>
+        <Toast ref={ref => (this.toast = ref)}/>
         {
           this.state.isLoading && <LoadingOverlay />
         }

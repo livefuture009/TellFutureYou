@@ -36,7 +36,7 @@ class SubscriptionScreen extends Component {
 
   onFailure() {
     this.setState({isLoading: false});
-    this.refs.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);
+    this.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);
   }
 
   onSubscribe=()=> {
@@ -60,7 +60,7 @@ class SubscriptionScreen extends Component {
             />
           </View>
         </View>
-        <Toast ref="toast"/>
+        <Toast ref={ref => (this.toast = ref)}/>
         { this.state.isLoading && <LoadingOverlay /> }
       </SafeAreaView>
     );

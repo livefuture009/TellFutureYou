@@ -187,7 +187,7 @@ class SignUpScreen extends Component {
     }
 
     if (!agreeTerms) {
-      this.refs.toast.show(Messages.InvalidTerms, TOAST_SHOW_TIME);    
+      this.toast.show(Messages.InvalidTerms, TOAST_SHOW_TIME);    
       isValid = false;
     }
 
@@ -220,7 +220,7 @@ class SignUpScreen extends Component {
 
   onFailure() {
     this.setState({isLoading: false});
-    this.refs.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);    
+    this.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);    
   }
 
   connectSendBird() {
@@ -424,7 +424,7 @@ class SignUpScreen extends Component {
               </View>
             </KeyboardAwareScrollView>        
         </View>
-        <Toast ref="toast"/>
+        <Toast ref={ref => (this.toast = ref)}/>
         {
           this.state.isLoading
           ? <LoadingOverlay />

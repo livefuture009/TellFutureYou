@@ -91,7 +91,7 @@ class EditProfile extends Component {
       message = Messages.NetWorkError;
     }
     this.setState({isLoading: false});
-    this.refs.toast.show(message, TOAST_SHOW_TIME);
+    this.toast.show(message, TOAST_SHOW_TIME);
   }
 
   onSelectedItemsChange = selectedItems => {
@@ -319,7 +319,7 @@ class EditProfile extends Component {
             </View>
           </KeyboardAwareScrollView>
         </View>
-        <Toast ref="toast"/>
+        <Toast ref={ref => (this.toast = ref)}/>
         { this.state.isLoading && <LoadingOverlay /> }
       </SafeAreaView>
     );

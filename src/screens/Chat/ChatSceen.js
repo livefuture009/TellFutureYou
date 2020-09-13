@@ -90,7 +90,6 @@ class ChatScreen extends Component {
         this.checkCreateChannel(user);
         return;
       } 
-
       if (contact) {
         this.setState({isLoading: true});
         this.props.dispatch({
@@ -99,7 +98,7 @@ class ChatScreen extends Component {
         });
       }
     } else {
-      this.refs.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
+      this.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
     }
   }
 
@@ -187,7 +186,7 @@ class ChatScreen extends Component {
 
   onFailure(message) {
     this.setState({isLoading: false});
-    this.refs.toast.show(message, TOAST_SHOW_TIME);
+    this.toast.show(message, TOAST_SHOW_TIME);
   }
 
   checkCreateChannel(user) {
@@ -351,7 +350,7 @@ class ChatScreen extends Component {
         },
       });
     } else {
-      this.refs.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
+      this.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
     }
   }
 
@@ -442,7 +441,7 @@ class ChatScreen extends Component {
       });
     } else {
       Keyboard.dismiss();
-      this.refs.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
+      this.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
     }
   }
 
@@ -615,7 +614,7 @@ class ChatScreen extends Component {
             onPress={(index) => this.selectActionSheet(index)}
           />
       </ChatView>
-      <Toast ref="toast"/>
+      <Toast ref={ref => (this.toast = ref)}/>
       { this.state.isLoading
         ? <LoadingOverlay />
         : null
