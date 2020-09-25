@@ -28,8 +28,8 @@ import Colors from '../../theme/Colors'
 import Messages from '../../theme/Messages'
 
 class ContactListScreen extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
       isLoading: false,
       contacts: [],
@@ -59,7 +59,7 @@ class ContactListScreen extends Component {
 
   getContacts() {
     const { currentUser } = this.props;
-    if (currentUser && currentUser.contacts && currentUser.contacts.length > 0) {
+    if (currentUser && currentUser.contacts) {
       this.sortContacts(currentUser.contacts);
       var list = [];
       currentUser.contacts.forEach(c => {

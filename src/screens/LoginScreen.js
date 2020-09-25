@@ -54,8 +54,8 @@ import appleAuth, {
 var sb = new SendBird({ appId: SENDBIRD_APP_ID });
 
 class LoginScreen extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
       email: '',
       emailError: '',
@@ -136,6 +136,7 @@ class LoginScreen extends Component {
 
   initPush() {
     OneSignal.init(ONE_SIGNAL_APP_ID);
+    OneSignal.inFocusDisplaying(2);   // Controls what should happen if a notification is received while the app is open. 2 means that the notification will go directly to the device's notification center.
     OneSignal.addEventListener('received', this.onReceived);
     OneSignal.addEventListener('opened', this.onOpened);
     OneSignal.addEventListener('ids', this.onIds);

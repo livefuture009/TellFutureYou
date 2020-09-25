@@ -11,8 +11,8 @@ class Avatar extends Component {
         data: PropTypes.object,
     }
 
-    constructor(props) {
-        super(props)
+    constructor() {
+        super()
         this.state = {
           
         }

@@ -8,8 +8,8 @@ import Fonts from '../theme/Fonts'
 import Colors from '../theme/Colors'
 
 class FormInput extends Component {
-    constructor(props) {
-        super(props)
+    constructor() {
+        super()
         this.state = {
           displayPassword: false,
         }

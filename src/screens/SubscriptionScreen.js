@@ -19,8 +19,8 @@ import actionTypes from '../actions/actionTypes';
 import * as RNIap from 'react-native-iap';
 
 class SubscriptionScreen extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
       isLoading: false,
     }    

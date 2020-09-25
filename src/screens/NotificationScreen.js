@@ -17,8 +17,8 @@ import Colors from '../theme/Colors'
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
 
 class NotificationScreen extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
       isFirst: true,
       isLoading: false,

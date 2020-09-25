@@ -19,8 +19,8 @@ import Toast from 'react-native-easy-toast'
 import actionTypes from '../actions/actionTypes';
 
 class ResetNewPasswordScreen extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
       newPassword: '',
       newPasswordConfirm: '',

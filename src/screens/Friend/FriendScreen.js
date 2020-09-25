@@ -22,8 +22,8 @@ import Colors from '../../theme/Colors'
 import Messages from '../../theme/Messages'
 
 class FriendScreen extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
       isLoading: false,
       isShowSearch: false,

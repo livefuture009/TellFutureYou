@@ -20,8 +20,8 @@ import { TOAST_SHOW_TIME, Status } from '../constants.js'
 import Colors from '../theme/Colors'
 
 class VerificationCodeScreen extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
       code: '',
       codeError: '',

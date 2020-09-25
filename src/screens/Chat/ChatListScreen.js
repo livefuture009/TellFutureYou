@@ -21,8 +21,8 @@ import actionTypes from '../../actions/actionTypes';
 var sb = null;
 
 class ChatScreen extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
       isLoading: false,
       channelList: [],

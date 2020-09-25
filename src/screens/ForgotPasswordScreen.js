@@ -21,8 +21,8 @@ import { isValidEmail } from '../functions'
 import Colors from '../theme/Colors'
 
 class ForgotPasswordScreen extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
       email: '',
       emailError: '',

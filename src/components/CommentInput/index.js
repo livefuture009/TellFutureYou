@@ -7,8 +7,8 @@ import Images from '../../theme/Images';
 import Fonts from '../../theme/Fonts';
 
 export default class CommentInput extends React.Component{
-  constructor(props){
-    super(props)
+  constructor(){
+    super()
     this.state={ value: '' }
   }
   render() {

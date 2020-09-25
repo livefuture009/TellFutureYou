@@ -29,8 +29,8 @@ var sb = new SendBird({ appId: SENDBIRD_APP_ID });
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 class SignUpScreen extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
       isLoading: false,
       firstName: '',

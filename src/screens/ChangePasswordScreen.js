@@ -19,8 +19,8 @@ import { TOAST_SHOW_TIME, Status, PASSWORD_MIN_LENGTH } from '../constants.js'
 import actionTypes from '../actions/actionTypes';
 
 class ChangePasswordScreen extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
       password: '',
       newPassword: '',

@@ -12,8 +12,8 @@ import { GOOGLE_API_KEY } from '../constants.js'
 const win = Dimensions.get('window');
 class LabelFormInput extends Component {
 
-    constructor(props) {
-        super(props)
+    constructor() {
+        super()
         this.state = {
           showAddressList: false
         }

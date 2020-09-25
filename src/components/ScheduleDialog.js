@@ -12,8 +12,8 @@ import Moment from 'moment';
 import { NetInfoCellularGeneration } from '@react-native-community/netinfo';
 
 export default class ScheduleDialog extends React.Component {
-    constructor(props) {
-        super(props)
+    constructor() {
+        super()
         this.state = {
           scheduleDate: null,
           scheduleTime: null,

@@ -21,13 +21,14 @@ import Messages from '../../theme/Messages'
 import { filterName } from '../../functions';
 
 class ImportContactScreen extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
       isLoading: false,
       contacts: [],
       originalContacts: [],
       isShowAddContactDialog: false,
+      selectedContacts: 0,
     }    
   }
 
@@ -69,8 +70,15 @@ class ImportContactScreen extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.importContactsStatus != this.props.importContactsStatus) {
       if (this.props.importContactsStatus == Status.SUCCESS) {
+        const { selectedContacts } = this.state;
         this.setState({isLoading: false});
-        this.showResultMessage(Messages.SuccessImportContacts, true);
+        
+        if (selectedContacts > 1) {
+          this.showResultMessage(Messages.SuccessImportContacts, true);
+        }
+        else {
+          this.showResultMessage(Messages.SuccessImportContact, true);
+        }
       } 
       else if (this.props.importContactsStatus == Status.FAILURE) {
         this.onFailure();
@@ -110,17 +118,19 @@ class ImportContactScreen extends Component {
   }
 
   onImport=()=> {
+    var selectedContacts = 0;
     const { currentUser } = this.props;
     const { contacts } = this.state;
     var list = [];
     contacts.forEach(c => {
       if (c.selected) {
         list.push(c);
+        selectedContacts ++;
       }
     });
 
     if (list && list.length > 0) {
-      this.setState({isLoading: true});
+      this.setState({isLoading: true, selectedContacts: selectedContacts});
       this.props.dispatch({
         type: actionTypes.IMPORT_CONTACTS,
         userId: currentUser._id,

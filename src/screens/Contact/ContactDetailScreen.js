@@ -24,8 +24,8 @@ import actionTypes from '../../actions/actionTypes';
 import {validateEmail, getOnlyAlphabetLetters} from '../../functions'
 
 class ContactDetailScreen extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
         id: '',
         avatar: '',

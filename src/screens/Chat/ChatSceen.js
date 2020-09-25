@@ -43,8 +43,8 @@ const emptyText="Direct messages will show up here."
 var sb = null;
 
 class ChatScreen extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     sb = SendBird.getInstance();
 
     this.text='';

@@ -11,8 +11,8 @@ const win = Dimensions.get('window');
 
 class RoundTextInput extends Component {
 
-    constructor(props) {
-        super(props)
+    constructor() {
+        super()
         this.state = {
           displayPassword: false,
           showAddressList: false

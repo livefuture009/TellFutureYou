@@ -4,8 +4,8 @@ import Images from '../theme/Images';
 import Colors from '../theme/Colors';
 
 class LabelFormInput extends Component {
-    constructor(props) {
-        super(props)
+    constructor() {
+        super()
         this.state = {
           
         }
