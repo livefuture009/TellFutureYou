@@ -101,6 +101,7 @@ class ResetNewPasswordScreen extends Component {
           <View style={styles.contentView}>
             <LabelFormInput
               autoFocus={true}
+              editable={true}
               label="New Password" 
               type="password"
               placeholder="***********"
@@ -115,6 +116,7 @@ class ResetNewPasswordScreen extends Component {
               label="Confirm New Password" 
               type="password"
               placeholder="***********"
+              editable={true}
               placeholderTextColor="#939393"
               errorMessage={this.state.passwordConfirmError}
               value={this.state.newPasswordConfirm} 

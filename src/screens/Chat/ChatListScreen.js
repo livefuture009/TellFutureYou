@@ -9,6 +9,7 @@ import {
 import {connect} from 'react-redux';
 import SendBird from 'sendbird';
 import Toast from 'react-native-easy-toast'
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import HeaderInfoBar from '../../components/HeaderInfoBar'
 import SearchBox from '../../components/SearchBox'
 import LoadingOverlay from '../../components/LoadingOverlay'
@@ -50,6 +51,18 @@ class ChatScreen extends Component {
     this.focusListener();
   }
     
+  UNSAFE_componentWillMount(){
+    if (Platform.OS === 'android') {
+      AndroidKeyboardAdjust.setAdjustPan();
+    }    
+  }
+
+  UNSAFE_componentWillUnmount(){
+    if (Platform.OS === 'android') {
+      AndroidKeyboardAdjust.setAdjustResize();
+    }
+  }
+
   initChannelHandler() {
     var _SELF = this;
     var ChannelHandler = new sb.ChannelHandler();

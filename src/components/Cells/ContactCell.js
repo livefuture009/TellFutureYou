@@ -61,7 +61,7 @@ export default class ContactCell extends React.Component {
                             {
                                 data.status === CONTACT_STATUS.EXIST_ACCOUNT &&
                                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                    <View style={styles.actionButton}>
+                                    <View style={[styles.actionButton, styles.addFriendBtn]}>
                                         <Text style={styles.actionButtonText}>Add Friend</Text>
                                     </View>        
                                     <Image source={Images.arrow_right} style={styles.arrowIcon}/>
@@ -88,7 +88,7 @@ export default class ContactCell extends React.Component {
                             {
                                 data.status === CONTACT_STATUS.RECEIVE_REQUEST &&
                                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                    <View style={[styles.actionButton]}>
+                                    <View style={[styles.actionButton, styles.acceptBtn]}>
                                         <Text style={styles.actionButtonText}>Accept Request</Text>
                                     </View>        
                                     <Image source={Images.arrow_right} style={styles.arrowIcon}/>
@@ -179,21 +179,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 
-    addFriendButton: {
-        width: 110,
-        backgroundColor: Colors.appColor,
-        paddingVertical: 5,
-        borderRadius: 15,
-        shadowColor: Colors.appColor,
-		shadowOffset: {
-			width: 0,
-			height: 2,
-		},
-		shadowOpacity: 0.3,
-		shadowRadius: 10,
-        elevation: 5,
-        alignItems: 'center',
-        marginRight: 20,
+    addFriendBtn: {
+        backgroundColor: Colors.newJobTextColor,
+        shadowColor: Colors.newJobTextColor,
+    },
+
+    acceptBtn: {
+        backgroundColor: Colors.workingJobTextColor,
+        shadowColor: Colors.workingJobTextColor,
     },
 
     actionButtonText: {

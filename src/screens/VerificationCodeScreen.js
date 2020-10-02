@@ -92,6 +92,7 @@ class VerificationCodeScreen extends Component {
               label="Verification Code" 
               type="number"
               autoFocus={true}
+              editable={true}
               placeholder="******" 
               placeholderTextColor="#939393"
               errorMessage={this.state.codeError}

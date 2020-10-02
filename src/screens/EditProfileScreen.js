@@ -250,6 +250,7 @@ class EditProfile extends Component {
                   <LabelFormInput
                     label="First Name" 
                     type="text"
+                    editable={true}
                     placeholderTextColor={Colors.placeholderTextColor}
                     value={this.state.firstName} 
                     errorMessage={this.state.firstNameError}
@@ -262,6 +263,7 @@ class EditProfile extends Component {
                   <LabelFormInput
                     label="Last Name" 
                     type="text"
+                    editable={true}
                     placeholderTextColor={Colors.placeholderTextColor}
                     value={this.state.lastName} 
                     errorMessage={this.state.lastNameError}
@@ -276,6 +278,7 @@ class EditProfile extends Component {
                 <LabelFormInput
                   label="Email" 
                   type="email"
+                  editable={true}
                   placeholderTextColor={Colors.placeholderTextColor}
                   value={this.state.email} 
                   errorMessage={this.state.emailError}
@@ -288,6 +291,7 @@ class EditProfile extends Component {
                 <LabelFormInput
                   label="Phone" 
                   type="phone"
+                  editable={true}
                   placeholderTextColor={Colors.placeholderTextColor}
                   value={this.state.phone} 
                   errorMessage={this.state.phoneError}
@@ -300,6 +304,7 @@ class EditProfile extends Component {
                   label="Location" 
                   type="address"
                   returnKeyType="next"
+                  editable={true}
                   placeholderTextColor={Colors.placeholderTextColor}
                   value={this.state.locationText}
                   errorMessage={this.state.locationError} 

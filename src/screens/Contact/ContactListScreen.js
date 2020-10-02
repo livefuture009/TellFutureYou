@@ -11,6 +11,7 @@ import {
 
 import {connect} from 'react-redux';
 import Toast from 'react-native-easy-toast'
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import ActionSheet from 'react-native-actionsheet'
 import Mailer from 'react-native-mail';
 import SendSMS from 'react-native-sms';
@@ -55,6 +56,18 @@ class ContactListScreen extends Component {
 
   componentWillUnmount() {
     this.focusListener();
+  }
+
+  UNSAFE_componentWillMount(){
+    if (Platform.OS === 'android') {
+      AndroidKeyboardAdjust.setAdjustPan();
+    }    
+  }
+
+  UNSAFE_componentWillUnmount(){
+    if (Platform.OS === 'android') {
+      AndroidKeyboardAdjust.setAdjustResize();
+    }
   }
 
   getContacts() {

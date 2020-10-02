@@ -99,6 +99,7 @@ class ForgotPasswordScreen extends Component {
               label="Email Address" 
               type="email"
               placeholder="David@email.com" 
+              editable={true}
               autoFocus={true}
               placeholderTextColor="#939393"
               errorMessage={this.state.emailError}

@@ -130,6 +130,7 @@ class ChangePasswordScreen extends Component {
             <LabelFormInput
               label="Current Password" 
               type="password"
+              editable={true}
               placeholderTextColor="#939393"
               value={password} 
               errorMessage={passwordError}
@@ -140,6 +141,7 @@ class ChangePasswordScreen extends Component {
             <LabelFormInput
               label="New Password" 
               type="password"
+              editable={true}
               placeholderTextColor="#939393"
               value={newPassword} 
               errorMessage={newPasswordError} 
@@ -152,6 +154,7 @@ class ChangePasswordScreen extends Component {
             <LabelFormInput
               label="Confirm Password" 
               type="password"
+              editable={true}
               placeholderTextColor="#939393"
               value={confirmPassword} 
               errorMessage={confirmPasswordError}
