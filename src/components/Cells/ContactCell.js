@@ -192,6 +192,7 @@ const styles = StyleSheet.create({
     actionButtonText: {
         fontFamily: Fonts.regular,
         color: 'white',
+        fontSize: 13,
     },
 
     checkboxIcon: {

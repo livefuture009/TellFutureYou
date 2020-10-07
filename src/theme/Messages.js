@@ -10,7 +10,7 @@ const Messages = {
 	InvalidLocation: 'Please input a valid location.',
 	InvalidPhone: 'Please input a valid phone number.',
 	InvalidTerms: 'Please agree to the Terms of Service.',
-	SuccessImportContacts: 'Contacts has been imported successfully!',
+	SuccessImportContacts: 'Contacts have been imported successfully!',
 	SuccessImportContact: 'Contact has been imported successfully!',
 	InvalidVerifyCode: 'Please input the 6-digit verification code.',
 	InvalidScheduleTime: 'Please select future schedule time.',
