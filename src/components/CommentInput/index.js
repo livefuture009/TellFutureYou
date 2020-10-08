@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: Fonts.regular,
     color: Colors.text,
+    maxHeight: 150
   },
 
   scheduleButton: {
