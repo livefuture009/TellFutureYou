@@ -263,7 +263,11 @@ class LoginScreen extends Component {
     }); 
 
     // Reset Page.
-    this.setState({isLoading: false, email: '', password: ''});    
+    this.setState({isLoading: false, email: '', password: ''});
+
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 1000);
   }
 
   onLogin() {
