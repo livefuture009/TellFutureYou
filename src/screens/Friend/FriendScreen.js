@@ -18,6 +18,7 @@ import FriendCell from '../../components/Cells/FriendCell'
 import actionTypes from '../../actions/actionTypes';
 import EmptyView from '../../components/EmptyView'
 import { TOAST_SHOW_TIME, Status } from '../../constants.js'
+import { getFriendCountByLevel } from '../../functions'
 import Colors from '../../theme/Colors'
 import Messages from '../../theme/Messages'
 
@@ -28,6 +29,7 @@ class FriendScreen extends Component {
       isLoading: false,
       isShowSearch: false,
       currentPage: 0,
+      selectedFriend: null,
 
       friends: [],
       requests: [],
@@ -122,8 +124,18 @@ class FriendScreen extends Component {
         const { activePage } = this.props;
         this.onSelectPage(activePage);
       } 
-    }
+    } 
     
+    // Get Friend Count
+    if (prevProps.getFriendCountStatus != this.props.getFriendCountStatus) {
+      if (this.props.getFriendCountStatus == Status.SUCCESS) {
+        this.setState({isLoading: false});
+        this.checkAcceptFriendRequest(this.props.friendCount);
+      } 
+      else if (this.props.getFriendCountStatus == Status.FAILURE) {
+        this.onFailure();
+      }      
+    }
   }
 
   filterFriends() {
@@ -233,14 +245,64 @@ class FriendScreen extends Component {
   }
 
   onAcceptFriend=(friend)=> {
+    const { friends } = this.state;
     const { currentUser } = this.props;
-    this.setState({isLoading: true}, () => {
-      this.props.dispatch({
-        type: actionTypes.ACCEPT_FRIEND_REQUEST,
-        userId: currentUser._id,
-        friendId: friend._id
-      });
-    });
+    const friendCount = friends ? friends.length: 0;
+    const limitCount = getFriendCountByLevel(currentUser.level);
+
+    // Check current user's friends count.
+    if (friendCount >= limitCount ) {
+      Alert.alert(
+        Messages.UnableAcceptRequest,
+        Messages.ReachedFriendLimit,
+        [
+          {text: 'Ok', onPress: () => console.log('Limited')},
+        ],
+        { cancelable: true }
+      )
+    } else {
+      var otherUser = friend.user1;
+      if (friend.user1._id == currentUser._id) {
+        otherUser = friend.user2;
+      }
+
+      this.setState({isLoading: true, selectedFriend: friend}, () => {
+        this.props.dispatch({
+          type: actionTypes.GET_FRIEND_COUNT,
+          userId: otherUser._id,
+        });
+      });      
+    }
+  }
+
+  checkAcceptFriendRequest(friendCount) {
+    const { selectedFriend } = this.state;
+    const { currentUser } = this.props;
+    const limitCount = getFriendCountByLevel(currentUser.level);
+
+    console.log("friendCount: ", friendCount);
+    console.log("limitCount: ", limitCount);
+
+    if (friendCount >= limitCount ) {
+      Alert.alert(
+        Messages.UnableAcceptRequest,
+        Messages.ReachedFriendLimitForOther,
+        [
+          {text: 'Ok', onPress: () => console.log('Limited')},
+        ],
+        { cancelable: true }
+      )
+    } else {
+      if (selectedFriend) {
+        this.setState({isLoading: true}, () => {
+          this.props.dispatch({
+            type: actionTypes.ACCEPT_FRIEND_REQUEST,
+            userId: currentUser._id,
+            friendId: selectedFriend._id
+          });
+        });
+      }
+    }
   }
 
   onDeclineFriend=(friend)=> {
@@ -412,6 +474,7 @@ function mapStateToProps(state) {
     currentUser: state.user.currentUser,
     friends: state.user.friends,
     activePage: state.user.activePage,
+    friendCount: state.user.friendCount,
 
     errorMessage: state.user.errorMessage,
     getMyFriendsStatus: state.user.getMyFriendsStatus,
@@ -420,6 +483,7 @@ function mapStateToProps(state) {
     declineFriendRequestStatus: state.user.declineFriendRequestStatus,
     removeFriendStatus: state.user.removeFriendStatus,
     changeActiveFriendPageStatus: state.user.changeActiveFriendPageStatus,
+    getFriendCountStatus: state.user.getFriendCountStatus,
   };  
 }
 

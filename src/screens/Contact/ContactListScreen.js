@@ -24,7 +24,7 @@ import ContactCell from '../../components/Cells/ContactCell'
 import actionTypes from '../../actions/actionTypes';
 import EmptyView from '../../components/EmptyView'
 import { TOAST_SHOW_TIME, Status } from '../../constants.js'
-import { filterName, getInviteMessage } from '../../functions';
+import { filterName, getInviteMessage, getFriendCountByLevel } from '../../functions';
 import Colors from '../../theme/Colors'
 import Messages from '../../theme/Messages'
 
@@ -357,16 +357,34 @@ class ContactListScreen extends Component {
   }
 
   onSendMessage=(data)=> {
-    if (data.userId) {
-      this.setState({isLoading: true}, () => {
-        const { currentUser } = this.props;
-        this.props.dispatch({
-          type: actionTypes.SEND_FRIEND_REQUEST,
-          userId: currentUser._id,
-          friendId: data.userId,
-          contactId: data._id
+    const { currentUser, friends } = this.props;
+    const limitCount = getFriendCountByLevel(currentUser.level);
+    const friendCount = friends ? friends.length : 0;
+    
+    console.log("limitCount: ", limitCount);
+    console.log("friendCount: ", friendCount);
+
+    if (friendCount >= limitCount ) {
+      Alert.alert(
+        Messages.UnableSendRequest,
+        Messages.ReachedFriendLimit,
+        [
+          {text: 'Ok', onPress: () => console.log('Limited')},
+        ],
+        { cancelable: true }
+      )
+    } else {
+      if (data.userId) {
+        this.setState({isLoading: true}, () => {
+          const { currentUser } = this.props;
+          this.props.dispatch({
+            type: actionTypes.SEND_FRIEND_REQUEST,
+            userId: currentUser._id,
+            friendId: data.userId,
+            contactId: data._id
+          });
         });
-      });
+      }
     }
   }
 
@@ -497,6 +515,7 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
   return {
     currentUser: state.user.currentUser,
+    friends: state.user.friends,
     errorMessage: state.user.errorMessage,
     sendInviteStatus: state.user.sendInviteStatus,
     sendFriendRequestStatus: state.user.sendFriendRequestStatus,

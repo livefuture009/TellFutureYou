@@ -210,3 +210,14 @@ export const getInviteMessage = (receiver, sender, type) => {
 
   return content;
 }
+
+export const getFriendCountByLevel = (level) => {
+  var count = 3;
+  if (level === 1) {
+    count = 10;
+  }
+  else if (level === 2) {
+    count = 20;
+  }
+  return count;
+}

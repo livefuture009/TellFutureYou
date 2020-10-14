@@ -46,7 +46,6 @@ static void InitializeFlipper(UIApplication *application) {
   [self.window makeKeyAndVisible];
   
 //  [RNSplashScreen show];
-  
   return YES;
 }
 

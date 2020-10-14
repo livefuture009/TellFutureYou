@@ -10,7 +10,7 @@ import {
 import {connect} from 'react-redux';
 import HeaderInfoBar from '../../components/HeaderInfoBar'
 import SettingsInfoCell from '../../components/SettingsInfoCell'
-import { TOAST_SHOW_TIME, Status, WEB_PAGE_TYPE } from '../../constants.js'
+import { TOAST_SHOW_TIME, Status, WEB_PAGE_TYPE, USER_LEVEL } from '../../constants.js'
 import actionTypes from '../../actions/actionTypes';
 import * as Storage from '../../services/Storage'
 import Colors from '../../theme/Colors'
@@ -62,7 +62,13 @@ class MyAccountScreen extends Component {
     const firstName = (currentUser && currentUser.firstName)  ? currentUser.firstName : '';
     const lastName = (currentUser && currentUser.lastName)  ? currentUser.lastName : '';
     const email = (currentUser && currentUser.email)  ? currentUser.email : '';
-
+    var level = "Free Member";
+    if (currentUser.level == USER_LEVEL.STANDARD) {
+      level = "Standard Member";
+    } else if (currentUser.level == USER_LEVEL.PREMIUM) {
+      level = "Premium Member";
+    }
+    
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
         <View style={styles.container}>
@@ -78,7 +84,7 @@ class MyAccountScreen extends Component {
                   <FastImage source={avatar ? {uri: avatar} : Images.account_icon} style={styles.avatarImage}/>
                 </View>              
                 <Text style={styles.nameText}>{firstName} {lastName}</Text>
-                <Text style={styles.emailText}>{email}</Text>
+                <Text style={styles.emailText}>{level}</Text>
               </View>
 
               <View style={{paddingHorizontal: 20}}>
@@ -151,8 +157,10 @@ const styles = StyleSheet.create({
 
   emailText: {
     fontFamily: Fonts.regular,
-    fontSize: 16,
-    opacity: 0.7,
+    fontStyle: 'italic',
+    fontSize: 14,
+    opacity: 0.5,
+    textTransform: 'uppercase',
   },
 
   avatarContainer: {

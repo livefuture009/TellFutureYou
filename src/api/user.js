@@ -1,7 +1,6 @@
 import { url } from '../constants';
 import { Platform } from 'react-native';
 import { filterFileUri, filterFileName, makeRandomText, compressImage } from '../functions';
-import RNFS from 'react-native-fs';
 
 //////////////////////////////////////////////////////////////////
 ////////////////////////// Login /////////////////////////////////
@@ -427,6 +426,23 @@ export const getMyFriends = (userId) => {
 };
 
 //////////////////////////////////////////////////////////////////
+//////////////////////// Get Friend Count ////////////////////////
+//////////////////////////////////////////////////////////////////
+export const getFriendCount = (userId) => {
+  const method = 'POST';
+  const request_url = `${url}/user/get_friend_count`
+  const headers = {
+    'Content-Type': 'application/json',
+  }
+  const body = JSON.stringify({ 
+    user_id: userId,   
+  });
+
+  return fetch(request_url, { method, body, headers})
+    .then((res) => res.json());
+};
+
+//////////////////////////////////////////////////////////////////
 ///////////////////// Send Friend Request ////////////////////////
 //////////////////////////////////////////////////////////////////
 export const sendFriendRequest = (userId, friendId, contactId) => {
@@ -493,6 +509,25 @@ export const removeFriend = (userId, friendId) => {
   const body = JSON.stringify({ 
     user_id: userId,   
     friend_id: friendId
+  });
+
+  return fetch(request_url, { method, body, headers})
+    .then((res) => res.json());
+};
+
+//////////////////////////////////////////////////////////////////
+////////////////////// Change Subscription ///////////////////////
+//////////////////////////////////////////////////////////////////
+export const changeSubscription = (user_id, level, subscription) => {
+  const method = 'POST';
+  const request_url = `${url}/user/change_subscription`
+  const headers = {
+    'Content-Type': 'application/json',
+  }
+  const body = JSON.stringify({ 
+    user_id,   
+    level,
+    subscription: JSON.stringify(subscription)
   });
 
   return fetch(request_url, { method, body, headers})

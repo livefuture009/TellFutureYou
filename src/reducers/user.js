@@ -13,6 +13,7 @@ export const initialState = {
   resultMessage: '',
   unreadMessages: 0,
   activePage: 0,
+  friendCount: 0,
 
   loginUserStatus: Status.NONE,
   loginWithSocialStatus: Status.NONE,
@@ -35,10 +36,13 @@ export const initialState = {
   getContactsStatus: Status.NONE,
 
   getMyFriendsStatus: Status.NONE,
+  getFriendCountStatus: Status.NONE,
   sendFriendRequestStatus: Status.NONE,
   acceptFriendRequestStatus: Status.NONE,
   declineFriendRequestStatus: Status.NONE,
   removeFriendStatus: Status.NONE,
+
+  changeSubscriptionStatus: Status.NONE,
 
   changeActiveFriendPageStatus: Status.NONE,
 };
@@ -411,6 +415,26 @@ const getMyFriendsFailure = (state, action) => ({
 });
 
 //////////////////////////////////////////////////////////////////
+////////////////////// Get Friend Count //////////////////////////
+//////////////////////////////////////////////////////////////////
+const getFriendCountRequest = (state) => ({
+  ...state,
+  getFriendCountStatus: Status.REQUEST,
+});
+
+const getFriendCountSuccess = (state, action) => ({
+  ...state,
+  friendCount: action.payload,
+  getFriendCountStatus: Status.SUCCESS,
+});
+
+const getFriendCountFailure = (state, action) => ({
+  ...state,
+  errorMessage: action.error,
+  getFriendCountStatus: Status.FAILURE,
+});
+
+//////////////////////////////////////////////////////////////////
 ///////////////////// Send Friend Request ////////////////////////
 //////////////////////////////////////////////////////////////////
 const sendFriendRequestRequest = (state) => ({
@@ -595,6 +619,26 @@ const removeFriendFailure = (state, action) => ({
 });
 
 //////////////////////////////////////////////////////////////////
+///////////////////// Change Subscription ////////////////////////
+//////////////////////////////////////////////////////////////////
+const changeSubscriptionRequest = (state) => ({
+  ...state,
+  changeSubscriptionStatus: Status.REQUEST,
+});
+
+const changeSubscriptionSuccess = (state, action) => ({
+  ...state,
+  currentUser: action.payload,
+  changeSubscriptionStatus: Status.SUCCESS,
+});
+
+const changeSubscriptionFailure = (state, action) => ({
+  ...state,
+  errorMessage: action.error,
+  changeSubscriptionStatus: Status.FAILURE,
+});
+
+//////////////////////////////////////////////////////////////////
 ///////////////////// Set Current User ///////////////////////////
 //////////////////////////////////////////////////////////////////
 const setCurrentUser = (state, action) => ({
@@ -653,6 +697,7 @@ const resetUser = (state, action) => {
   state.errorMessage = '';
   state.resultMessage = '';
   state.activePage = 0;
+  state.friendCount = 0;
 
   state.loginUserStatus = Status.NONE;
   state.loginWithSocialStatus = Status.NONE;
@@ -674,10 +719,13 @@ const resetUser = (state, action) => {
   state.getContactsStatus = Status.NONE;
 
   state.getMyFriendsStatus = Status.NONE;
+  state.getFriendCountStatus = Status.NONE;
   state.sendFriendRequestStatus = Status.NONE;
   state.acceptFriendRequestStatus = Status.NONE;
   state.declineFriendRequestStatus = Status.NONE;
   state.removeFriendStatus = Status.NONE;
+
+  state.changeSubscriptionStatus = Status.NONE;
 
   state.changeActiveFriendPageStatus= Status.NONE;
   return {
@@ -759,6 +807,10 @@ const actionHandlers = {
   [Types.GET_MY_FRIENDS_SUCCESS]: getMyFriendsSuccess,
   [Types.GET_MY_FRIENDS_FAILURE]: getMyFriendsFailure,
 
+  [Types.GET_FRIEND_COUNT_REQUEST]: getFriendCountRequest,
+  [Types.GET_FRIEND_COUNT_SUCCESS]: getFriendCountSuccess,
+  [Types.GET_FRIEND_COUNT_FAILURE]: getFriendCountFailure,
+
   [Types.SEND_FRIEND_REQUEST_REQUEST]: sendFriendRequestRequest,
   [Types.SEND_FRIEND_REQUEST_SUCCESS]: sendFriendRequestSuccess,
   [Types.SEND_FRIEND_REQUEST_FAILURE]: sendFriendRequestFailure,
@@ -774,6 +826,10 @@ const actionHandlers = {
   [Types.REMOVE_FRIEND_REQUEST]: removeFriendRequest,
   [Types.REMOVE_FRIEND_SUCCESS]: removeFriendSuccess,
   [Types.REMOVE_FRIEND_FAILURE]: removeFriendFailure,
+
+  [Types.CHANGE_SUBSCRIPTION_REQUEST]: changeSubscriptionRequest,
+  [Types.CHANGE_SUBSCRIPTION_SUCCESS]: changeSubscriptionSuccess,
+  [Types.CHANGE_SUBSCRIPTION_FAILURE]: changeSubscriptionFailure,
 
   [Types.SET_CURRENT_USER]: setCurrentUser,
   [Types.SET_PLAYER_ID]: setPlayerId, 

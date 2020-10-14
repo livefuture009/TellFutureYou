@@ -4,30 +4,129 @@ import {
   View,
   SafeAreaView,
   StyleSheet,
-  Keyboard
+  FlatList
 } from 'react-native';
 
 import {connect} from 'react-redux';
 import Toast from 'react-native-easy-toast'
+import RNIap, {
+  purchaseErrorListener,
+  purchaseUpdatedListener,
+} from 'react-native-iap';
+
 import TopNavBar from '../components/TopNavBar'
 import RoundButton from '../components/RoundButton'
 import LoadingOverlay from '../components/LoadingOverlay'
+import SubscriptionCell from '../components/Cells/SubscriptionCell'
+import actionTypes from '../actions/actionTypes';
+import { 
+  TOAST_SHOW_TIME, 
+  Status, 
+  SUBSCRIPTION_STANDARD, 
+  SUBSCRIPTION_PREMIUM, 
+  USER_LEVEL 
+} from '../constants.js'
+
 import Messages from '../theme/Messages'
 import Colors from '../theme/Colors'
-import { TOAST_SHOW_TIME, Status, PASSWORD_MIN_LENGTH } from '../constants.js'
-import actionTypes from '../actions/actionTypes';
-import * as RNIap from 'react-native-iap';
+
+
+const itemSubs = Platform.select({
+  ios: [SUBSCRIPTION_STANDARD, SUBSCRIPTION_PREMIUM],
+  android: [SUBSCRIPTION_STANDARD, SUBSCRIPTION_PREMIUM]
+});
 
 class SubscriptionScreen extends Component {
   constructor() {
     super()
     this.state = {
       isLoading: false,
+      isRequestSubscription: false,
+      products: [],
+      selectedIndex: -1,
     }    
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidMount() {
+    const { currentUser } = this.props;
+    if (currentUser.level == USER_LEVEL.STANDARD) {
+      this.setState({selectedIndex: 0});
+    } else if (currentUser.level == USER_LEVEL.PREMIUM) {
+      this.setState({selectedIndex: 1});
+    }
+    this.initIAP();
+  }
 
+  componentWillUnmount() {
+    if (this.purchaseUpdateSubscription) {
+      this.purchaseUpdateSubscription.remove();
+      this.purchaseUpdateSubscription = null;
+    }
+    if (this.purchaseErrorSubscription) {
+      this.purchaseErrorSubscription.remove();
+      this.purchaseErrorSubscription = null;
+    }
+
+    RNIap.endConnection();
+  }
+
+  async initIAP() {
+    try {
+      await RNIap.initConnection();
+      this.getSubscriptions();
+    } catch (err) {
+      console.warn(err.code, err.message);
+    }
+  }
+
+  initIAPListener() {
+    this.purchaseUpdateSubscription = purchaseUpdatedListener(
+      async (purchase) => {
+        const receipt = purchase.transactionReceipt;
+        if (receipt) {
+          if (this.state.isRequestSubscription) {
+            this.finishTransaction(purchase);
+          }          
+        }
+      },
+    );
+
+    this.purchaseErrorSubscription = purchaseErrorListener(
+      (error) => {
+        if (this.state.isRequestSubscription) {
+          Alert.alert(Messages.SubscriptionCancelled, '');
+        }        
+        this.setState({isLoading: false, isRequestSubscription: false});
+      },
+    );
+  }
+
+  getSubscriptions = async () => {
+    const _SELF = this;
+    try {
+        _SELF.setState({isLoading: true});
+        const products = await RNIap.getSubscriptions(itemSubs);
+        _SELF.setState({products: products, isLoading: false});
+        _SELF.initIAPListener();
+    } 
+    catch (err) {
+       console.warn(err.code, err.message);
+       _SELF.setState({isLoading: false});
+       Alert.alert(Messages.NetWorkError, '');
+    }
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.changeSubscriptionStatus != this.props.changeSubscriptionStatus) {
+      if (this.props.changeSubscriptionStatus == Status.SUCCESS) {
+        this.setState({isLoading: false});
+        this.showMessage(Messages.SubscriptionCompleted, true);
+      } 
+      else if (this.props.changeSubscriptionStatus == Status.FAILURE) {
+        this.setState({isLoading: false});
+        this.showMessage(Messages.SubscriptionFailed, false);        
+      }      
+    }
   }
 
   onBack() {
@@ -39,18 +138,73 @@ class SubscriptionScreen extends Component {
     this.toast.show(this.props.errorMessage, TOAST_SHOW_TIME);
   }
 
-  onSubscribe=()=> {
+  showMessage(message, isBack) {
+    Alert.alert(
+      '',
+      message,
+      [
+        {text: 'OK', onPress: () => {
+          if (isBack) this.onBack();
+        }},
+      ],
+      {cancelable: false},
+    ); 
+  }
+
+  finishTransaction(purchase) {
+    const { currentUser } = this.props;
+    this.setState({isRequestSubscription: false, isLoading: true});
+    var level = currentUser.level;
+    if (purchase.productId == SUBSCRIPTION_STANDARD) {
+      level = USER_LEVEL.STANDARD;
+    } else {
+      level = USER_LEVEL.PREMIUM;
+    }
     
+    this.props.dispatch({
+        type: actionTypes.CHANGE_SUBSCRIPTION,
+        user_id: currentUser._id,
+        level,
+        subscription: purchase
+    }); 
+  }
+
+  onSubscribe=()=> {
+    const {selectedIndex, products} = this.state; 
+    if (selectedIndex >= 0) {
+      this.requestSubscription(products[selectedIndex].productId);
+    }    
+  }
+
+  requestSubscription = async (sku) => {
+    try {
+      this.setState({isLoading: true, isRequestSubscription: true});
+      await RNIap.requestSubscription(sku);
+    } catch (err) {
+      this.setState({isLoading: false, isRequestSubscription: false});
+    }
   }
 
   render() {
+    const { products, selectedIndex } = this.state;
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
         <View style={styles.container}>
           <TopNavBar title="SUBSCRIPTION" align="left" onBack={() => this.onBack()}/>
-          <View style={styles.contentView}>
-          </View>
-
+          <FlatList 
+            style={styles.listView}
+            data={products}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item, index}) => (
+              <SubscriptionCell 
+                data={item} 
+                key={index} 
+                index={index}
+                selectedIndex={selectedIndex}
+                onSelect={(index) => this.setState({selectedIndex: index})} 
+              />
+            )}
+          />
           <View style={styles.viewBottom}>
             <RoundButton 
               title="Subscribe" 
@@ -102,7 +256,7 @@ function mapStateToProps(state) {
   return {
     currentUser: state.user.currentUser,
     errorMessage: state.user.errorMessage,
-    changePasswordStatus: state.user.changePasswordStatus,
+    changeSubscriptionStatus: state.user.changeSubscriptionStatus,
   };  
 }
 

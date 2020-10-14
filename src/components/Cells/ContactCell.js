@@ -32,6 +32,7 @@ export default class ContactCell extends React.Component {
   	render() {
         const { data, isImport, onSelect } = this.props;
         const avatar = data.avatar ? {uri: data.avatar} : Images.account_icon;
+
     	return (
 	   		<TouchableOpacity style={styles.container} onPress={() => onSelect(data)}>
                 <View style={[styles.contentView, Platform.OS == "ios" ? styles.shadowView: {}]}>

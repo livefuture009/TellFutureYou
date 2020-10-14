@@ -26,10 +26,13 @@ const {
   getContactStatus,
 
   getMyFriends,
+  getFriendCount,
   sendFriendRequest,
   acceptFriendRequest,
   declineFriendRequest,
   removeFriend,
+
+  changeSubscription,
 } = api;
 
 function* GetCurrentUser(action) {
@@ -313,6 +316,21 @@ function* GetMyFriends(action) {
   }
 }
 
+function* GetFriendCount(action) {
+  yield put({ type: Types.GET_FRIEND_COUNT_REQUEST });
+  try {
+    const res = yield call(getFriendCount, action.userId);
+    if (res.result) {
+      yield put({ type: Types.GET_FRIEND_COUNT_SUCCESS, payload: res.count });
+    } else {
+      yield put({ type: Types.GET_FRIEND_COUNT_FAILURE, error: res.error });      
+    }
+  } catch (error) {
+    yield put({ type: Types.GET_FRIEND_COUNT_FAILURE, error: Messages.NetWorkError });
+    console.log(error);
+  }
+}
+
 function* SendFriendRequest(action) {
   yield put({ type: Types.SEND_FRIEND_REQUEST_REQUEST });
   try {
@@ -373,6 +391,21 @@ function* RemoveFriend(action) {
   }
 }
 
+function* ChangeSubscription(action) {
+  yield put({ type: Types.CHANGE_SUBSCRIPTION_REQUEST });
+  try {
+    const res = yield call(changeSubscription, action.user_id, action.level, action.subscription);
+    if (res.result) {
+      yield put({ type: Types.CHANGE_SUBSCRIPTION_SUCCESS, payload: res.user });
+    } else {
+      yield put({ type: Types.CHANGE_SUBSCRIPTION_FAILURE, error: res.error });      
+    }
+  } catch (error) {
+    console.log(error);
+    yield put({ type: Types.CHANGE_SUBSCRIPTION_FAILURE, error: Messages.NetWorkError });
+  }
+}
+
 export default [
   takeLatest(Types.LOGIN_USER, LoginUser),
   takeLatest(Types.LOGIN_WITH_SOCIAL, LoginWithSocial),
@@ -394,8 +427,11 @@ export default [
   takeLatest(Types.GET_CONTACT_STATUS, GetContactStatus),
 
   takeLatest(Types.GET_MY_FRIENDS, GetMyFriends),
+  takeLatest(Types.GET_FRIEND_COUNT, GetFriendCount),
   takeLatest(Types.SEND_FRIEND_REQUEST, SendFriendRequest),
   takeLatest(Types.ACCEPT_FRIEND_REQUEST, AcceptFriendRequest),
   takeLatest(Types.DECLINE_FRIEND_REQUEST, DeclineFriendRequest),
   takeLatest(Types.REMOVE_FRIEND, RemoveFriend),
+
+  takeLatest(Types.CHANGE_SUBSCRIPTION, ChangeSubscription),
 ];
