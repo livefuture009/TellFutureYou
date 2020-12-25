@@ -10,6 +10,8 @@
 		00CA0C0927DD45EC95B25A74 /* OpenSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0F6C0CFA9395453D8E0295F6 /* OpenSans-Regular.ttf */; };
 		00E356F31AD99517003FC87E /* TellFutureYouTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* TellFutureYouTests.m */; };
 		043C7BE324B8DAAD00CCE1F7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 043C7BE224B8DAAD00CCE1F7 /* GoogleService-Info.plist */; };
+		046927FD25965D3800ECF12A /* TellFutureYou.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046927FC25965D3800ECF12A /* TellFutureYou.swift */; };
+		046927FE25965D3800ECF12A /* TellFutureYou.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046927FC25965D3800ECF12A /* TellFutureYou.swift */; };
 		119C7A4CE3C848F58BF88568 /* OpenSans-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83C400B16CC949E3B0498657 /* OpenSans-BoldItalic.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
@@ -56,6 +58,9 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* TellFutureYouTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TellFutureYouTests.m; sourceTree = "<group>"; };
 		043C7BE224B8DAAD00CCE1F7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "TellFutureYou/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		046927FA25965D3800ECF12A /* TellFutureYou-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TellFutureYou-Bridging-Header.h"; sourceTree = "<group>"; };
+		046927FB25965D3800ECF12A /* TellFutureYou-tvOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TellFutureYou-tvOS-Bridging-Header.h"; sourceTree = "<group>"; };
+		046927FC25965D3800ECF12A /* TellFutureYou.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TellFutureYou.swift; sourceTree = "<group>"; };
 		049C3F69249D6C19008FCB01 /* TellFutureYou.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = TellFutureYou.entitlements; path = TellFutureYou/TellFutureYou.entitlements; sourceTree = "<group>"; };
 		0C0DAB35ED3B44E59D789E22 /* OpenSans-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-Light.ttf"; path = "../assets/fonts/OpenSans-Light.ttf"; sourceTree = "<group>"; };
 		0F6C0CFA9395453D8E0295F6 /* OpenSans-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-Regular.ttf"; path = "../assets/fonts/OpenSans-Regular.ttf"; sourceTree = "<group>"; };
@@ -157,6 +162,9 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				046927FC25965D3800ECF12A /* TellFutureYou.swift */,
+				046927FA25965D3800ECF12A /* TellFutureYou-Bridging-Header.h */,
+				046927FB25965D3800ECF12A /* TellFutureYou-tvOS-Bridging-Header.h */,
 			);
 			name = TellFutureYou;
 			sourceTree = "<group>";
@@ -337,10 +345,11 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = AMH65FF9S9;
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1220;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
+						LastSwiftMigration = 1220;
 						ProvisioningStyle = Automatic;
 					};
 					2D02E48F1E0B4A5D006451C7 = {
@@ -499,6 +508,7 @@
 				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
 				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/RNImageCropPicker/QBImagePicker.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/TOCropViewController/TOCropViewControllerBundle.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -506,6 +516,7 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FacebookSDKStrings.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/QBImagePicker.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TOCropViewControllerBundle.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -545,6 +556,7 @@
 				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
 				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/RNImageCropPicker/QBImagePicker.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/TOCropViewController/TOCropViewControllerBundle.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -552,6 +564,7 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FacebookSDKStrings.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/QBImagePicker.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TOCropViewControllerBundle.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -635,6 +648,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				046927FD25965D3800ECF12A /* TellFutureYou.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -644,6 +658,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */,
+				046927FE25965D3800ECF12A /* TellFutureYou.swift in Sources */,
 				2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -688,6 +703,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8951CBC9B08D183A896D7713 /* Pods-TellFutureYou-TellFutureYouTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -711,6 +727,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 58D8444575A249E2E9CCDAD4 /* Pods-TellFutureYou-TellFutureYouTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = TellFutureYouTests/Info.plist;
@@ -750,6 +767,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = gad.tellfutureyou.org;
 				PRODUCT_NAME = "Tell Future You";
+				SWIFT_OBJC_BRIDGING_HEADER = "TellFutureYou-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -774,6 +792,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = gad.tellfutureyou.org;
 				PRODUCT_NAME = "Tell Future You";
+				SWIFT_OBJC_BRIDGING_HEADER = "TellFutureYou-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -786,6 +805,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -802,6 +822,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.TellFutureYou-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
+				SWIFT_OBJC_BRIDGING_HEADER = "TellFutureYou-tvOS-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 			};
@@ -814,6 +837,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -830,6 +854,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.TellFutureYou-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
+				SWIFT_OBJC_BRIDGING_HEADER = "TellFutureYou-tvOS-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 			};
@@ -839,6 +865,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AF67E27AC886C81F4D7F17A /* Pods-TellFutureYou-tvOSTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -866,6 +893,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E9CE4644C6A19E39120647F9 /* Pods-TellFutureYou-tvOSTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;

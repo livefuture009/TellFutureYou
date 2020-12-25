@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -14,34 +14,32 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="splash_bg" translatesAutoresizingMaskIntoConstraints="NO" id="4lh-P9-t5i">
-                    <rect key="frame" x="0.0" y="801" width="640" height="335"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="335" id="IJE-yM-3eI"/>
-                    </constraints>
+                    <rect key="frame" x="0.0" y="0.0" width="640" height="1136"/>
                 </imageView>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="splash_logo" translatesAutoresizingMaskIntoConstraints="NO" id="WaD-QO-pJc">
-                    <rect key="frame" x="195" y="275" width="250" height="250"/>
+                    <rect key="frame" x="220" y="292" width="200" height="200"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="250" id="EfV-ug-l95"/>
-                        <constraint firstAttribute="height" constant="250" id="nWT-t6-Mtc"/>
+                        <constraint firstAttribute="height" constant="200" id="36j-iz-8CU"/>
+                        <constraint firstAttribute="width" constant="200" id="ufg-KJ-tnm"/>
                     </constraints>
                 </imageView>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="4lh-P9-t5i" secondAttribute="bottom" id="Jhl-to-YJJ"/>
-                <constraint firstAttribute="trailing" secondItem="4lh-P9-t5i" secondAttribute="trailing" id="MJW-VH-SpU"/>
-                <constraint firstItem="WaD-QO-pJc" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" constant="-168" id="TmG-HK-GUv"/>
-                <constraint firstItem="WaD-QO-pJc" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="o3V-hs-UrU"/>
-                <constraint firstItem="4lh-P9-t5i" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="tuJ-Vd-i7p"/>
+                <constraint firstItem="4lh-P9-t5i" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="MFY-m7-fa3"/>
+                <constraint firstItem="WaD-QO-pJc" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="d4i-IH-UBM"/>
+                <constraint firstAttribute="trailing" secondItem="4lh-P9-t5i" secondAttribute="trailing" id="k8f-Xn-Mgo"/>
+                <constraint firstItem="4lh-P9-t5i" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="onr-ZM-hmj"/>
+                <constraint firstItem="WaD-QO-pJc" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" constant="-176" id="rBv-v9-WT2"/>
+                <constraint firstAttribute="bottom" secondItem="4lh-P9-t5i" secondAttribute="bottom" id="sPh-FT-HTa"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="115.94202898550725" y="315.40178571428572"/>
+            <point key="canvasLocation" x="40.579710144927539" y="312.72321428571428"/>
         </view>
     </objects>
     <resources>
-        <image name="splash_bg" width="562.5" height="385.5"/>
-        <image name="splash_logo" width="169.5" height="269"/>
+        <image name="splash_bg" width="561" height="1218"/>
+        <image name="splash_logo" width="220" height="246.5"/>
     </resources>
 </document>
