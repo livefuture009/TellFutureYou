@@ -59,14 +59,14 @@ const styles = StyleSheet.create({
 		textAlign: 'left',
 		fontFamily: Fonts.bold,
 		fontSize: 28,
-		color: 'black',
+		color: 'white',
 	},
 
 	buttonText: {
 		textAlign: 'right',
 		fontFamily: Fonts.regular,
 		fontSize: 16,
-		color: 'rgba(0, 0 ,0, 0.7)',
+		color: 'white',
 	},
 
 	plusButtonText :{

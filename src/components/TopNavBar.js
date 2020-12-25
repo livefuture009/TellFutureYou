@@ -45,7 +45,7 @@ export default class TopNavBar extends React.Component {
 
 const styles = StyleSheet.create({
 	container: {
-		paddingTop: 10,
+		paddingTop: 5,
 		paddingBottom: 10,
 		zIndex: 3,
 	},
@@ -60,8 +60,8 @@ const styles = StyleSheet.create({
 		width: '100%',
 		textAlign: 'center',
 		fontFamily: Fonts.bold,
-		fontSize: 20,
-		color: 'black',
+		fontSize: 24,
+		color: 'white',
 		paddingHorizontal: 50,
 		paddingVertical: 10,
 	},

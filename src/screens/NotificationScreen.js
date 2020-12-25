@@ -143,7 +143,7 @@ class NotificationScreen extends Component {
   render() {
     const { notifications, isFirst, isLoading } = this.state;
     return (
-      <View style={{flex: 1, backgroundColor: Colors.pageColor}}>
+      <View style={{flex: 1, backgroundColor: Colors.appColor}}>
         <SafeAreaConsumer>
           {
             insets => 
@@ -188,15 +188,15 @@ class NotificationScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f2f2f5',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    overflow: 'hidden',
   },
 
   contentView: {
     flex: 1,
-    backgroundColor: '#f2f2f5',
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-    paddingTop: 15,
+    paddingTop: 10,
   },
 
   listView: {

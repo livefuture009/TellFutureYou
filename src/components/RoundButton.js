@@ -1,4 +1,5 @@
 import React from 'react';
+import LinearGradient from 'react-native-linear-gradient';
 import { Text, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Colors from "../theme/Colors"
 import Fonts from "../theme/Fonts"
@@ -10,9 +11,9 @@ export default class RoundButton extends React.Component {
 	    <TouchableOpacity style={this.props.style} onPress={() => onPress()}>
 	    	{
 	    		theme == "blue" 
-	    		? <View style={[styles.buttonContainer, styles.mainButton]}>
+	    		?  <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#0d3758', '#02213b']} style={styles.buttonContainer}>
 					<Text style={[styles.buttonText, styles.whiteText]}>{title}</Text>
-	    		  </View>
+				</LinearGradient>
 	    		: null
 	    	}
 	    	{	

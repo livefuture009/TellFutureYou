@@ -3,12 +3,12 @@ import {
   View,
   Alert,
   SafeAreaView,
-  Text,
   StyleSheet,
   Keyboard
 } from 'react-native';
 
 import {connect} from 'react-redux';
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import ImagePicker from 'react-native-image-picker';
 import Toast from 'react-native-easy-toast'
@@ -272,92 +272,98 @@ class ContactDetailScreen extends Component {
     
 
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
-        <TopNavBar 
-          title={title} 
-          align="left" 
-          rightButton={isEditing ? "remove" : null}
-          onBack={() => this.onBack()}
-          onRight={() => this.onRemoveContact()}
-        />
-        <View style={styles.container}>
-              <View style={styles.profileBox}>
-              <KeyboardAwareScrollView style={{paddingHorizontal: 20}}>      
-                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                  <EditAvatar avatar={this.state.avatar} onTakePhoto={() => this.onTakePicture()} />
-                </View>                          
-                <LabelFormInput
-                    label="First Name" 
-                    type="text"
-                    placeholder="John"
+      <View style={{flex: 1, backgroundColor: Colors.appColor}}>
+        <SafeAreaInsetsContext.Consumer>
+          {insets => 
+            <View style={{flex: 1, paddingTop: insets.top }} >
+              <TopNavBar 
+                title={title} 
+                align="left" 
+                rightButton={isEditing ? "remove" : null}
+                onBack={() => this.onBack()}
+                onRight={() => this.onRemoveContact()}
+              />
+              <View style={styles.container}>
+                <View style={styles.profileBox}>
+                <KeyboardAwareScrollView style={{paddingHorizontal: 20}}>      
+                  <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <EditAvatar avatar={this.state.avatar} onTakePhoto={() => this.onTakePicture()} />
+                  </View>                          
+                  <LabelFormInput
+                      label="First Name" 
+                      type="text"
+                      placeholder="John"
+                      placeholderTextColor={Colors.placeholderColor}
+                      editable={!isDisabled}
+                      value={this.state.firstName} 
+                      errorMessage={this.state.firstNameError}
+                      returnKeyType="next"                                       
+                      onSubmitEditing={() => { this.lastNameInput.focus() }}
+                      onChangeText={this.onChangeFirstName} 
+                      style={{marginTop: 20}}
+                  />
+
+                  <LabelFormInput
+                      label="Last Name" 
+                      type="text"
+                      placeholder="Doe"
+                      placeholderTextColor={Colors.placeholderColor}
+                      editable={!isDisabled}
+                      value={this.state.lastName} 
+                      errorMessage={this.state.lastNameError}
+                      returnKeyType="next"                                       
+                      onRefInput={(input) => { this.lastNameInput = input }}
+                      onSubmitEditing={() => { this.emailInput.focus() }}
+                      onChangeText={this.onChangeLastName} 
+                  />
+
+                  <LabelFormInput
+                    label="Email" 
+                    type="email"
+                    placeholder="john@email.com"
                     placeholderTextColor={Colors.placeholderColor}
                     editable={!isDisabled}
-                    value={this.state.firstName} 
-                    errorMessage={this.state.firstNameError}
+                    value={this.state.email} 
+                    errorMessage={this.state.emailError}
                     returnKeyType="next"                                       
-                    onSubmitEditing={() => { this.lastNameInput.focus() }}
-                    onChangeText={this.onChangeFirstName} 
-                    style={{marginTop: 20}}
-                />
+                    onRefInput={(input) => { this.emailInput = input }}
+                    onSubmitEditing={() => { this.phoneInput.focus() }}
+                    onChangeText={this.onChangeEmail} 
+                  />
 
-                <LabelFormInput
-                    label="Last Name" 
-                    type="text"
-                    placeholder="Doe"
+                  <LabelFormInput
+                    label="Phone" 
+                    type="phone"
+                    placeholder="123-456-7890"
                     placeholderTextColor={Colors.placeholderColor}
                     editable={!isDisabled}
-                    value={this.state.lastName} 
-                    errorMessage={this.state.lastNameError}
-                    returnKeyType="next"                                       
-                    onRefInput={(input) => { this.lastNameInput = input }}
-                    onSubmitEditing={() => { this.emailInput.focus() }}
-                    onChangeText={this.onChangeLastName} 
-                />
+                    value={this.state.phone} 
+                    errorMessage={this.state.phoneError}
+                    returnKeyType="done"                                       
+                    onRefInput={(input) => { this.phoneInput = input }}
+                    onSubmitEditing={() => { this.onMakeChanges() }}
+                    onChangeText={(text) => this.setState({phone: text, phoneError: null})} />
 
-                <LabelFormInput
-                  label="Email" 
-                  type="email"
-                  placeholder="john@email.com"
-                  placeholderTextColor={Colors.placeholderColor}
-                  editable={!isDisabled}
-                  value={this.state.email} 
-                  errorMessage={this.state.emailError}
-                  returnKeyType="next"                                       
-                  onRefInput={(input) => { this.emailInput = input }}
-                  onSubmitEditing={() => { this.phoneInput.focus() }}
-                  onChangeText={this.onChangeEmail} 
-                />
-
-                <LabelFormInput
-                  label="Phone" 
-                  type="phone"
-                  placeholder="123-456-7890"
-                  placeholderTextColor={Colors.placeholderColor}
-                  editable={!isDisabled}
-                  value={this.state.phone} 
-                  errorMessage={this.state.phoneError}
-                  returnKeyType="done"                                       
-                  onRefInput={(input) => { this.phoneInput = input }}
-                  onSubmitEditing={() => { this.onMakeChanges() }}
-                  onChangeText={(text) => this.setState({phone: text, phoneError: null})} />
-
-                {
-                  !isDisabled &&
-                  <View style={styles.centerView}>
-                    <RoundButton 
-                      title="Save" 
-                      theme="blue" 
-                      style={styles.blueButton} 
-                      onPress={() => this.onMakeChanges()} />
-                  </View>
-                }
-                
-                </KeyboardAwareScrollView>
+                  {
+                    !isDisabled &&
+                    <View style={styles.centerView}>
+                      <RoundButton 
+                        title="Save" 
+                        theme="blue" 
+                        style={styles.blueButton} 
+                        onPress={() => this.onMakeChanges()} />
+                    </View>
+                  }
+                  
+                  </KeyboardAwareScrollView>
+              </View>
+          </View>
             </View>
-        </View>
+          }
+        </SafeAreaInsetsContext.Consumer>
         <Toast ref={ref => (this.toast = ref)}/>
         { this.state.isLoading && <LoadingOverlay /> }
-      </SafeAreaView>
+      </View>
     );
   }
 }
@@ -365,6 +371,10 @@ class ContactDetailScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    overflow: 'hidden',
   },
 
   centerView: {
@@ -375,7 +385,7 @@ const styles = StyleSheet.create({
   },
 
   blueButton: {
-    width: '90%'
+    width: '100%'
   },
 
   profileBox: {

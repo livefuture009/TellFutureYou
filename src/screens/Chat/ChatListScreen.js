@@ -211,11 +211,9 @@ class ChatScreen extends Component {
       currentUser = sb.currentUser;
     }
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: Colors.appColor}}>
+        <HeaderInfoBar title="MESSAGES"/>
         <View style={styles.container}>
-          <HeaderInfoBar 
-            title="MESSAGES" 
-          />
           <View style={styles.contentView}>
             <SearchBox 
               style={{marginTop: 10, marginBottom: 10}} 
@@ -252,14 +250,13 @@ class ChatScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f2f2f5',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
   },
 
   contentView: {
     flex: 1,
-    backgroundColor: '#f2f2f5',
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
   },
 
   listView: {

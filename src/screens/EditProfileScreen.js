@@ -10,6 +10,7 @@ import {
 
 import {connect} from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import ImagePicker from 'react-native-image-picker';
 import Toast from 'react-native-easy-toast'
 import TopNavBar from '../components/TopNavBar'
@@ -235,98 +236,103 @@ class EditProfile extends Component {
   }
 
   render() {
-    const { currentUser } = this.props;
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
-        <TopNavBar title="EDIT PROFILE" onBack={() => this.onBack()}/>
-        <View style={styles.container}>
-          <KeyboardAwareScrollView>
-            <View>
-              <View style={styles.profileBox}>
-                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                  <EditAvatar avatar={this.state.avatar} style={{ marginTop: -80}} onTakePhoto={() => this.onTakePicture()} />
-                </View>              
-                <View style={styles.rowView}>
-                  <LabelFormInput
-                    label="First Name" 
-                    type="text"
-                    editable={true}
-                    placeholderTextColor={Colors.placeholderTextColor}
-                    value={this.state.firstName} 
-                    errorMessage={this.state.firstNameError}
-                    style={{width: '45%'}}
-                    returnKeyType="next"                                       
-                    onSubmitEditing={() => { this.lastNameInput.focus() }}
-                    onChangeText={this.onChangeFirstName} 
-                  />
+      <View style={{flex: 1, backgroundColor: Colors.appColor}}>
+        <SafeAreaInsetsContext.Consumer>
+          {insets => 
+            <View style={{flex: 1, paddingTop: insets.top }} >
+              <TopNavBar title="EDIT PROFILE" onBack={() => this.onBack()}/>
+                <View style={styles.container}>
+                  <KeyboardAwareScrollView>
+                    <View>
+                      <View style={styles.profileBox}>
+                        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                          <EditAvatar avatar={this.state.avatar} style={{ marginTop: -80}} onTakePhoto={() => this.onTakePicture()} />
+                        </View>              
+                        <View style={[styles.rowView, {marginTop: 25}]}>
+                          <LabelFormInput
+                            label="First Name" 
+                            type="text"
+                            editable={true}
+                            placeholderTextColor={Colors.placeholderTextColor}
+                            value={this.state.firstName} 
+                            errorMessage={this.state.firstNameError}
+                            style={{width: '45%'}}
+                            returnKeyType="next"                                       
+                            onSubmitEditing={() => { this.lastNameInput.focus() }}
+                            onChangeText={this.onChangeFirstName} 
+                          />
 
-                  <LabelFormInput
-                    label="Last Name" 
-                    type="text"
-                    editable={true}
-                    placeholderTextColor={Colors.placeholderTextColor}
-                    value={this.state.lastName} 
-                    errorMessage={this.state.lastNameError}
-                    style={{width: '45%'}}
-                    returnKeyType="next"                                       
-                    onRefInput={(input) => { this.lastNameInput = input }}
-                    onSubmitEditing={() => { this.emailInput.focus() }}
-                    onChangeText={this.onChangeLastName} 
-                  />
-                </View>
+                          <LabelFormInput
+                            label="Last Name" 
+                            type="text"
+                            editable={true}
+                            placeholderTextColor={Colors.placeholderTextColor}
+                            value={this.state.lastName} 
+                            errorMessage={this.state.lastNameError}
+                            style={{width: '45%'}}
+                            returnKeyType="next"                                       
+                            onRefInput={(input) => { this.lastNameInput = input }}
+                            onSubmitEditing={() => { this.emailInput.focus() }}
+                            onChangeText={this.onChangeLastName} 
+                          />
+                        </View>
 
-                <LabelFormInput
-                  label="Email" 
-                  type="email"
-                  editable={true}
-                  placeholderTextColor={Colors.placeholderTextColor}
-                  value={this.state.email} 
-                  errorMessage={this.state.emailError}
-                  returnKeyType="next"                                       
-                  onRefInput={(input) => { this.emailInput = input }}
-                  onSubmitEditing={() => { this.phoneInput.focus() }}
-                  onChangeText={this.onChangeEmail} 
-                />
+                        <LabelFormInput
+                          label="Email" 
+                          type="email"
+                          editable={true}
+                          placeholderTextColor={Colors.placeholderTextColor}
+                          value={this.state.email} 
+                          errorMessage={this.state.emailError}
+                          returnKeyType="next"                                       
+                          onRefInput={(input) => { this.emailInput = input }}
+                          onSubmitEditing={() => { this.phoneInput.focus() }}
+                          onChangeText={this.onChangeEmail} 
+                        />
 
-                <LabelFormInput
-                  label="Phone" 
-                  type="phone"
-                  editable={true}
-                  placeholderTextColor={Colors.placeholderTextColor}
-                  value={this.state.phone} 
-                  errorMessage={this.state.phoneError}
-                  returnKeyType="next"                                       
-                  onRefInput={(input) => { this.phoneInput = input }}
-                  onSubmitEditing={() => { this.locationInput.focus() }}
-                  onChangeText={(text) => this.setState({phone: text, phoneError: null})} />
+                        <LabelFormInput
+                          label="Phone" 
+                          type="phone"
+                          editable={true}
+                          placeholderTextColor={Colors.placeholderTextColor}
+                          value={this.state.phone} 
+                          errorMessage={this.state.phoneError}
+                          returnKeyType="next"                                       
+                          onRefInput={(input) => { this.phoneInput = input }}
+                          onSubmitEditing={() => { this.locationInput.focus() }}
+                          onChangeText={(text) => this.setState({phone: text, phoneError: null})} />
 
-                <LabelFormInput
-                  label="Location" 
-                  type="address"
-                  returnKeyType="next"
-                  editable={true}
-                  placeholderTextColor={Colors.placeholderTextColor}
-                  value={this.state.locationText}
-                  errorMessage={this.state.locationError} 
-                  onRefInput={(input) => { this.locationInput = input }}
-                  onSelectAddress={(address) => this.onChangeLocation(address)}     
-                  onChangeText={(text) => this.setState({locationText: text, locationError: null})} 
-                />
+                        <LabelFormInput
+                          label="Location" 
+                          type="address"
+                          returnKeyType="next"
+                          editable={true}
+                          placeholderTextColor={Colors.placeholderTextColor}
+                          value={this.state.locationText}
+                          errorMessage={this.state.locationError} 
+                          onRefInput={(input) => { this.locationInput = input }}
+                          onSelectAddress={(address) => this.onChangeLocation(address)}     
+                          onChangeText={(text) => this.setState({locationText: text, locationError: null})} 
+                        />
 
-                <View style={styles.centerView}>
-                  <RoundButton 
-                    title="Save Changes" 
-                    theme="blue" 
-                    style={styles.blueButton} 
-                    onPress={() => this.onMakeChanges()} />
+                        <View style={styles.centerView}>
+                          <RoundButton 
+                            title="Save Changes" 
+                            theme="blue" 
+                            style={styles.blueButton} 
+                            onPress={() => this.onMakeChanges()} />
+                        </View>
+                      </View>
+                    </View>
+                  </KeyboardAwareScrollView>
                 </View>
               </View>
-            </View>
-          </KeyboardAwareScrollView>
-        </View>
-        <Toast ref={ref => (this.toast = ref)}/>
-        { this.state.isLoading && <LoadingOverlay /> }
-      </SafeAreaView>
+            }
+          </SafeAreaInsetsContext.Consumer>
+          <Toast ref={ref => (this.toast = ref)}/>
+          { this.state.isLoading && <LoadingOverlay /> }
+      </View>
     );
   }
 }
@@ -334,6 +340,10 @@ class EditProfile extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.pageColor,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    overflow: 'hidden',
   },
 
   centerView: {
@@ -344,7 +354,7 @@ const styles = StyleSheet.create({
   },
 
   blueButton: {
-    width: '90%'
+    width: '100%'
   },
 
   profileBox: {
@@ -354,7 +364,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
     paddingLeft: 22,
     paddingRight: 22,
-    paddingTop: 10,
+    paddingTop: 25,
     paddingBottom: 10,
     borderRadius: 10,
   },

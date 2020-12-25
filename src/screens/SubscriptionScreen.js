@@ -9,6 +9,7 @@ import {
 
 import {connect} from 'react-redux';
 import Toast from 'react-native-easy-toast'
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import RNIap, {
   purchaseErrorListener,
   purchaseUpdatedListener,
@@ -188,35 +189,41 @@ class SubscriptionScreen extends Component {
   render() {
     const { products, selectedIndex } = this.state;
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
-        <View style={styles.container}>
-          <TopNavBar title="SUBSCRIPTION" align="left" onBack={() => this.onBack()}/>
-          <FlatList 
-            style={styles.listView}
-            data={products}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item, index}) => (
-              <SubscriptionCell 
-                data={item} 
-                key={index} 
-                index={index}
-                selectedIndex={selectedIndex}
-                onSelect={(index) => this.setState({selectedIndex: index})} 
-              />
-            )}
-          />
-          <View style={styles.viewBottom}>
-            <RoundButton 
-              title="Subscribe" 
-              theme="blue" 
-              style={styles.registerButton} 
-              onPress={this.onSubscribe} 
-            />
-          </View>
-        </View>
+      <View style={{flex: 1, backgroundColor: Colors.appColor}}>
+        <SafeAreaInsetsContext.Consumer>
+          {insets => 
+            <View style={{flex: 1, paddingTop: insets.top }} >
+              <TopNavBar title="SUBSCRIPTION" align="left" onBack={() => this.onBack()} />
+              <View style={styles.container}>
+                <FlatList 
+                  style={styles.listView}
+                  data={products}
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={({item, index}) => (
+                    <SubscriptionCell 
+                      data={item} 
+                      key={index} 
+                      index={index}
+                      selectedIndex={selectedIndex}
+                      onSelect={(index) => this.setState({selectedIndex: index})} 
+                    />
+                  )}
+                />
+                <View style={styles.viewBottom}>
+                  <RoundButton 
+                    title="Subscribe" 
+                    theme="blue" 
+                    style={styles.registerButton} 
+                    onPress={this.onSubscribe} 
+                  />
+                </View>
+              </View>
+            </View>
+          }
+        </SafeAreaInsetsContext.Consumer>
         <Toast ref={ref => (this.toast = ref)}/>
         { this.state.isLoading && <LoadingOverlay /> }
-      </SafeAreaView>
+      </View>
     );
   }
 }
@@ -225,6 +232,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    overflow: 'hidden',
   },
 
   contentView: {

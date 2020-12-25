@@ -10,6 +10,7 @@ import {
 
 import {connect} from 'react-redux';
 import Toast from 'react-native-easy-toast'
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import BackgroundTimer from 'react-native-background-timer';
 import TopNavBar from '../../components/TopNavBar'
 import ScheduledChatCell from '../../components/Cells/ScheduledChatCell'
@@ -174,61 +175,69 @@ class ScheduleMessageScreen extends Component {
   render() {
     const { messages, isFirst, isShowScheduleDialog } = this.state;
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
-        <TopNavBar 
-          title="Scheduled Messages" 
-          onBack={() => this.onBack()}
-        />
-        {
-          messages && messages.length > 0
-          ? <ChatView 
-              behavior={Platform.OS === "ios" ? "padding" : null}
-              style={styles.container} 
-            >
-              <View style={[styles.chatContainer, {transform: [{ scaleY: -1 }]}]}>
-                { 
-                    <FlatList
-                        enableEmptySections={true}
-                        data={messages}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({item, i}) => (
-                            <ScheduledChatCell 
-                              data={item} 
-                              onSelect={this.onSelectedMessage}
-                            />
-                        )}
-                    />
-                }
+      <View style={{flex: 1, backgroundColor: Colors.appColor}}>
+        <SafeAreaInsetsContext.Consumer>
+          {insets => 
+            <View style={{flex: 1, paddingTop: insets.top }} >
+              <TopNavBar 
+                title="Scheduled Messages" 
+                onBack={() => this.onBack()}
+              />
+              <View style={styles.container}>
+              {
+                messages && messages.length > 0
+                ? <ChatView 
+                    behavior={Platform.OS === "ios" ? "padding" : null}
+                    style={styles.container} 
+                  >
+                    <View style={[styles.chatContainer, {transform: [{ scaleY: -1 }]}]}>
+                      { 
+                          <FlatList
+                              enableEmptySections={true}
+                              data={messages}
+                              keyExtractor={(item, index) => index.toString()}
+                              renderItem={({item, i}) => (
+                                  <ScheduledChatCell 
+                                    data={item} 
+                                    onSelect={this.onSelectedMessage}
+                                  />
+                              )}
+                          />
+                      }
+                    </View>
+                  </ChatView>
+                : !isFirst && <EmptyView title="No scheduled messages." />
+              }
               </View>
-            </ChatView>
-          : !isFirst && <EmptyView title="No scheduled messages." />
-        }
-      <Toast ref={ref => (this.toast = ref)}/>
-      { this.state.isLoading
-        ? <LoadingOverlay />
-        : null
-      } 
-      <ActionSheet
-        ref={o => this.ActionSheet = o}
-        options={[
-          'Send Now', 
-          'Reschedule',
-          'Delete',
-          'Cancel']}
-        cancelButtonIndex={3}
-        onPress={(index) => this.selectActionSheet(index)}
-      />
-      <ScheduleDialog 
-        isVisible={isShowScheduleDialog}
-        value={this.scheduleTime}
-        onClose={() => this.setState({isShowScheduleDialog: false})}
-        onSelect={(date) => {
-          this.scheduleTime = date;
-          this.setState({isShowScheduleDialog: false});
-          this.rescheduleMessage();
-        }}
-      />
-      </SafeAreaView>
+            </View>
+          }
+        </SafeAreaInsetsContext.Consumer>
+        <Toast ref={ref => (this.toast = ref)}/>
+        { this.state.isLoading
+          ? <LoadingOverlay />
+          : null
+        } 
+        <ActionSheet
+          ref={o => this.ActionSheet = o}
+          options={[
+            'Send Now', 
+            'Reschedule',
+            'Delete',
+            'Cancel']}
+          cancelButtonIndex={3}
+          onPress={(index) => this.selectActionSheet(index)}
+        />
+        <ScheduleDialog 
+          isVisible={isShowScheduleDialog}
+          value={this.scheduleTime}
+          onClose={() => this.setState({isShowScheduleDialog: false})}
+          onSelect={(date) => {
+            this.scheduleTime = date;
+            this.setState({isShowScheduleDialog: false});
+            this.rescheduleMessage();
+          }}
+        />
+      </View>
     );
   }
 }
@@ -238,7 +247,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 10,
-    backgroundColor: Colors.pageColor
+    backgroundColor: Colors.pageColor,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    overflow: 'hidden',
   },
   chatContainer: {
     flex: 10,

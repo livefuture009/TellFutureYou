@@ -249,6 +249,8 @@ class LoginScreen extends Component {
   }
 
   async onMoveHome(animate) {
+    StatusBar.setBarStyle('light-content', true);
+
     await this.connectSendBird();
     const { currentUser } = this.props;
 

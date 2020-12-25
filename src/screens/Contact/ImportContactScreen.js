@@ -3,12 +3,12 @@ import {
   View,
   StyleSheet,
   FlatList,
-  SafeAreaView,
   Alert,
 } from 'react-native';
 
 import {connect} from 'react-redux';
 import Toast from 'react-native-easy-toast'
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import TopNavBar from '../../components/TopNavBar'
 import SearchBox from '../../components/SearchBox'
 import LoadingOverlay from '../../components/LoadingOverlay'
@@ -17,8 +17,9 @@ import RoundButton from '../../components/RoundButton'
 import actionTypes from '../../actions/actionTypes';
 import EmptyView from '../../components/EmptyView'
 import { TOAST_SHOW_TIME, Status } from '../../constants.js'
-import Messages from '../../theme/Messages'
 import { filterName } from '../../functions';
+import Messages from '../../theme/Messages'
+import Colors from '../../theme/Colors'
 
 class ImportContactScreen extends Component {
   constructor() {
@@ -186,44 +187,50 @@ class ImportContactScreen extends Component {
     const { contacts, keyword } = this.state;
 
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
-        <View style={styles.container}>
-            <TopNavBar title="IMPORT CONTACTS" align="left" onBack={() => this.onBack()}/>
-            <View style={{flex: 1}}>
-                <View style={styles.contentView}>
-                    <SearchBox 
-                        style={{marginTop: 10, marginBottom: 10}} 
-                        value={keyword} 
-                        placeholder="Search ..." 
-                        onChangeText={(text) => this.searchContacts(text)}
-                    />
-                    {
-                        (contacts && contacts.length > 0)
-                        ?  <View style={{flex: 1}}>
-                            <FlatList
-                                data={contacts}
-                                keyExtractor={(item, index) => index.toString()}
-                                ListFooterComponent={() => (<View style={{height: 70}}/>)}
-                                renderItem={({ item, index }) => (
-                                <ContactCell 
-                                    data={item} 
-                                    isImport={true}
-                                    onSelect={this.onSelectContact}
+      <View style={{flex: 1, backgroundColor: Colors.appColor}}>
+        <SafeAreaInsetsContext.Consumer>
+          {insets => 
+            <View style={{flex: 1, paddingTop: insets.top }} >
+              <TopNavBar title="IMPORT CONTACTS" align="left" onBack={() => this.onBack()}/>
+              <View style={styles.container}>
+                <View style={{flex: 1}}>
+                    <View style={styles.contentView}>
+                        <SearchBox 
+                            style={{marginTop: 10, marginBottom: 10}} 
+                            value={keyword} 
+                            placeholder="Search ..." 
+                            onChangeText={(text) => this.searchContacts(text)}
+                        />
+                        {
+                            (contacts && contacts.length > 0)
+                            ?  <View style={{flex: 1}}>
+                                <FlatList
+                                    data={contacts}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    ListFooterComponent={() => (<View style={{height: 70}}/>)}
+                                    renderItem={({ item, index }) => (
+                                    <ContactCell 
+                                        data={item} 
+                                        isImport={true}
+                                        onSelect={this.onSelectContact}
+                                    />
+                                    )}
                                 />
-                                )}
-                            />
-                            <View style={styles.footer}>
-                                <RoundButton title="Import" theme="blue" onPress={this.onImport}/>
-                            </View>
-                            </View>
-                        : <EmptyView title="No contacts."/>
-                    }
+                                <View style={styles.footer}>
+                                    <RoundButton title="Import" theme="blue" onPress={this.onImport}/>
+                                </View>
+                                </View>
+                            : <EmptyView title="No contacts."/>
+                        }
+                    </View>
                 </View>
             </View>
-        </View>
+            </View>
+          }
+        </SafeAreaInsetsContext.Consumer>
         <Toast ref={ref => (this.toast = ref)}/>
         { this.state.isLoading && <LoadingOverlay /> } 
-      </SafeAreaView>
+      </View>
     );
   }
 }

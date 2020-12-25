@@ -436,13 +436,13 @@ class ContactListScreen extends Component {
     const { contacts, keyword, isShowAddContactDialog, inviteOptions } = this.state;
 
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: Colors.appColor}}>
+        <HeaderInfoBar 
+          title="MY CONTACTS" 
+          rightButton="plus"
+          onRight={this.onAddContact}
+        />
         <View style={styles.container}>
-          <HeaderInfoBar 
-            title="MY CONTACTS" 
-            rightButton="plus"
-            onRight={this.onAddContact}
-          />
           <View style={{flex: 1}}>
             <View style={styles.contentView}>
               <SearchBox 

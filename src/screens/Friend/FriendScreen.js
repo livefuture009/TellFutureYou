@@ -412,7 +412,7 @@ class FriendScreen extends Component {
     const { currentPage } = this.state;
 
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: Colors.appColor}}>
         <View style={styles.container}>
           <HeaderInfoBar 
             title="MY FRIENDS" 

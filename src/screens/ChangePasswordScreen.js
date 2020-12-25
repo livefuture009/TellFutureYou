@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import {
   Alert,
   View,
-  SafeAreaView,
   StyleSheet,
   Keyboard
 } from 'react-native';
 
 import {connect} from 'react-redux';
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import Toast from 'react-native-easy-toast'
 import TopNavBar from '../components/TopNavBar'
 import RoundButton from '../components/RoundButton'
@@ -122,62 +122,66 @@ class ChangePasswordScreen extends Component {
       confirmPasswordError 
     } = this.state;
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
+      <View style={{flex: 1, backgroundColor: Colors.appColor}}>
+        <SafeAreaInsetsContext.Consumer>
+          {insets => 
+            <View style={{flex: 1, paddingTop: insets.top }} >
+              <TopNavBar title="CHANGE PASSWORD" align="left" onBack={() => this.onBack()}/>
+              <View style={styles.container}>
+                <View style={styles.contentView}>
+                  <LabelFormInput
+                    label="Current Password" 
+                    type="password"
+                    editable={true}
+                    placeholderTextColor="#939393"
+                    value={password} 
+                    errorMessage={passwordError}
+                    returnKeyType="next"                                       
+                    onSubmitEditing={() => { this.newPasswordInput.focus() }}
+                    onChangeText={(text) => this.setState({password: text, passwordError: null})} />
 
-        <View style={styles.container}>
-          <TopNavBar title="CHANGE PASSWORD" align="left" onBack={() => this.onBack()}/>
-          <View style={styles.contentView}>
-            <LabelFormInput
-              label="Current Password" 
-              type="password"
-              editable={true}
-              placeholderTextColor="#939393"
-              value={password} 
-              errorMessage={passwordError}
-              returnKeyType="next"                                       
-              onSubmitEditing={() => { this.newPasswordInput.focus() }}
-              onChangeText={(text) => this.setState({password: text, passwordError: null})} />
+                  <LabelFormInput
+                    label="New Password" 
+                    type="password"
+                    editable={true}
+                    placeholderTextColor="#939393"
+                    value={newPassword} 
+                    errorMessage={newPasswordError} 
+                    returnKeyType="next"                                       
+                    onRefInput={(input) => { this.newPasswordInput = input }}
+                    onChangeText={(text) => this.setState({newPassword: text, newPasswordError: null})} 
+                    onSubmitEditing={() => { this.confirmPasswordInput.focus() }}
+                  />
 
-            <LabelFormInput
-              label="New Password" 
-              type="password"
-              editable={true}
-              placeholderTextColor="#939393"
-              value={newPassword} 
-              errorMessage={newPasswordError} 
-              returnKeyType="next"                                       
-              onRefInput={(input) => { this.newPasswordInput = input }}
-              onChangeText={(text) => this.setState({newPassword: text, newPasswordError: null})} 
-              onSubmitEditing={() => { this.confirmPasswordInput.focus() }}
-            />
+                  <LabelFormInput
+                    label="Confirm Password" 
+                    type="password"
+                    editable={true}
+                    placeholderTextColor="#939393"
+                    value={confirmPassword} 
+                    errorMessage={confirmPasswordError}
+                    returnKeyType="done"                                       
+                    onRefInput={(input) => { this.confirmPasswordInput = input }}
+                    onChangeText={(text) => this.setState({confirmPassword: text, confirmPasswordError: null})} 
+                    onSubmitEditing={this.onChangePassword}
+                  />
+                </View>
 
-            <LabelFormInput
-              label="Confirm Password" 
-              type="password"
-              editable={true}
-              placeholderTextColor="#939393"
-              value={confirmPassword} 
-              errorMessage={confirmPasswordError}
-              returnKeyType="done"                                       
-              onRefInput={(input) => { this.confirmPasswordInput = input }}
-              onChangeText={(text) => this.setState({confirmPassword: text, confirmPasswordError: null})} 
-              onSubmitEditing={this.onChangePassword}
-            />
-          </View>
-
-          <View style={styles.viewBottom}>
-            <RoundButton 
-              title="CHANGE PASSWORD" 
-              theme="blue" 
-              style={styles.registerButton} 
-              onPress={this.onChangePassword} 
-            />
-          </View>
-        </View>
+                <View style={styles.viewBottom}>
+                  <RoundButton 
+                    title="CHANGE PASSWORD" 
+                    theme="blue" 
+                    style={styles.registerButton} 
+                    onPress={this.onChangePassword} 
+                  />
+                </View>
+              </View>
+            </View>
+          }
+        </SafeAreaInsetsContext.Consumer>
         <Toast ref={ref => (this.toast = ref)}/>
-      { this.state.isLoading && <LoadingOverlay /> }
-
-      </SafeAreaView>
+        { this.state.isLoading && <LoadingOverlay /> }
+      </View>
     );
   }
 }
@@ -186,6 +190,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    overflow: 'hidden',
   },
 
   contentView: {

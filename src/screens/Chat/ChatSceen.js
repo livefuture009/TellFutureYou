@@ -12,7 +12,9 @@ import {
 import {connect} from 'react-redux';
 import SendBird from 'sendbird';
 import Toast from 'react-native-easy-toast'
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import ImagePicker from 'react-native-image-crop-picker';
+import { ifIphoneX } from 'react-native-iphone-x-helper'
 import ActionSheet from 'react-native-actionsheet'
 import ImageResizer from 'react-native-image-resizer';
 import ImageView from 'react-native-image-view';
@@ -548,64 +550,88 @@ class ChatScreen extends Component {
     }
 
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
-        <TopNavBar 
-          title={name} 
-          rightButton="schedule"
-          onBack={() => this.onBack()}
-          onRight={this.onMoveSchedulePage}
-        />
-        <ChatView 
-          behavior={Platform.OS === "ios" ? "padding" : null}
-          style={styles.container} 
-        >
-          <View style={[styles.chatContainer, {transform: [{ scaleY: -1 }]}]}>
-              <FlatList
-                  enableEmptySections={true}
-                  onEndReached={() => this._getChannelMessage(false)}
-                  onEndReachedThreshold={PULLDOWN_DISTANCE}
-                  data={this.state.messages}
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item, i}) => (
-                    <ChatCell 
-                      item={item} 
-                      currentUser={currentUser}
-                      onPressImage={this.onPressImage}
-                    />
-                  )}
-                />
-          </View>
-          {
-            this.state.messages.length == 0
-            ? <View style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
-                { 
-                  !this.state.isFirst
-                  ? <EmptyText icon="💬">{emptyText}</EmptyText>
-                  : null
+      <View style={{flex: 1, backgroundColor: Colors.appColor}}>
+        <SafeAreaInsetsContext.Consumer>
+          {insets => 
+            <View style={{flex: 1, paddingTop: insets.top }} >
+              <TopNavBar 
+                title={name} 
+                rightButton="schedule"
+                onBack={() => this.onBack()}
+                onRight={this.onMoveSchedulePage}
+              />
+              <ChatView 
+                behavior={Platform.OS === "ios" ? "padding" : null}
+                style={styles.container} 
+              >
+                <View style={[styles.chatContainer, {transform: [{ scaleY: -1 }]}]}>
+                    <FlatList
+                        enableEmptySections={true}
+                        onEndReached={() => this._getChannelMessage(false)}
+                        onEndReachedThreshold={PULLDOWN_DISTANCE}
+                        data={this.state.messages}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={({item, i}) => (
+                          <ChatCell 
+                            item={item} 
+                            currentUser={currentUser}
+                            onPressImage={this.onPressImage}
+                          />
+                        )}
+                      />
+                </View>
+                {
+                  this.state.messages.length == 0
+                  ? <View style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                      { 
+                        !this.state.isFirst
+                        ? <EmptyText icon="💬">{emptyText}</EmptyText>
+                        : null
+                      }
+                    </View>
+                  : null 
                 }
-              </View>
-            : null 
+                {
+                  this.state.channel
+                    ? <CommentInput
+                        textRef={(ref) => {this.commentInputRef=ref}}
+                        style={{
+                          width: '100%', 
+                          paddingLeft: 15,
+                          paddingRight: 15,
+                          zIndex: 100, 
+                          paddingTop: 3, 
+                          paddingBottom: 3,
+                          backgroundColor:'white',
+                          ...ifIphoneX({
+                            marginBottom: 15,
+                          }, {
+                            marginBottom: 0,
+                          }),
+                        }}
+                        inputStyle={{height: Math.max(30, this.state.commentHeight)}}
+                        placeholder='Write a message...'
+                        disabled={disabled}
+                        onChangeText={this.onChangeText}
+                        onPost={this.onSend}
+                        onSchedule={this.onSchedule}
+                        onImagePress={this._onPhoto}
+                        onGifPress={this.onInsertGifButtonPress}
+                        onContentSizeChange={(event) => this.setState({
+                          commentHeight: event.nativeEvent.contentSize.height
+                        })}
+                      />
+                    : null
+                }
+            </ChatView>
+            </View>
           }
-          {
-            this.state.channel
-              ? <CommentInput
-                  textRef={(ref) => {this.commentInputRef=ref}}
-                  style={{width: '100%', paddingLeft: 15, paddingRight: 15,zIndex: 100, paddingTop: 3, paddingBottom: 3, backgroundColor:'white'}}
-                  inputStyle={{height: Math.max(30, this.state.commentHeight)}}
-                  placeholder='Write a message...'
-                  disabled={disabled}
-                  onChangeText={this.onChangeText}
-                  onPost={this.onSend}
-                  onSchedule={this.onSchedule}
-                  onImagePress={this._onPhoto}
-                  onGifPress={this.onInsertGifButtonPress}
-                  onContentSizeChange={(event) => this.setState({
-                    commentHeight: event.nativeEvent.contentSize.height
-                  })}
-                />
-              : null
-          }
-
+        </SafeAreaInsetsContext.Consumer>
+        <Toast ref={ref => (this.toast = ref)}/>
+          { this.state.isLoading
+            ? <LoadingOverlay />
+            : null
+          } 
           <ActionSheet
             ref={o => this.ActionSheet = o}
             title={'Choose Media'}
@@ -613,28 +639,22 @@ class ChatScreen extends Component {
             cancelButtonIndex={2}
             onPress={(index) => this.selectActionSheet(index)}
           />
-      </ChatView>
-      <Toast ref={ref => (this.toast = ref)}/>
-      { this.state.isLoading
-        ? <LoadingOverlay />
-        : null
-      } 
-      <ImageView
-        images={photos}
-        imageIndex={currentPhotoIndex}
-        isSwipeCloseEnabled={true}
-        isVisible={isImageViewVisible}
-        onClose={() => this.setState({isImageViewVisible: false})}
-      />    
-      <ScheduleDialog 
-        isVisible={isShowScheduleDialog}
-        value={this.scheduleTime}
-        onClose={() => this.setState({isShowScheduleDialog: false})}
-        onSelect={(date) => {
-          this.onSelectScheduleDate(date);
-        }}
-      />
-      </SafeAreaView>
+          <ImageView
+            images={photos}
+            imageIndex={currentPhotoIndex}
+            isSwipeCloseEnabled={true}
+            isVisible={isImageViewVisible}
+            onClose={() => this.setState({isImageViewVisible: false})}
+          />    
+          <ScheduleDialog 
+            isVisible={isShowScheduleDialog}
+            value={this.scheduleTime}
+            onClose={() => this.setState({isShowScheduleDialog: false})}
+            onSelect={(date) => {
+              this.onSelectScheduleDate(date);
+            }}
+          />
+      </View>
     );
   }
 }
@@ -644,7 +664,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 10,
-    backgroundColor: Colors.pageColor
+    backgroundColor: 'white',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    overflow: 'hidden',
   },
 
   chatContainer: {

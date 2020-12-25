@@ -70,13 +70,14 @@ class MyAccountScreen extends Component {
     }
     
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.pageColor}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: Colors.appColor}}>
+        <HeaderInfoBar 
+          title="MY ACCOUNT" 
+          rightButton="logout"
+          onRight={this.onLogout}
+        />
         <View style={styles.container}>
-          <HeaderInfoBar 
-            title="MY ACCOUNT" 
-            rightButton="logout"
-            onRight={this.onLogout}
-          />
+          <View style={styles.bottomView}/>
           <ScrollView>
             <View style={styles.contentView}>
               <View style={styles.profileBox}>
@@ -139,6 +140,14 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
     marginTop: 60,
     paddingBottom: 20,
+  },
+
+  bottomView: {
+    position: 'absolute',
+    bottom: 0,
+    height: 300,
+    width: '100%',
+    backgroundColor: '#f2f2f5',
   },
 
   profileBox: {

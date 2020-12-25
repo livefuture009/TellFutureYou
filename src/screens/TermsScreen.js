@@ -2,19 +2,20 @@ import React, { Component } from 'react';
 import {
   View,
   StyleSheet,
-  StatusBar,
-  TouchableOpacity,
-  Image,
   ActivityIndicator
 } from 'react-native';
 
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
+import TopNavBar from '../components/TopNavBar'
 import { WebView } from 'react-native-webview';
-import { SafeAreaConsumer } from 'react-native-safe-area-context';
-import { WEB_PAGE_TYPE, TERMS_LINK, PRIVACY_LINK } from '../constants'
-import Images from '../theme/Images'
 import Colors from '../theme/Colors'
+import { WEB_PAGE_TYPE, TERMS_LINK, PRIVACY_LINK } from '../constants';
 
 class TermsScreen extends Component {
+  static navigationOptions = {
+    headerShown: false,
+  };
+
   constructor() {
     super()
     this.state = {
@@ -23,10 +24,8 @@ class TermsScreen extends Component {
   }
 
   componentDidMount() {
-    StatusBar.setBarStyle('dark-content', true);
     if (this.props.route.params && this.props.route.params.page) {
       const { page } = this.props.route.params;
-      console.log("page: ", page);
       this.setState({page: page});
     }
   }
@@ -34,7 +33,6 @@ class TermsScreen extends Component {
   onBack() {
     this.props.navigation.goBack();
   }
-
 
   ActivityIndicatorLoadingView() {
     return (
@@ -60,32 +58,30 @@ class TermsScreen extends Component {
       title = "Privacy Policy";
       link = PRIVACY_LINK;
     }
-
     return (
-      <View style={{flex: 1, backgroundColor: 'white'}}>
-        <SafeAreaConsumer>
+      <View style={{flex: 1, backgroundColor: Colors.appColor}}>
+        <SafeAreaInsetsContext.Consumer>
           {insets => 
             <View style={{flex: 1, paddingTop: insets.top }} >
-              <TouchableOpacity style={styles.btnBack} onPress={() => this.onBack()}>
-                <Image source={Images.icon_white_back} style={styles.backIcon}/>
-              </TouchableOpacity>
+              <TopNavBar 
+                title={title} 
+                theme="black" 
+                leftButton="back"
+                onBack={() => this.onBack()}
+              />                      
               <View style={styles.container}>
-                {
-                  (link && link.length > 0) 
-                    ? <WebView 
-                        style={{ flex: 1 }}
-                        javaScriptEnabled={true}
-                        domStorageEnabled={true}
-                        renderLoading={this.ActivityIndicatorLoadingView} 
-                        startInLoadingState={true}  
-                        source={{ uri: link }} 
-                      />                  
-                    : null
-                }
+                <WebView 
+                  style={{ flex: 1 }}
+                  javaScriptEnabled={true}
+                  domStorageEnabled={true}
+                  renderLoading={this.ActivityIndicatorLoadingView} 
+                  startInLoadingState={true}  
+                  source={{ uri: link }} 
+                />
               </View>
             </View>
           }
-        </SafeAreaConsumer>
+        </SafeAreaInsetsContext.Consumer>
       </View>
     );
   }
@@ -96,7 +92,10 @@ export default TermsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    overflow: 'hidden',
   },
 
   ActivityIndicatorStyle:{
@@ -107,19 +106,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignItems: 'center',
     justifyContent: 'center'
-  },
-
-  btnBack: {
-    position: 'absolute',
-    left: 10,
-    top: 10,
-    zIndex: 2,
-  },
-
-  backIcon: {
-    width: 30,
-    height: 30,
-    resizeMode: 'contain'
+  
   }
-
 })
