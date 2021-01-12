@@ -9,7 +9,7 @@ const screenWidth = Dimensions.get('window').width;
 
 export default class TopNavBar extends React.Component {
   render() {
-	const { rightLabel, rightButton, onBack, rightIcon, onRight} = this.props;
+	const { theme, rightLabel, rightButton, onBack, rightIcon, onRight} = this.props;
     return (
 	    <View 
 	    	style={[
@@ -20,10 +20,10 @@ export default class TopNavBar extends React.Component {
 			<TouchableOpacity style={styles.closeButton} onPress={() => onBack()}>
 				<Image
 					style={styles.closeButtonIcon}
-					source={Images.back_arrow}
+					source={theme=="black" ? Images.back_arrow : Images.back_arrow_white}
 				/>
 			</TouchableOpacity>	    	
-			<Text numberOfLines={1} style={styles.titleText}>{this.props.title}</Text>	    	
+			<Text numberOfLines={1} style={[styles.titleText, (theme == "black" ? {color: Colors.appColor} : {})]}>{this.props.title}</Text>	    	
 			{
 				rightButton === "schedule"
 				? <TouchableOpacity style={styles.rightButton} onPress={() => onRight()}>

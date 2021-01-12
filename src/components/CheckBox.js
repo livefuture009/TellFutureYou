@@ -56,5 +56,6 @@ const styles = StyleSheet.create({
 		marginLeft: 10,
 		fontFamily: Fonts.regular,
 		color: 'white',
+		fontSize: 14,
 	},
 });

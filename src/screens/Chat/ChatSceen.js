@@ -4,7 +4,7 @@ import {
   StyleSheet,
   Platform,
   KeyboardAvoidingView,
-  SafeAreaView,
+  TouchableWithoutFeedback,
   FlatList,
   Keyboard,
 } from 'react-native';
@@ -582,13 +582,18 @@ class ChatScreen extends Component {
                 </View>
                 {
                   this.state.messages.length == 0
-                  ? <View style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
-                      { 
-                        !this.state.isFirst
-                        ? <EmptyText icon="💬">{emptyText}</EmptyText>
-                        : null
-                      }
-                    </View>
+                  ? <TouchableWithoutFeedback 
+                      onPress={() => Keyboard.dismiss()} 
+                      style={{flex: 1}}
+                    >
+                      <View style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                        { 
+                          !this.state.isFirst
+                          ? <EmptyText icon="💬">{emptyText}</EmptyText>
+                          : null
+                        }
+                      </View>
+                    </TouchableWithoutFeedback>
                   : null 
                 }
                 {

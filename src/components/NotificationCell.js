@@ -36,7 +36,7 @@ class NotificationCell extends Component {
                     />
                     <View style={{ flex: 1}}>
                         <Text style={styles.reviewText}>
-                            <Text style={{fontFamily: Fonts.bold}}>{name}</Text>
+                            <Text style={{fontFamily: Fonts.bold, fontSize: 14}}>{name}</Text>
                             {message}
                         </Text>
                         <Text style={styles.timeText}>{time}</Text>

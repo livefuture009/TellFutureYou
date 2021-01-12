@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
         height: 125,
         borderRadius: 62.5,
         resizeMode: 'cover',
+        backgroundColor: 'lightgray',
     },
 
     photoIcon: {

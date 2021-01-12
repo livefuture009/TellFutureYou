@@ -23,7 +23,9 @@ class LabelFormInput extends Component {
         const { 
             type, 
             label, 
-            value, 
+            value,
+            maxLength,
+            autoCapitalize,
             placeholder, 
             placeholderTextColor,
             onChangeText, 
@@ -49,6 +51,8 @@ class LabelFormInput extends Component {
                         underlineColorAndroid='transparent'
                         onChangeText={onChangeText}
                         value={value}
+                        autoCapitalize={autoCapitalize}
+                        maxLength={maxLength}
                         placeholder={placeholder}
                         editable={editable}
                         ref={onRefInput}
@@ -64,6 +68,8 @@ class LabelFormInput extends Component {
                         placeholderTextColor={placeholderTextColor ? placeholderTextColor : "#fff"}
                         underlineColorAndroid='transparent'
                         keyboardType='phone-pad'
+                        maxLength={maxLength}
+                        autoCapitalize={autoCapitalize}
                         onChangeText={onChangeText}
                         value={value}
                         placeholder={placeholder}
@@ -83,6 +89,8 @@ class LabelFormInput extends Component {
                         underlineColorAndroid='transparent'
                         onChangeText={onChangeText}
                         value={value}
+                        autoCapitalize={autoCapitalize}
+                        maxLength={maxLength}
                         placeholder={placeholder}
                         editable={editable}
                         ref={onRefInput}
@@ -97,11 +105,13 @@ class LabelFormInput extends Component {
                         autoCapitalize='none'
                         keyboardType={'email-address'}
                         autoCorrect={false}
+                        autoCapitalize={autoCapitalize}
                         style={[styles.textInput, editable ? {} : styles.disabledTextInput]}
                         placeholderTextColor={placeholderTextColor ? placeholderTextColor : "#fff"}
                         underlineColorAndroid='transparent'
                         onChangeText={onChangeText}
                         value={value}
+                        maxLength={maxLength}
                         placeholder={placeholder}
                         editable={editable}
                         ref={onRefInput}
@@ -117,11 +127,13 @@ class LabelFormInput extends Component {
                             secureTextEntry={true}
                             autoCapitalize='none'
                             autoCorrect={false}
+                            autoCapitalize={autoCapitalize}
                             style={[styles.textInput, editable ? {} : styles.disabledTextInput]}
                             placeholderTextColor={placeholderTextColor ? placeholderTextColor : "#fff"}
                             underlineColorAndroid='transparent'
                             onChangeText={onChangeText}
                             value={value}
+                            maxLength={maxLength}
                             placeholder={placeholder}
                             editable={editable}
                             ref={onRefInput}
@@ -141,10 +153,12 @@ class LabelFormInput extends Component {
                                     handleTextChange(text);
                                     onChangeText(text);
                                 }}
+                                autoCapitalize={autoCapitalize}
                                 returnKeyType={returnKeyType}
                                 onSubmitEditing={onSubmitEditing}
                                 onFocus={ () => this.setState({showAddressList: true}) }
                                 ref={onRefInput}
+                                maxLength={maxLength}
                                 style={{
                                     fontFamily: Fonts.regular,
                                     height: 50,
@@ -215,6 +229,8 @@ class LabelFormInput extends Component {
                         placeholderTextColor={placeholderTextColor ? placeholderTextColor : "#fff"}
                         underlineColorAndroid='transparent'
                         numberOfLines={6}
+                        autoCapitalize={autoCapitalize}
+                        maxLength={maxLength}
                         multiline={true}
                         onChangeText={onChangeText}
                         value={value}
@@ -287,6 +303,7 @@ const styles = StyleSheet.create({
 
     labelText: {
         fontFamily: Fonts.regular,
+        fontSize: 14,
         color: '#a7a7a7',
         marginLeft: 5,
     },

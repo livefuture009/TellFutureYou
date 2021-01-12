@@ -172,6 +172,7 @@ const styles = StyleSheet.create({
 
     labelText: {
         fontFamily: 'OpenSans',
+        fontSize: 14,
         color: '#7a79b5',
         marginBottom: 10,
         marginLeft: 10,
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
 
     whiteText: {
         color: 'white',
-        fontFamily: 'OpenSans',        
+        fontFamily: 'OpenSans',    
     },
 
     grayText: {

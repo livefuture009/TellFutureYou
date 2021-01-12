@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Text, TouchableOpacity
+  View, StyleSheet, Text, TouchableOpacity, Dimensions,
 } from 'react-native';
 import Colors from '../../theme/Colors';
 import Fonts from '../../theme/Fonts';
 import Images from '../../theme/Images';
 import FastImage from 'react-native-fast-image'
 import Moment from 'moment';
+
+const win = Dimensions.get('window');
 
 export default class ChannelCell extends React.PureComponent {
   getChannelName(currentUser, channel) {
@@ -113,6 +115,7 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans-Bold',
     fontSize: 17,
     color: 'black',
+    width: win.width - 185,
   },
 
   unreadBadge: {
@@ -130,6 +133,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'gray',
     marginTop: 3,
+    width: win.width - 185,
   },
 
   timeText: {

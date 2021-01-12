@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   Alert,
   View,
+  TouchableWithoutFeedback,
   StyleSheet,
   Keyboard
 } from 'react-native';
@@ -125,6 +126,7 @@ class ChangePasswordScreen extends Component {
       <View style={{flex: 1, backgroundColor: Colors.appColor}}>
         <SafeAreaInsetsContext.Consumer>
           {insets => 
+            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View style={{flex: 1, paddingTop: insets.top }} >
               <TopNavBar title="CHANGE PASSWORD" align="left" onBack={() => this.onBack()}/>
               <View style={styles.container}>
@@ -177,6 +179,7 @@ class ChangePasswordScreen extends Component {
                 </View>
               </View>
             </View>
+            </TouchableWithoutFeedback>
           }
         </SafeAreaInsetsContext.Consumer>
         <Toast ref={ref => (this.toast = ref)}/>

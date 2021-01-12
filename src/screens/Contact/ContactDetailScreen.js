@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   View,
   Alert,
-  SafeAreaView,
   StyleSheet,
   Keyboard
 } from 'react-native';
@@ -10,7 +9,8 @@ import {
 import {connect} from 'react-redux';
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import ImagePicker from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import ActionSheet from 'react-native-actionsheet'
 import Toast from 'react-native-easy-toast'
 import TopNavBar from '../../components/TopNavBar'
 import RoundButton from '../../components/RoundButton'
@@ -219,27 +219,43 @@ class ContactDetailScreen extends Component {
     const { isDisabled } = this.state;
     if (isDisabled) return;
     
-    const options = {
-      title: 'Select Photo',
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-
-    ImagePicker.showImagePicker(options, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else {
-        this.setState({
-          avatar: response.uri,
-          avatarFile: response
-        });
-      }
-    });
+    this.ActionSheet.show();
   }
+
+  onSelectMedia(index) {
+		const options = {
+			mediaType: 'photo',
+		};
+		
+		if (index == 0) {
+			launchCamera(options, (response) => {
+				if (response.didCancel) {
+				console.log('User cancelled image picker');
+				} else if (response.error) {
+				console.log('ImagePicker Error: ', response.error);
+				} else {
+					this.setState({
+            avatar: response.uri,
+            avatarFile: response
+          });
+				}
+			});
+		}
+		else if (index == 1) {
+			launchImageLibrary(options, (response) => {
+				if (response.didCancel) {
+				console.log('User cancelled image picker');
+				} else if (response.error) {
+				console.log('ImagePicker Error: ', response.error);
+				} else {
+					this.setState({
+            avatar: response.uri,
+            avatarFile: response
+          });
+				}
+			});
+		}
+	}
 
   onChangeFirstName =(text)=> {
     const name = getOnlyAlphabetLetters(text);
@@ -286,7 +302,7 @@ class ContactDetailScreen extends Component {
               <View style={styles.container}>
                 <View style={styles.profileBox}>
                 <KeyboardAwareScrollView style={{paddingHorizontal: 20}}>      
-                  <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                  <View style={{ alignItems: 'center', justifyContent: 'center', paddingTop: 20 }}>
                     <EditAvatar avatar={this.state.avatar} onTakePhoto={() => this.onTakePicture()} />
                   </View>                          
                   <LabelFormInput

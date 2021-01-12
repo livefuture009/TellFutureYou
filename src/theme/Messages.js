@@ -25,6 +25,7 @@ const Messages = {
 	SubscriptionCancelled: 'Your purchase has been cancelled.',
 	SubscriptionCompleted: 'Your subscription has been completed successfully!',
 	SubscriptionFailed: 'Your subscription has been failed!',
+	InvalidSubscription: 'Please select a valid subscription',
 	UnableSendRequest: 'Unable to Send Friend Request',
 	UnableAcceptRequest: 'Unable to Accept Friend Request',
 	ReachedFriendLimit: 'You have reached the friend request limit. Please upgrade your subscription level.',

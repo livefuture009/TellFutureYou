@@ -18,7 +18,6 @@ export default class ScheduleDialog extends React.Component {
           scheduleDate: null,
           scheduleTime: null,
           dateError: null,
-
           dateSelected: '',
         }        
     }
@@ -29,9 +28,6 @@ export default class ScheduleDialog extends React.Component {
 
     onSchedule() {
       const { scheduleDate, scheduleTime } = this.state;
-      console.log("scheduleDate: ", scheduleDate);
-      console.log("scheduleTime: ", scheduleTime);
-
       const { onSelect } = this.props;
       const today = new Date();
       if (scheduleDate && scheduleTime) {
@@ -57,10 +53,6 @@ export default class ScheduleDialog extends React.Component {
       return (
         <Modal isVisible={isVisible}>
             <View style={styles.container}>
-            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                <Image source={Images.close_icon} style={styles.closeIcon} />
-            </TouchableOpacity>
-
             <View style={styles.body}>
               <Calendar
                 current={current}
@@ -97,7 +89,10 @@ export default class ScheduleDialog extends React.Component {
                 <Text style={styles.errorText}>{dateError}</Text>
               }
             </View>
-            </View>
+            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+                <Image source={Images.close_icon} style={styles.closeIcon} />
+            </TouchableOpacity>
+          </View>
         </Modal>
       );
     }
@@ -107,8 +102,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
     paddingHorizontal: 20,
-    paddingBottom: 20,
-    paddingTop: 40,
+    paddingBottom: 10,
+    paddingTop: 0,
     borderRadius: 10,
   },
 
@@ -134,7 +129,7 @@ const styles = StyleSheet.create({
   },
 
   body: {
-    paddingTop: 10,
+    
   },
 
   actionButton: {

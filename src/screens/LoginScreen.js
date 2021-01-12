@@ -321,22 +321,22 @@ class LoginScreen extends Component {
       if (appleAuth.isSupported) {
         try {
           const appleAuthRequestResponse = await appleAuth.performRequest({
-            requestedOperation: AppleAuthRequestOperation.LOGIN,
-            requestedScopes: [AppleAuthRequestScope.EMAIL, AppleAuthRequestScope.FULL_NAME],
+            requestedOperation: appleAuth.Operation.LOGIN,
+            requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
           });
     
           // get current authentication state for user
           const credentialState = await appleAuth.getCredentialStateForUser(appleAuthRequestResponse.user);
           
           // use credentialState response to ensure the user is authenticated
-          if (credentialState === AppleAuthCredentialState.AUTHORIZED) {
+          if (credentialState === appleAuth.State.AUTHORIZED) {
             var socialId = '';
             var socialType = 'apple';
             var firstName = '';
             var lastName = '';
             var email = '';
             var avatar = '';
-
+            
             if (appleAuthRequestResponse.user) {
               socialId = appleAuthRequestResponse.user;
             }
@@ -358,7 +358,6 @@ class LoginScreen extends Component {
               email,
               avatar,
             };
-
             if (appleUsers && appleUsers.length > 0) {
               var isExisting = false;
               appleUsers.forEach(item => {
@@ -384,6 +383,7 @@ class LoginScreen extends Component {
             });
           }
         } catch (error) {
+          console.log("error: ", error);
           this.toast.show('Apple sign in has been cancelled.', TOAST_SHOW_TIME);
         }
       } else {
@@ -569,7 +569,8 @@ class LoginScreen extends Component {
     if (this.props.needToSignUp) {
       this.setState({isLoading: false});
       this.props.navigation.navigate('SignUp', {user: this.props.currentUser});
-    } else {
+    } 
+    else {
       Storage.USERID.set(this.props.currentUser._id);
       this.onMoveHome(true);
     }

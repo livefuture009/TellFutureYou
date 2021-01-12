@@ -3,6 +3,7 @@ import {
   View,
   StyleSheet,
   Keyboard,
+  TouchableWithoutFeedback,
   SafeAreaView
 } from 'react-native';
 
@@ -17,7 +18,6 @@ import Messages from '../theme/Messages'
 import Toast, {DURATION} from 'react-native-easy-toast'
 import actionTypes from '../actions/actionTypes';
 import { TOAST_SHOW_TIME, Status } from '../constants.js'
-import Colors from '../theme/Colors'
 
 class VerificationCodeScreen extends Component {
   constructor() {
@@ -84,34 +84,37 @@ class VerificationCodeScreen extends Component {
   render() {
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
-        <View style={styles.container}>
-          <TopNavBar title="Verify Code" onBack={() => this.onBack()}/>
-          <BlueBar title="We have sent you an access code via Email for email address verification." />
-          <View style={styles.contentView}>
-            <LabelFormInput
-              label="Verification Code" 
-              type="number"
-              autoFocus={true}
-              editable={true}
-              placeholder="******" 
-              placeholderTextColor="#939393"
-              errorMessage={this.state.codeError}
-              value={this.state.code} 
-              returnKeyType="done"
-              onChangeText={(text) => this.setState({code: text, codeError: null})} 
-              onSubmitEditing={() => { 
-              this.onVerify() 
-            }}
-          />
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <View style={styles.container}>
+            <TopNavBar title="Verify Code" theme="black" onBack={() => this.onBack()}/>
+            <BlueBar title="We have sent you an access code via Email for email address verification." />
+            <View style={styles.contentView}>
+              <LabelFormInput
+                label="Verification Code" 
+                type="number"
+                autoFocus={true}
+                editable={true}
+                placeholder="******" 
+                placeholderTextColor="#939393"
+                maxLength={6}
+                errorMessage={this.state.codeError}
+                value={this.state.code} 
+                returnKeyType="done"
+                onChangeText={(text) => this.setState({code: text, codeError: null})} 
+                onSubmitEditing={() => { 
+                this.onVerify() 
+              }}
+            />
+            </View>
+            <View style={styles.viewBottom}>
+              <RoundButton 
+                title="Verify" 
+                theme="blue" 
+                style={styles.registerButton} 
+                onPress={() => this.onVerify()} />
+            </View>
           </View>
-          <View style={styles.viewBottom}>
-            <RoundButton 
-              title="Verify" 
-              theme="blue" 
-              style={styles.registerButton} 
-              onPress={() => this.onVerify()} />
-          </View>
-        </View>
+        </TouchableWithoutFeedback>
         <Toast ref={ref => (this.toast = ref)}/>
         {
           this.state.isLoading && <LoadingOverlay />

@@ -4,14 +4,13 @@ import {
   StyleSheet,
   Keyboard,
   SafeAreaView,
-  Dimensions
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 import {connect} from 'react-redux';
 import TopNavBar from '../components/TopNavBar'
 import RoundButton from '../components/RoundButton'
 import LabelFormInput from '../components/LabelFormInput'
-import Colors from '../theme/Colors'
 import { TOAST_SHOW_TIME, Status, PASSWORD_MIN_LENGTH } from '../constants.js'
 import LoadingOverlay from '../components/LoadingOverlay'
 import Messages from '../theme/Messages'
@@ -96,47 +95,49 @@ class ResetNewPasswordScreen extends Component {
   render() {
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
-        <View style={styles.container}>
-          <TopNavBar title="Reset Password" onBack={() => this.onBack()}/>
-          <View style={styles.contentView}>
-            <LabelFormInput
-              autoFocus={true}
-              editable={true}
-              label="New Password" 
-              type="password"
-              placeholder="***********"
-              placeholderTextColor="#939393"
-              errorMessage={this.state.passwordError}
-              value={this.state.newPassword} 
-              returnKeyType="next"
-              onSubmitEditing={() => { this.confirmPasswordInput.focus() }}
-              onChangeText={(text) => this.setState({newPassword: text, passwordError: null})} />
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <View style={styles.container}>
+            <TopNavBar title="Reset Password" theme="black" onBack={() => this.onBack()}/>
+            <View style={styles.contentView}>
+              <LabelFormInput
+                autoFocus={true}
+                editable={true}
+                label="New Password" 
+                type="password"
+                placeholder="***********"
+                placeholderTextColor="#939393"
+                errorMessage={this.state.passwordError}
+                value={this.state.newPassword} 
+                returnKeyType="next"
+                onSubmitEditing={() => { this.confirmPasswordInput.focus() }}
+                onChangeText={(text) => this.setState({newPassword: text, passwordError: null})} />
 
-            <LabelFormInput
-              label="Confirm New Password" 
-              type="password"
-              placeholder="***********"
-              editable={true}
-              placeholderTextColor="#939393"
-              errorMessage={this.state.passwordConfirmError}
-              value={this.state.newPasswordConfirm} 
-              returnKeyType="done"
-              onRefInput={(input) => { this.confirmPasswordInput = input }}
-              onChangeText={(text) => this.setState({newPasswordConfirm: text, passwordConfirmError: null})}
-              onSubmitEditing={() => { 
-              this.onResetPassword() 
-            }}
-            />
+              <LabelFormInput
+                label="Confirm New Password" 
+                type="password"
+                placeholder="***********"
+                editable={true}
+                placeholderTextColor="#939393"
+                errorMessage={this.state.passwordConfirmError}
+                value={this.state.newPasswordConfirm} 
+                returnKeyType="done"
+                onRefInput={(input) => { this.confirmPasswordInput = input }}
+                onChangeText={(text) => this.setState({newPasswordConfirm: text, passwordConfirmError: null})}
+                onSubmitEditing={() => { 
+                this.onResetPassword() 
+              }}
+              />
 
+            </View>
+            <View style={styles.viewBottom}>
+              <RoundButton 
+                title="RESET PASSWORD" 
+                theme="blue" 
+                style={styles.registerButton} 
+                onPress={() => this.onResetPassword()} />
+            </View>
           </View>
-          <View style={styles.viewBottom}>
-            <RoundButton 
-              title="RESET PASSWORD" 
-              theme="blue" 
-              style={styles.registerButton} 
-              onPress={() => this.onResetPassword()} />
-          </View>
-        </View>
+        </TouchableWithoutFeedback>
         <Toast ref={ref => (this.toast = ref)}/>
       { this.state.isLoading && <LoadingOverlay /> }
       </SafeAreaView>

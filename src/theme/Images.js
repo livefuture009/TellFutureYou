@@ -9,6 +9,7 @@ const Images = {
     eye_icon: require('../../assets/images/eye_icon.png'),
     eye_hide_icon: require('../../assets/images/eye_hide_icon.png'),
     back_arrow: require('../../assets/images/back_arrow.png'),
+    back_arrow_white: require('../../assets/images/back_arrow_white.png'),
     dropdown_icon: require('../../assets/images/dropdown_icon.png'),
     account_icon: require('../../assets/images/account_icon.png'),
     tab_friend: require('../../assets/images/tab_friend.png'),    

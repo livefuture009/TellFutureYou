@@ -65,7 +65,6 @@ class TermsScreen extends Component {
             <View style={{flex: 1, paddingTop: insets.top }} >
               <TopNavBar 
                 title={title} 
-                theme="black" 
                 leftButton="back"
                 onBack={() => this.onBack()}
               />                      

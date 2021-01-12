@@ -3,6 +3,7 @@ import {
   View,
   StyleSheet,
   SafeAreaView,
+  TouchableWithoutFeedback,
   Keyboard,
   Alert
 } from 'react-native';
@@ -18,7 +19,6 @@ import Messages from '../theme/Messages'
 import Toast from 'react-native-easy-toast'
 import actionTypes from '../actions/actionTypes';
 import { isValidEmail } from '../functions'
-import Colors from '../theme/Colors'
 
 class ForgotPasswordScreen extends Component {
   constructor() {
@@ -91,35 +91,38 @@ class ForgotPasswordScreen extends Component {
   render() {
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
-        <View style={styles.container}>
-          <TopNavBar title="Forgot Password" onBack={() => this.onBack()}/>
-          <BlueBar title="Enter your email address and we will send you a verification code to reset your password." />
-          <View style={styles.contentView}>
-            <LabelFormInput
-              label="Email Address" 
-              type="email"
-              placeholder="David@email.com" 
-              editable={true}
-              autoFocus={true}
-              placeholderTextColor="#939393"
-              errorMessage={this.state.emailError}
-              value={this.state.email} 
-              returnKeyType="done"
-              onChangeText={(text) => this.setState({email: text, emailError: null})} 
-              onSubmitEditing={() => { 
-              this.onResetPassword() 
-            }}
-          />
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <View style={styles.container}>
+            <TopNavBar theme="black" title="Forgot Password" onBack={() => this.onBack()}/>
+            <BlueBar title="Enter your email address and we will send you a verification code to reset your password." />
+            <View style={styles.contentView}>
+              <LabelFormInput
+                label="Email Address" 
+                type="email"
+                placeholder="David@email.com" 
+                editable={true}
+                autoFocus={true}
+                autoCapitalize="none"
+                placeholderTextColor="#939393"
+                errorMessage={this.state.emailError}
+                value={this.state.email} 
+                returnKeyType="done"
+                onChangeText={(text) => this.setState({email: text, emailError: null})} 
+                onSubmitEditing={() => { 
+                this.onResetPassword() 
+              }}
+            />
 
+            </View>
+            <View style={styles.viewBottom}>
+              <RoundButton 
+                title="RESET PASSWORD" 
+                theme="blue" 
+                style={styles.registerButton} 
+                onPress={() => this.onResetPassword()} />
+            </View>
           </View>
-          <View style={styles.viewBottom}>
-            <RoundButton 
-              title="RESET PASSWORD" 
-              theme="blue" 
-              style={styles.registerButton} 
-              onPress={() => this.onResetPassword()} />
-          </View>
-        </View>
+        </TouchableWithoutFeedback>
         <Toast ref={ref => (this.toast = ref)}/>
         { this.state.isLoading && <LoadingOverlay /> }  
       </SafeAreaView>

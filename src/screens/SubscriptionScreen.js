@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
   Alert,
   View,
-  SafeAreaView,
+  TouchableOpacity,
+  Text,
   StyleSheet,
   FlatList
 } from 'react-native';
@@ -20,6 +21,7 @@ import RoundButton from '../components/RoundButton'
 import LoadingOverlay from '../components/LoadingOverlay'
 import SubscriptionCell from '../components/Cells/SubscriptionCell'
 import actionTypes from '../actions/actionTypes';
+import {checkInternetConnectivity} from '../functions'
 import { 
   TOAST_SHOW_TIME, 
   Status, 
@@ -30,7 +32,7 @@ import {
 
 import Messages from '../theme/Messages'
 import Colors from '../theme/Colors'
-
+import Fonts from '../theme/Fonts'
 
 const itemSubs = Platform.select({
   ios: [SUBSCRIPTION_STANDARD, SUBSCRIPTION_PREMIUM],
@@ -170,10 +172,18 @@ class SubscriptionScreen extends Component {
     }); 
   }
 
-  onSubscribe=()=> {
-    const {selectedIndex, products} = this.state; 
-    if (selectedIndex >= 0) {
-      this.requestSubscription(products[selectedIndex].productId);
+  onSubscribe=async()=> {
+    const isConnected = await checkInternetConnectivity();
+    if (isConnected) {
+      const {selectedIndex, products} = this.state; 
+      if (products && products.length > 0 && selectedIndex >= 0) {
+        this.requestSubscription(products[selectedIndex].productId);
+      } else {
+        this.setState({subscriptionError: Messages.InvalidSubscription});
+      }
+    }
+    else {
+      this.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
     }    
   }
 
@@ -186,8 +196,46 @@ class SubscriptionScreen extends Component {
     }
   }
 
+  async onRestore() {
+    const isConnected = await checkInternetConnectivity();
+    if (isConnected) {
+      this.setState({isLoading: true});
+      try {
+        const availablePurchases = await RNIap.getAvailablePurchases();
+        this.setState({isLoading: false});
+        if (availablePurchases && availablePurchases.length > 0) {
+          const sortedAvailablePurchases = availablePurchases.sort(
+            (a, b) => b.transactionDate - a.transactionDate
+          );
+          const latestPurchase = sortedAvailablePurchases[0];
+          this.finishTransaction(latestPurchase);
+        }
+        else {
+          var platform = Platform.OS == "ios" ? "Apple" : "Google";
+          Alert.alert(
+            'No Subscription Restored',
+            'We were unable to find an active subscription for your account. Please verify your subscription with ' + platform + ".",
+            [
+              {text: 'OK', onPress: () => {
+                
+              }},
+            ],
+            {cancelable: false},
+          ); 
+        }
+      } 
+      catch (err) {
+        this.setState({isLoading: false});
+        Alert.alert(Messages.SubscriptionCancelled, '');
+      }
+    }
+    else {
+      this.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
+    }    
+  }
+
   render() {
-    const { products, selectedIndex } = this.state;
+    const { products, selectedIndex, subscriptionError } = this.state;
     return (
       <View style={{flex: 1, backgroundColor: Colors.appColor}}>
         <SafeAreaInsetsContext.Consumer>
@@ -210,12 +258,20 @@ class SubscriptionScreen extends Component {
                   )}
                 />
                 <View style={styles.viewBottom}>
+                  {
+                    (subscriptionError && subscriptionError.length > 0) 
+                    ? <Text style={styles.errorText}>{subscriptionError}</Text>
+                    : null
+                  }
                   <RoundButton 
                     title="Subscribe" 
                     theme="blue" 
                     style={styles.registerButton} 
                     onPress={this.onSubscribe} 
                   />
+                  <TouchableOpacity style={styles.restoreBtn} onPress={() => this.onRestore()}>
+                    <Text style={styles.restoreBtnText}>Restore</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
@@ -250,9 +306,34 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
 
+  listView: {
+    paddingTop: 20,
+  },
+
   registerButton: {
     marginTop: 20,
     width: '90%'
+  },
+
+  restoreBtn: {
+    marginTop: 10,
+    marginBottom: 15,
+  },
+
+  restoreBtnText: {
+    fontFamily: Fonts.bold,
+    fontSize: 16,
+    marginTop: 5,
+  },
+
+  errorText: {
+    fontFamily: Fonts.regular,
+    fontStyle: 'italic',
+    color: '#fc3434',
+    fontSize: 11,
+    marginLeft: 10,
+    marginTop: 5,
+    marginBottom: 5,
   },
 })
 
