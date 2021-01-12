@@ -186,6 +186,7 @@ class EditProfile extends Component {
   }
 
   onSelectMedia(index) {
+    console.log("index: ", index);
     const options = {
 			mediaType: 'photo',
 		};
@@ -197,6 +198,7 @@ class EditProfile extends Component {
 				} else if (response.error) {
 				console.log('ImagePicker Error: ', response.error);
 				} else {
+          console.log("response: ", response);
           this.setState({
             avatar: response.uri,
             avatarFile: response
