@@ -377,6 +377,13 @@ class ContactDetailScreen extends Component {
             </View>
           }
         </SafeAreaInsetsContext.Consumer>
+        <ActionSheet
+					ref={o => this.ActionSheet = o}
+					title={'Select Image'}
+					options={['Camera', 'Photo Library', 'Cancel']}
+					cancelButtonIndex={2}
+					onPress={(index) => this.onSelectMedia(index)}
+				/>
         <Toast ref={ref => (this.toast = ref)}/>
         { this.state.isLoading && <LoadingOverlay /> }
       </View>
