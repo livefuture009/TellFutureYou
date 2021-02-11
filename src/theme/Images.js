@@ -43,6 +43,7 @@ const Images = {
     icon_search: require('../../assets/images/icon_search.png'),
     circle_close: require('../../assets/images/circle_close.png'),
     icon_red_trash: require('../../assets/images/icon_red_trash.png'),
+    icon_trash: require('../../assets/images/icon_trash.png'),
     icon_white_back: require('../../assets/images/icon_white_back.png'),
     
 };

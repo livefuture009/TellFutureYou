@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import ImageResizer from 'react-native-image-resizer';
 import RNFS from 'react-native-fs';
-import { IMAGE_COMPRESS_QUALITY, MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT, APP_LINK } from './constants'
+import { IMAGE_COMPRESS_QUALITY, MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT, IOS_APP_LINK } from './constants'
 import NetInfo from "@react-native-community/netinfo";
 
 export const compressImage = async (imageFile) => {
@@ -206,7 +206,7 @@ export const getInviteMessage = (receiver, sender, type) => {
   if (type == "email") {
     separator = "<br/><br/>";
   }
-  var content = `Hello, ${separator}${sender} invited you to use TellFutureYou app. Please download the app using the link below.${separator}${APP_LINK}`;
+  var content = `Hello, ${separator}${sender} invited you to use TellFutureYou app. Please download the app using the link below.${separator}${IOS_APP_LINK}`;
 
   return content;
 }

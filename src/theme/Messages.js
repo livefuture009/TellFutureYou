@@ -30,6 +30,10 @@ const Messages = {
 	UnableAcceptRequest: 'Unable to Accept Friend Request',
 	ReachedFriendLimit: 'You have reached the friend request limit. Please upgrade your subscription level.',
 	ReachedFriendLimitForOther: 'This person has reached the friend request limit and can\'t accept any more.',
+	MailNotAvailable: "Mail services are not available",
+	SMSNotAvailable: "SMS services are not available",
+	InviteSent: "An Invitation has been successfully sent!",
+	InviteFailed: "An Invitation has been failed!",
 	NetWorkError: 'No internet connection.',	
 };
 

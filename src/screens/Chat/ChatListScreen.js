@@ -2,22 +2,25 @@ import React, { Component } from 'react';
 import {
   View,
   StyleSheet,
-  FlatList,
+  Image,
+  TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
 
 import {connect} from 'react-redux';
 import SendBird from 'sendbird';
 import Toast from 'react-native-easy-toast'
+import { SwipeListView } from 'react-native-swipe-list-view';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import HeaderInfoBar from '../../components/HeaderInfoBar'
 import SearchBox from '../../components/SearchBox'
 import LoadingOverlay from '../../components/LoadingOverlay'
 import EmptyView from '../../components/EmptyView'
-import Colors from '../../theme/Colors'
 import ChannelCell from '../../components/Cells/ChannelCell'
 import { TOAST_SHOW_TIME, Status } from '../../constants.js'
 import actionTypes from '../../actions/actionTypes';
+import Images from '../../theme/Images'
+import Colors from '../../theme/Colors'
 
 var sb = null;
 
@@ -204,6 +207,13 @@ class ChatScreen extends Component {
     }
   }
 
+  onRemoveChannel(channel) {
+    const SELF = this;
+    channel.leave(function(response, error) {
+      SELF.getChannelList();
+    });
+  }
+
   render() {
     const { keyword } = this.state;
     var currentUser = null;
@@ -223,10 +233,18 @@ class ChatScreen extends Component {
             />
             {
               (this.state.channelList && this.state.channelList.length > 0)
-              ? <FlatList
+              ? <SwipeListView
                   style={styles.listView}
                   data={this.state.channelList}
                   keyExtractor={(item, index) => index.toString()}
+                  rightOpenValue={-75}
+                  renderHiddenItem={(data, index) => (
+                    <View style={styles.rowBack}>
+                      <TouchableOpacity style={styles.trashBtn} onPress={() => this.onRemoveChannel(data.item)}>
+                        <Image source={Images.icon_red_trash} style={{width: 35, height: 35}} />
+                      </TouchableOpacity>
+                    </View>
+                  )}
                   renderItem={({item, i}) => (
                     <ChannelCell 
                       currentUser={currentUser}
@@ -260,6 +278,18 @@ const styles = StyleSheet.create({
   },
 
   listView: {
+  },
+
+  rowBack: {
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+  },
+
+  trashBtn: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+    width: 75,
   },
 })
 

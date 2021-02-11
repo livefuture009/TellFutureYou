@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import {connect} from 'react-redux';
+import SendBird from 'sendbird';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -19,12 +20,13 @@ import RoundButton from '../components/RoundButton'
 import LabelFormInput from '../components/LabelFormInput'
 import EditAvatar from '../components/EditAvatar'
 import Colors from '../theme/Colors'
-import Styles from '../theme/Styles'
 import LoadingOverlay from '../components/LoadingOverlay'
 import Messages from '../theme/Messages'
 import { TOAST_SHOW_TIME, Status } from '../constants.js'
 import actionTypes from '../actions/actionTypes';
 import {validateEmail, getOnlyAlphabetLetters} from '../functions'
+
+var sb = null;
 
 class EditProfile extends Component {
   constructor() {
@@ -49,6 +51,8 @@ class EditProfile extends Component {
   }
 
   componentDidMount() {
+    sb = SendBird.getInstance();
+
     if (this.props.currentUser) {
       const { currentUser } = this.props;
       this.setState({
@@ -61,13 +65,27 @@ class EditProfile extends Component {
         location: currentUser.location,
         locationText: currentUser.location,
       });
-    }      
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.updateProfileStatus != this.props.updateProfileStatus) {
       if (this.props.updateProfileStatus == Status.SUCCESS) {
         this.setState({isLoading: false});
+
+        // Update Sendbird.
+        const { currentUser } = this.props;
+        const username = currentUser.firstName + " " + currentUser.lastName;
+        var profileUrl = '';
+        if (currentUser.avatar && currentUser.avatar.length > 0) {
+          profileUrl = currentUser.avatar;
+        }
+        if (sb && sb.currentUser) {
+          sb.updateCurrentUserInfo(username, profileUrl, function(response, error) {
+          });
+        }
+        
+
         this.showMessage("Profile has been updated successfully!", true);
       } else if (this.props.updateProfileStatus == Status.FAILURE) {
         this.onFailure(this.props.errorMessage);

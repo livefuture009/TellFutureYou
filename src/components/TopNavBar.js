@@ -34,7 +34,7 @@ export default class TopNavBar extends React.Component {
 			{
 				rightButton == "remove"
 				? <TouchableOpacity style={styles.rightButton} onPress={() => onRight()}>
-					<Image source={Images.icon_red_trash} style={styles.trashIcon}/>
+					<Image source={Images.icon_trash} style={styles.trashIcon}/>
 				</TouchableOpacity>
 				: null
 			}

@@ -300,15 +300,31 @@ class ContactListScreen extends Component {
       body: content,
       isHTML: true,
     }, (error, event) => {
-      Alert.alert(
-        error,
-        event,
-        [
-          {text: 'Ok', onPress: () => console.log('OK: Email Error Response')},
-          {text: 'Cancel', onPress: () => console.log('CANCEL: Email Error Response')}
-        ],
-        { cancelable: true }
-      )
+      console.log("error: ", error);
+      console.log("event: ", event);
+
+      var message = "";
+      if (error && error.length > 0) {
+        if (error == "not_available") {
+          message = Messages.MailNotAvailable;
+        }
+      }
+      else {
+        if (event == "sent") {
+          message = Messages.InviteSent;
+        }
+      }
+
+      if (message && message.length > 0) {
+        Alert.alert(
+          message,
+          '',
+          [
+            {text: 'Ok', onPress: () => console.log('OK')},
+          ],
+          { cancelable: true }
+        )
+      }
     });
   }
 
@@ -352,7 +368,28 @@ class ContactListScreen extends Component {
       successTypes: ['sent', 'queued'],
       allowAndroidSendWithoutReadPermission: true
     }, (completed, cancelled, error) => {
-        console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
+      var message = "";
+      if (error) {
+        message = Messages.SMSNotAvailable;
+      }
+      else if (completed) {
+        message = Messages.InviteSent;
+      }
+      else if (cancelled) {
+        message = Messages.InviteFailed;
+      }
+
+      if (message && message.length > 0) {
+        Alert.alert(
+          message,
+          '',
+          [
+            {text: 'Ok', onPress: () => console.log('OK')},
+          ],
+          { cancelable: true }
+        )
+      }
+      console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
     });
   }
 

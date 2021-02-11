@@ -36,7 +36,6 @@ import Colors from '../theme/Colors'
 import { 
   TOAST_SHOW_TIME, 
   ONE_SIGNAL_APP_ID, 
-  RELOAD_GLOBAL_TIME, 
   GOOGLE_SIGNIN_WEB_CLIENT_ID,
   GOOGLE_SIGNIN_IOS_CLIENT_ID,
   SENDBIRD_APP_ID,
@@ -46,9 +45,6 @@ import actionTypes from '../actions/actionTypes';
 import * as Storage from '../services/Storage'
 import appleAuth, {
   AppleButton,
-  AppleAuthRequestOperation,
-  AppleAuthRequestScope,
-  AppleAuthCredentialState,
 } from '@invertase/react-native-apple-authentication';
 
 var sb = new SendBird({ appId: SENDBIRD_APP_ID });
@@ -84,7 +80,6 @@ class LoginScreen extends Component {
       accountName: '', // [Android] specifies an account name on the device that should be used
       iosClientId: GOOGLE_SIGNIN_IOS_CLIENT_ID,
     });
-
     this.restoreUser();
   }
 
@@ -327,7 +322,8 @@ class LoginScreen extends Component {
     
           // get current authentication state for user
           const credentialState = await appleAuth.getCredentialStateForUser(appleAuthRequestResponse.user);
-          
+          console.log("appleAuthRequestResponse: ", appleAuthRequestResponse);
+
           // use credentialState response to ensure the user is authenticated
           if (credentialState === appleAuth.State.AUTHORIZED) {
             var socialId = '';

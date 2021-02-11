@@ -1,4 +1,4 @@
-export const url = 'https://tellfutureyou.herokuapp.com';
+export const url = 'https://tellfutureyouapp.herokuapp.com';
 // export const url = 'http://192.168.1.15:5000';
 
 export const ONE_SIGNAL_APP_ID = '6c0fae7c-4fd4-4c56-b3c5-ca0fe05353e0'
@@ -8,6 +8,8 @@ export const GOOGLE_SIGNIN_IOS_CLIENT_ID = '389020544990-8uohd3jvl00dvo5c9rao5g9
 export const SENDBIRD_APP_ID = '83A1D87C-EAA9-460A-AAF9-6D224B27E793';
 
 export const APP_LINK = "https://tellfutureyou.com";
+export const IOS_APP_LINK = "https://apps.apple.com/us/app/tellfutureyou/id1535738320";
+export const GOOGLE_APP_LINK = "https://tellfutureyou.com";
 export const TERMS_LINK = "http://dukeheartaudrey.gadaiweb.com/terms-and-conditions.html";
 export const PRIVACY_LINK = "http://dukeheartaudrey.gadaiweb.com/privacy-policy.html";
 
