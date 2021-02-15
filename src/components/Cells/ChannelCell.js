@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Text, TouchableOpacity, Dimensions,
+  View, StyleSheet, Text, TouchableOpacity, Dimensions, TouchableHighlight,
 } from 'react-native';
 import Colors from '../../theme/Colors';
 import Fonts from '../../theme/Fonts';
@@ -58,24 +58,26 @@ export default class ChannelCell extends React.PureComponent {
     
 
     return (
-      <TouchableOpacity onPress={() => this.props.onPress(channel, room)} style={styles.listItem}>
-        <View style={{flexDirection: 'row', alignItems: 'center', width: '60%'}}>
-          <FastImage
-            style={styles.avatarImage}
-            source={avatar ? {uri: avatar} : Images.account_icon}
-          />
-          <View>
-            <Text style={channel.unreadMessageCount > 0 ? styles.boldTitleLabel : styles.titleLabel}>{room}</Text>
-            <Text style={styles.lastMessageText} numberOfLines={2}>{message}</Text>
-          </View>          
+      <TouchableHighlight onPress={() => this.props.onPress(channel, room)}>
+        <View style={styles.listItem}>
+          <View style={{flexDirection: 'row', alignItems: 'center', width: '60%'}}>
+            <FastImage
+              style={styles.avatarImage}
+              source={avatar ? {uri: avatar} : Images.account_icon}
+            />
+            <View>
+              <Text style={channel.unreadMessageCount > 0 ? styles.boldTitleLabel : styles.titleLabel}>{room}</Text>
+              <Text style={styles.lastMessageText} numberOfLines={2}>{message}</Text>
+            </View>          
+          </View>
+          <Text style={styles.timeText}>{time}</Text>
+          {
+            channel.unreadMessageCount > 0
+              ? <View style={styles.unreadBadge} />
+              : null
+          }
         </View>
-      <Text style={styles.timeText}>{time}</Text>
-      {
-        channel.unreadMessageCount > 0
-          ? <View style={styles.unreadBadge} />
-          : null
-      }
-      </TouchableOpacity>
+      </TouchableHighlight>
     );
   }
 }

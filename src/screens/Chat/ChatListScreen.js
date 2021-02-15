@@ -18,9 +18,11 @@ import LoadingOverlay from '../../components/LoadingOverlay'
 import EmptyView from '../../components/EmptyView'
 import ChannelCell from '../../components/Cells/ChannelCell'
 import { TOAST_SHOW_TIME, Status } from '../../constants.js'
+import { checkInternetConnectivity } from '../../functions'
 import actionTypes from '../../actions/actionTypes';
 import Images from '../../theme/Images'
 import Colors from '../../theme/Colors'
+import Messages from '../../theme/Messages'
 
 var sb = null;
 
@@ -207,11 +209,17 @@ class ChatScreen extends Component {
     }
   }
 
-  onRemoveChannel(channel) {
+  async onRemoveChannel(channel) {
     const SELF = this;
-    channel.leave(function(response, error) {
-      SELF.getChannelList();
-    });
+    const isConnected = await checkInternetConnectivity();
+    if (isConnected) {
+      channel.leave(function(response, error) {
+        SELF.getChannelList();
+      });
+    }
+    else {
+      this.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
+    }    
   }
 
   render() {
