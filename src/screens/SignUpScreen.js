@@ -3,6 +3,7 @@ import {
   View,
   StyleSheet,
   SafeAreaView,
+  StatusBar,
   Keyboard,
   Dimensions
 } from 'react-native';
@@ -37,8 +38,6 @@ class SignUpScreen extends Component {
       lastName: '',
       email: '',
       phone: '',
-      location: '',
-      locationText: '',
       password: '',
       confirmPassword: '',
       agreeTerms: false,
@@ -101,19 +100,12 @@ class SignUpScreen extends Component {
     }
   }
 
-  onChangeLocation(address) {
-    this.setState({
-      location: address,
-      locationText: address,
-      locationError: null,
-    })
-  }
-
   onTerms=()=> {
     this.props.navigation.navigate('Terms', {page: WEB_PAGE_TYPE.TERMS});
   }
 
   async onMoveHome() {
+    StatusBar.setBarStyle('light-content', true);
     await this.connectSendBird();
     this.setState({isLoading: false});
     this.props.navigation.navigate("MainTab");
@@ -132,8 +124,6 @@ class SignUpScreen extends Component {
       lastName,
       email,
       phone,
-      location,
-      locationText,
       socialId, 
       socialType,
       password,
@@ -159,11 +149,6 @@ class SignUpScreen extends Component {
 
     if (phone == null || phone.length == 0) {
       this.setState({phoneError: Messages.InvalidPhone});
-      isValid = false;
-    }
-
-    if (location == null || location.length == 0 || location != locationText) {
-      this.setState({locationError: Messages.InvalidLocation});
       isValid = false;
     }
 
@@ -200,7 +185,6 @@ class SignUpScreen extends Component {
             lastName,
             email,
             phone,
-            location,
             password,
             confirmPassword,
             avatar,
@@ -279,8 +263,6 @@ class SignUpScreen extends Component {
       lastName,
       email,
       phone,
-      location,
-      locationText,
       password,
       confirmPassword,
       socialId,
@@ -289,7 +271,6 @@ class SignUpScreen extends Component {
       lastNameError,
       emailError,
       phoneError,
-      locationError,
       passwordError,
       confirmPasswordError,
 
@@ -352,28 +333,15 @@ class SignUpScreen extends Component {
                   errorMessage={phoneError}
                   returnKeyType="next"           
                   onRefInput={(input) => { this.phoneInput = input }}                                            
-                  onSubmitEditing={() => this.locationInput.focus()}
-                  onChangeText={(text) => this.setState({phone: text, phoneError: null})} />
-                
-                <FormInput
-                  label="Location" 
-                  placeholder="No. 212"
-                  type="address"
-                  placeholderTextColor={Colors.placeholderColor}
-                  value={locationText} 
-                  errorMessage={locationError}
-                  returnKeyType="next"
-                  onFocus={() => {this.scroll.props.scrollToPosition(0, 110)}}
-                  onRefInput={(input) => { this.locationInput = input }}                                            
-                  onSubmitEditing={() => { 
-                    if (socialId === null) {
-                     this.passwordInput.focus()
+                  onSubmitEditing={() => {
+                    if (socialId == null) {
+                      this.passwordInput.focus()
                     } else {
-                     Keyboard.dismiss()
+                      Keyboard.dismiss()
                     }
                   }}
-                  onSelectAddress={(address) => this.onChangeLocation(address)}
-                  onChangeText={(text) => this.setState({locationText: text, locationError: null})} />
+                  onChangeText={(text) => this.setState({phone: text, phoneError: null})} />
+                
                 {
 	            	  socialId == null
 	            	  ? <View>

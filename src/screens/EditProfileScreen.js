@@ -38,14 +38,11 @@ class EditProfile extends Component {
       lastName: '',
       email: '',
       phone: '',
-      location: '',
-      locationText: '',
       
       firstNameError: '',
       lastNameError: '',
       emailError: '',
       phoneError: '',
-      locationError: '',
       isLoading: false,
     }
   }
@@ -62,8 +59,6 @@ class EditProfile extends Component {
         lastName: currentUser.lastName,
         email: currentUser.email,
         phone: currentUser.phone,
-        location: currentUser.location,
-        locationText: currentUser.location,
       });
     }
   }
@@ -122,10 +117,6 @@ class EditProfile extends Component {
     this.props.navigation.goBack();
   }
 
-  onChangeLocation(address) {
-    this.setState({location: address, locationText: address});
-  }
-
   onMakeChanges() {
     Keyboard.dismiss();
     const { currentUser } = this.props;
@@ -135,8 +126,6 @@ class EditProfile extends Component {
       lastName, 
       email, 
       phone, 
-      location, 
-      locationText,
       avatarFile
     } = this.state;
 
@@ -160,11 +149,6 @@ class EditProfile extends Component {
       isValid = false;
     }
 
-    if (location == null || location.length == 0 || location != locationText) {
-      this.setState({locationError: Messages.InvalidLocation});
-      isValid = false;
-    }
-
     if (isValid) {
       this.setState({isLoading: true}, () => { 
         this.updateProfileData();
@@ -179,7 +163,6 @@ class EditProfile extends Component {
       lastName,
       email,
       phone,
-      location,
       avatarFile,
     } = this.state;
 
@@ -189,7 +172,6 @@ class EditProfile extends Component {
       lastName,
       email,
       phone,
-      location,
       avatarFile,
     };
 
@@ -337,20 +319,8 @@ class EditProfile extends Component {
                           errorMessage={this.state.phoneError}
                           returnKeyType="next"                                       
                           onRefInput={(input) => { this.phoneInput = input }}
-                          onSubmitEditing={() => { this.locationInput.focus() }}
-                          onChangeText={(text) => this.setState({phone: text, phoneError: null})} />
-
-                        <LabelFormInput
-                          label="Location" 
-                          type="address"
-                          returnKeyType="next"
-                          editable={true}
-                          placeholderTextColor={Colors.placeholderTextColor}
-                          value={this.state.locationText}
-                          errorMessage={this.state.locationError} 
-                          onRefInput={(input) => { this.locationInput = input }}
-                          onSelectAddress={(address) => this.onChangeLocation(address)}     
-                          onChangeText={(text) => this.setState({locationText: text, locationError: null})} 
+                          onSubmitEditing={() => { this.onMakeChanges() }}
+                          onChangeText={(text) => this.setState({phone: text, phoneError: null})} 
                         />
 
                         <View style={styles.centerView}>
