@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Text, TouchableOpacity, Dimensions, TouchableHighlight,
+  View, StyleSheet, Text, Image, Dimensions, TouchableWithoutFeedback,
 } from 'react-native';
 import Colors from '../../theme/Colors';
 import Fonts from '../../theme/Fonts';
@@ -39,32 +39,43 @@ export default class ChannelCell extends React.PureComponent {
   }
 
   render() {
-    const { channel, currentUser } = this.props;
-    const room = this.getChannelName(currentUser, channel);
-    const messageType = channel.lastMessage ? channel.lastMessage.data : '';
+    const { channel, currentUser, isSelfChannel } = this.props;
+    var room = '';
     var message = '';
-    if (messageType == 'image' || messageType == 'audio') {
-      message = '[' + messageType + ']';
-    } else {
-      message = channel.lastMessage ? channel.lastMessage.message : '';
-    }
+    var avatar = '';
+    var time = '';
 
-    const avatar = this.getProfileImage(currentUser, channel);
-    var time = ''
-    if (channel.lastMessage) {
-      const createdAt = channel.lastMessage ? channel.lastMessage.createdAt : '';      
-      time = Moment(createdAt).fromNow(true) + " ago";
+    if (isSelfChannel) {
+      room = "Saved";
     }
-    
+    else if (channel && channel._id) {
+      room = this.getChannelName(currentUser, channel);
+      const messageType = channel.lastMessage ? channel.lastMessage.data : '';
+      if (messageType == 'image' || messageType == 'audio') {
+        message = '[' + messageType + ']';
+      } else {
+        message = channel.lastMessage ? channel.lastMessage.message : '';
+      }
+
+      avatar = this.getProfileImage(currentUser, channel);
+      if (channel.lastMessage) {
+        const createdAt = channel.lastMessage ? channel.lastMessage.createdAt : '';      
+        time = Moment(createdAt).fromNow(true) + " ago";
+      }
+    }
 
     return (
-      <TouchableHighlight onPress={() => this.props.onPress(channel, room)}>
+      <TouchableWithoutFeedback onPress={() => this.props.onPress(channel, room)}>
         <View style={styles.listItem}>
           <View style={{flexDirection: 'row', alignItems: 'center', width: '60%'}}>
-            <FastImage
-              style={styles.avatarImage}
-              source={avatar ? {uri: avatar} : Images.account_icon}
-            />
+            {
+              isSelfChannel
+              ? <Image source={Images.icon_self_room} style={styles.avatarImage} />
+              : <FastImage
+                  style={styles.avatarImage}
+                  source={avatar ? {uri: avatar} : Images.account_icon}
+                />
+            }
             <View>
               <Text style={channel.unreadMessageCount > 0 ? styles.boldTitleLabel : styles.titleLabel}>{room}</Text>
               <Text style={styles.lastMessageText} numberOfLines={2}>{message}</Text>
@@ -77,7 +88,7 @@ export default class ChannelCell extends React.PureComponent {
               : null
           }
         </View>
-      </TouchableHighlight>
+      </TouchableWithoutFeedback>
     );
   }
 }
@@ -87,8 +98,6 @@ const styles = StyleSheet.create({
   listItem: {
     flex: 1,
     backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderColor: '#D8D8D8',
     paddingLeft: 15,
     paddingRight: 15,
     paddingTop: 12,
@@ -96,6 +105,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginHorizontal: 15,
+    marginVertical: 10,
+    borderRadius: 10,
   },
 
   avatarImage: {

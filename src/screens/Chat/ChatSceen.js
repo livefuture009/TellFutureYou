@@ -64,6 +64,7 @@ class ChatScreen extends Component {
       isImageViewVisible: false,
       isShowScheduleDialog: false,
       currentPhotoIndex: 0,
+      isSelfChannel: false,
     }
   }
 
@@ -80,7 +81,8 @@ class ChatScreen extends Component {
   }
 
   async componentDidMount() {
-    const { channel, user, contact } = this.props.route.params;
+    const { channel, user, contact, isSelfChannel } = this.props.route.params;
+
     // Check connection.
     const isConnected = await checkInternetConnectivity();
     if (isConnected) {
@@ -98,6 +100,10 @@ class ChatScreen extends Component {
           type: actionTypes.GET_USER_BY_EMAIL,
           email: contact.email,
         });
+      }
+
+      if (isSelfChannel) {
+        this.setState({isSelfChannel});
       }
     } else {
       this.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
@@ -535,18 +541,31 @@ class ChatScreen extends Component {
   }
 
   render() {
-    const { disabled, isImageViewVisible, isShowScheduleDialog, photos, currentPhotoIndex } = this.state;
+    const { 
+      disabled, 
+      isImageViewVisible, 
+      isShowScheduleDialog, 
+      photos, 
+      channel,
+      messages,
+      currentPhotoIndex, 
+      commentHeight,
+      isSelfChannel,
+      isFirst
+    } = this.state;
+
+    // Get Page Title.
     const currentUser = sb.currentUser;    
     const { user, room, contact } = this.props.route.params;  
-    var name = "";
+    var pageTitle = "";
     if (user) {
-      name = user.firstName + " " + user.lastName;
-    } 
-    else if (contact) {
-      name = contact.firstName + " " + contact.lastName;
-    } 
-    else {
-      name = room;
+      pageTitle = user.firstName + " " + user.lastName;
+    } else if (contact) {
+      pageTitle = contact.firstName + " " + contact.lastName;
+    } else if (isSelfChannel) {
+      pageTitle = "Saved Messages";
+    } else {
+      pageTitle = room;
     }
 
     return (
@@ -555,7 +574,7 @@ class ChatScreen extends Component {
           {insets => 
             <View style={{flex: 1, paddingTop: insets.top }} >
               <TopNavBar 
-                title={name} 
+                title={pageTitle} 
                 rightButton="schedule"
                 onBack={() => this.onBack()}
                 onRight={this.onMoveSchedulePage}
@@ -565,30 +584,30 @@ class ChatScreen extends Component {
                 style={styles.container} 
               >
                 <View style={[styles.chatContainer, {transform: [{ scaleY: -1 }]}]}>
-                    <FlatList
-                        enableEmptySections={true}
-                        onEndReached={() => this._getChannelMessage(false)}
-                        onEndReachedThreshold={PULLDOWN_DISTANCE}
-                        data={this.state.messages}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({item, i}) => (
-                          <ChatCell 
-                            item={item} 
-                            currentUser={currentUser}
-                            onPressImage={this.onPressImage}
-                          />
-                        )}
+                  <FlatList
+                    enableEmptySections={true}
+                    onEndReached={() => this._getChannelMessage(false)}
+                    onEndReachedThreshold={PULLDOWN_DISTANCE}
+                    data={messages}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({item, i}) => (
+                      <ChatCell 
+                        item={item} 
+                        currentUser={currentUser}
+                        onPressImage={this.onPressImage}
                       />
+                    )}
+                  />
                 </View>
                 {
-                  this.state.messages.length == 0
+                  messages.length == 0
                   ? <TouchableWithoutFeedback 
                       onPress={() => Keyboard.dismiss()} 
                       style={{flex: 1}}
                     >
                       <View style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
                         { 
-                          !this.state.isFirst
+                          !isFirst
                           ? <EmptyText icon="💬">{emptyText}</EmptyText>
                           : null
                         }
@@ -597,36 +616,36 @@ class ChatScreen extends Component {
                   : null 
                 }
                 {
-                  this.state.channel
-                    ? <CommentInput
-                        textRef={(ref) => {this.commentInputRef=ref}}
-                        style={{
-                          width: '100%', 
-                          paddingLeft: 15,
-                          paddingRight: 15,
-                          zIndex: 100, 
-                          paddingTop: 3, 
-                          paddingBottom: 3,
-                          backgroundColor:'white',
-                          ...ifIphoneX({
-                            marginBottom: 15,
-                          }, {
-                            marginBottom: 0,
-                          }),
-                        }}
-                        inputStyle={{height: Math.max(30, this.state.commentHeight)}}
-                        placeholder='Write a message...'
-                        disabled={disabled}
-                        onChangeText={this.onChangeText}
-                        onPost={this.onSend}
-                        onSchedule={this.onSchedule}
-                        onImagePress={this._onPhoto}
-                        onGifPress={this.onInsertGifButtonPress}
-                        onContentSizeChange={(event) => this.setState({
-                          commentHeight: event.nativeEvent.contentSize.height
-                        })}
-                      />
-                    : null
+                  channel
+                  ? <CommentInput
+                      textRef={(ref) => {this.commentInputRef=ref}}
+                      style={{
+                        width: '100%', 
+                        paddingLeft: 15,
+                        paddingRight: 15,
+                        zIndex: 100, 
+                        paddingTop: 3, 
+                        paddingBottom: 3,
+                        backgroundColor:'white',
+                        ...ifIphoneX({
+                          marginBottom: 15,
+                        }, {
+                          marginBottom: 0,
+                        }),
+                      }}
+                      inputStyle={{height: Math.max(30, commentHeight)}}
+                      placeholder='Write a message...'
+                      disabled={disabled}
+                      onChangeText={this.onChangeText}
+                      onPost={this.onSend}
+                      onSchedule={this.onSchedule}
+                      onImagePress={this._onPhoto}
+                      onGifPress={this.onInsertGifButtonPress}
+                      onContentSizeChange={(event) => this.setState({
+                        commentHeight: event.nativeEvent.contentSize.height
+                      })}
+                    />
+                  : null
                 }
             </ChatView>
             </View>

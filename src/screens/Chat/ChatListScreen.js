@@ -13,9 +13,8 @@ import Toast from 'react-native-easy-toast'
 import { SwipeListView } from 'react-native-swipe-list-view';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import HeaderInfoBar from '../../components/HeaderInfoBar'
-import SearchBox from '../../components/SearchBox'
+import TopTabBar from '../../components/TopTabBar'
 import LoadingOverlay from '../../components/LoadingOverlay'
-import EmptyView from '../../components/EmptyView'
 import ChannelCell from '../../components/Cells/ChannelCell'
 import { TOAST_SHOW_TIME, Status } from '../../constants.js'
 import { checkInternetConnectivity } from '../../functions'
@@ -32,8 +31,8 @@ class ChatScreen extends Component {
     this.state = {
       isLoading: false,
       channelList: [],
-      originalChannelList: [],
-      keyword: '',
+      archieveList: [],
+      currentPage: 0,
     }
   }
 
@@ -87,7 +86,7 @@ class ChatScreen extends Component {
   }
 
   updateChannelList(channel) {
-    const list = [];
+    const list = [{}];
     const { channelList } = this.state;    
     this.setState({channelList: list}, function() {
       var totalUnreadCount = 0;
@@ -111,8 +110,8 @@ class ChatScreen extends Component {
 
       this.setState({
         channelList: list,
-        originalChannelList: [...list],
       });
+
       this.props.dispatch({
         type: actionTypes.SET_UNREAD_MESSAGE,
         number: totalUnreadCount
@@ -125,14 +124,22 @@ class ChatScreen extends Component {
   }
   
   _onChannelPress=(channel, room)=> {
-    this.props.navigation.navigate('Chat', {
-      channel: channel, 
-      room: room,
-      onUpdateLastMessage: this.onUpdateLastMessage,
-    });
-    channel.markAsRead();
-    channel.unreadMessageCount = 0;
-    this.updateChannelList(channel);
+    if (channel && channel._id) {
+      this.props.navigation.navigate('Chat', {
+        channel: channel, 
+        room: room,
+        onUpdateLastMessage: this.onUpdateLastMessage,
+      });
+      channel.markAsRead();
+      channel.unreadMessageCount = 0;
+      this.updateChannelList(channel);
+    }
+    else {
+      this.props.navigation.navigate('Chat', {
+        isSelfChannel: true,
+        onUpdateLastMessage: this.onUpdateLastMessage,
+      });
+    }
   }
 
   async getChannelList() {
@@ -143,7 +150,7 @@ class ChatScreen extends Component {
     listQuery.next(function(response, error) {
       _SELF.setState({isLoading: false});
       if (response) {
-        var channelList = [];
+        var channelList = [{}];
         for (var i = 0; i < response.length; i++) {
           var channel = response[i];
           if (channel.memberCount >= 2 && channel.lastMessage != null) {
@@ -152,8 +159,7 @@ class ChatScreen extends Component {
         }
 
         _SELF.setState({ 
-          channelList: channelList, 
-          originalChannelList: [...channelList],
+          channelList, 
         });  
       } else {
         if (error) {
@@ -177,38 +183,6 @@ class ChatScreen extends Component {
     this.props.navigation.goBack();
   }
 
-  onSearch(keyword) {
-    this.setState({keyword: keyword});
-    const { originalChannelList } = this.state;
-
-    if (keyword) {
-      const text = keyword.trim().toLowerCase();
-      if (text.length > 0) {
-        const { currentUser } = this.props;
-        var list = [];
-        originalChannelList.forEach(item => {
-          var targetUsername = "";
-          if (item.members[0].userId == currentUser._id) {
-            targetUsername = item.members[1].nickname.toLowerCase();
-          } else {
-            targetUsername = item.members[0].nickname.toLowerCase();
-          }
-
-          if (targetUsername.indexOf(text) >= 0) {
-            list.push(item);
-          }
-        });
-
-        this.setState({ channelList: list });
-      } else {
-        this.setState({ channelList: originalChannelList });
-      }
-    } 
-    else {
-      this.setState({ channelList: originalChannelList });
-    }
-  }
-
   async onRemoveChannel(channel) {
     const SELF = this;
     const isConnected = await checkInternetConnectivity();
@@ -222,47 +196,55 @@ class ChatScreen extends Component {
     }    
   }
 
+  onAddMessage=()=> {
+
+  }
+
+  onSelectPage=(page)=> {
+    this.setState({currentPage: page});
+  }
+
   render() {
-    const { keyword } = this.state;
+    const { currentPage, channelList } = this.state;
     var currentUser = null;
     if (sb) {
       currentUser = sb.currentUser;
     }
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: Colors.appColor}}>
-        <HeaderInfoBar title="MESSAGES"/>
+        <HeaderInfoBar 
+          title="MESSANGER" 
+          rightButton="plus"
+          onRight={this.onAddMessage}
+        />
         <View style={styles.container}>
           <View style={styles.contentView}>
-            <SearchBox 
-              style={{marginTop: 10, marginBottom: 10}} 
-              value={keyword} 
-              placeholder="Search ..." 
-              onChangeText={(text) => this.onSearch(text)}
+            <TopTabBar
+              titles={["My Messages", "Archive"]}
+              currentPage={currentPage} 
+              onSelectPage={this.onSelectPage}
             />
-            {
-              (this.state.channelList && this.state.channelList.length > 0)
-              ? <SwipeListView
-                  style={styles.listView}
-                  data={this.state.channelList}
-                  keyExtractor={(item, index) => index.toString()}
-                  rightOpenValue={-75}
-                  renderHiddenItem={(data, index) => (
-                    <View style={styles.rowBack}>
-                      <TouchableOpacity style={styles.trashBtn} onPress={() => this.onRemoveChannel(data.item)}>
-                        <Image source={Images.icon_red_trash} style={{width: 35, height: 35}} />
-                      </TouchableOpacity>
-                    </View>
-                  )}
-                  renderItem={({item, i}) => (
-                    <ChannelCell 
-                      currentUser={currentUser}
-                      channel={item} 
-                      onPress={this._onChannelPress}
-                    />
-                  )} />
-              : <EmptyView title="No messages yet." />
-            }
-          
+            <SwipeListView
+              style={styles.listView}
+              data={channelList}
+              keyExtractor={(item, index) => index.toString()}
+              rightOpenValue={-75}
+              renderHiddenItem={(data, index) => (
+                <View style={styles.rowBack}>
+                  <TouchableOpacity style={styles.trashBtn} onPress={() => this.onRemoveChannel(data.item)}>
+                    <Image source={Images.icon_red_trash} style={{width: 35, height: 35}} />
+                  </TouchableOpacity>
+                </View>
+              )}
+              renderItem={({item, index}) => (
+                <ChannelCell 
+                  currentUser={currentUser}
+                  channel={item} 
+                  isSelfChannel={(currentPage == 0 && index == 0) ? true: false}
+                  onPress={this._onChannelPress}
+                />
+              )}
+            />
           </View>
         </View>
         
@@ -279,6 +261,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f2f2f5',
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
+    overflow: 'hidden',
   },
 
   contentView: {
