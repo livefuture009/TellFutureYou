@@ -12,34 +12,44 @@ export default class CommentInput extends React.Component{
     this.state={ value: '' }
   }
   render() {
-    const { props } = this;
+    const { 
+      placeholder,
+      disabled,
+      inputStyle,
+      textRef,
+      onBlur,
+      onPost,
+      onSchedule,
+      onImagePress,
+      onChangeText,
+    } = this.props;
     const { value } = this.state;
     return (
-      <View style={[styles.wrapper, props.style]}>
-        <TouchableOpacity style={{marginTop: 3}} onPress={props.onImagePress}>
+      <View style={[styles.wrapper, this.props.style]}>
+        <TouchableOpacity style={{marginTop: 3}} onPress={onImagePress}>
           <Image source={Images.image_record_icon} style={{ width: 34, height: 34, marginRight: 12 }} resizeMode="contain" />
         </TouchableOpacity>
         <View style={styles.container}>
           <TextInput
-            {...props}
-            value={this.state.value}
+            value={value}
             onChangeText={(value) => {
               this.setState({value});
-              props.onChangeText && props.onChangeText(value);
+              onChangeText && onChangeText(value);
             }}
-            ref={props.textRef ? props.textRef : () => {}}
-            style={[styles.textInput, props.inputStyle]}
+            placeholder={placeholder}
+            ref={textRef ? textRef : () => {}}
+            style={[styles.textInput, inputStyle]}
             multiline
             maxLength={1000}
-            onSubmitEditing={props.onBlur}
+            onSubmitEditing={onBlur}
             placeholderTextColor="#888888"
           />
         </View>
-        <TouchableOpacity style={styles.scheduleButton} onPress={() => props.onSchedule()}>
-          <Image source={Images.icon_clock} style={[styles.schedlueIcon, props.disabled && { opacity: 0.2 }]} resizeMode="contain" />
+        <TouchableOpacity style={styles.scheduleButton} onPress={() => onSchedule()}>
+          <Image source={Images.icon_clock} style={[styles.schedlueIcon, disabled && { opacity: 0.2 }]} resizeMode="contain" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.scheduleButton} onPress={props.onPost}>
-          <Image source={Images.send_icon} style={[styles.schedlueIcon, props.disabled && { opacity: 0.2 }]} resizeMode="contain" />
+        <TouchableOpacity style={styles.scheduleButton} onPress={onPost}>
+          <Image source={Images.send_icon} style={[styles.schedlueIcon, disabled && { opacity: 0.2 }]} resizeMode="contain" />
         </TouchableOpacity>
       </View>
     );

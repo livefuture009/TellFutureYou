@@ -18,6 +18,7 @@ import ImportContactScreen from '../screens/Contact/ImportContactScreen';
 import ContactDetailScreen from '../screens/Contact/ContactDetailScreen';
 import ChatSceen from '../screens/Chat/ChatSceen';
 import ScheduleMessageScreen from '../screens/Chat/ScheduleMessageScreen';
+import SavedMessageScreen from '../screens/Chat/SavedMessageScreen';
 
 import MainTab from './MainTab';
 
@@ -40,6 +41,7 @@ function AppNavigator() {
         <Stack.Screen name="ContactDetail" component={ContactDetailScreen} options={{ headerShown: false, gestureEnabled: false }}/>
         <Stack.Screen name="Chat" component={ChatSceen} options={{ headerShown: false, gestureEnabled: false }}/>
         <Stack.Screen name="ScheduleMessage" component={ScheduleMessageScreen} options={{ headerShown: false, gestureEnabled: false }}/>
+        <Stack.Screen name="SavedMessage" component={SavedMessageScreen} options={{ headerShown: false, gestureEnabled: false }}/>
         <Stack.Screen name="MainTab" component={MainTab} options={{ headerShown: false, gestureEnabled: false }}/>
       </Stack.Navigator>
     </NavigationContainer>

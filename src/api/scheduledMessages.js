@@ -29,14 +29,7 @@ export const createScheduledMessage = (data) => {
     const headers = {
         'Content-Type': 'application/json',
     }
-    const body = JSON.stringify({ 
-        message: data.message,
-        creator: data.creator, 
-        type: data.type,
-        scheduledAt: data.scheduledAt,
-        channelId: data.channelId, 
-        channelURL: data.channelURL,
-    });
+    const body = JSON.stringify(data);
 
     return fetch(request_url, { method, body, headers})
     .then((res) => res.json());
@@ -93,6 +86,21 @@ export const deleteScheduledMessage = (id) => {
         id
     });
 
+    return fetch(request_url, { method, body, headers})
+    .then((res) => res.json());
+};
+
+//////////////////////////////////////////////////////////////////
+///////////////////// Create Self Message. ///////////////////////
+//////////////////////////////////////////////////////////////////
+
+export const createSelfMessage = (data) => {
+    const method = 'POST';
+    const request_url = `${url}/scheduled_message/create_self`
+    const headers = {
+        'Content-Type': 'application/json',
+    }
+    const body = JSON.stringify(data);
     return fetch(request_url, { method, body, headers})
     .then((res) => res.json());
 };

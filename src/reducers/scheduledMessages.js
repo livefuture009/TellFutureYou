@@ -4,6 +4,7 @@ import { Status } from '../constants';
 
 export const initialState = {
   messages: [],
+  selfMessages: [],
   errorMessage: '',
 
   getScheduledMessagesStatus: Status.NONE,
@@ -11,6 +12,7 @@ export const initialState = {
   deleteScheduledMessageStatus: Status.NONE,
   rescheduleMessageStatus: Status.NONE,
   sendNowScheduledMessageStatus: Status.NONE,
+  createSelfMessageStatus: Status.NONE,
 };
 
 //////////////////////////////////////////////////////////////////
@@ -155,10 +157,37 @@ const rescheduleMessageFailure = (state, action) => ({
 });
 
 //////////////////////////////////////////////////////////////////
+/////////////////// Create Self Message. /////////////////////////
+//////////////////////////////////////////////////////////////////
+const createSelfMessageRequest = (state) => ({
+  ...state,
+  createSelfMessageStatus: Status.REQUEST,
+});
+
+const createSelfMessageSuccess = (state, action) => {
+  const { message } = action.payload;
+  var messages = [...state.selfMessages];
+  messages.push(message);
+  state.selfMessages = messages;
+  state.createSelfMessageStatus = Status.SUCCESS;
+  return {
+    ...state,
+  };
+};
+
+const createSelfMessageFailure = (state, action) => ({
+  ...state,
+  errorMessage: action.error,
+  createSelfMessageStatus: Status.FAILURE,
+});
+
+
+//////////////////////////////////////////////////////////////////
 ////////////////////// RESET /////////////////////////////////////
 //////////////////////////////////////////////////////////////////
 const resetScheduledMessages = (state, action) => {
   state.messages = [];
+  state.selfMessages = [];
   return {
     ...state,
   };
@@ -185,6 +214,10 @@ const actionHandlers = {
   [Types.RESCHEDULE_MESSAGE_REQUEST]: rescheduleMessageRequest,
   [Types.RESCHEDULE_MESSAGE_SUCCESS]: rescheduleMessageSuccess,
   [Types.RESCHEDULE_MESSAGE_FAILURE]: rescheduleMessageFailure,
+
+  [Types.CREATE_SELF_MESSAGE_REQUEST]: createSelfMessageRequest,
+  [Types.CREATE_SELF_MESSAGE_SUCCESS]: createSelfMessageSuccess,
+  [Types.CREATE_SELF_MESSAGE_FAILURE]: createSelfMessageFailure,
 
   [Types.RESET_SCHEDULED_MESSAGES]: resetScheduledMessages,
 };

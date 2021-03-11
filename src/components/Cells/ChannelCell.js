@@ -48,7 +48,7 @@ export default class ChannelCell extends React.PureComponent {
     if (isSelfChannel) {
       room = "Saved";
     }
-    else if (channel && channel._id) {
+    else if (channel && channel.name) {
       room = this.getChannelName(currentUser, channel);
       const messageType = channel.lastMessage ? channel.lastMessage.data : '';
       if (messageType == 'image' || messageType == 'audio') {
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginHorizontal: 15,
-    marginVertical: 10,
+    marginBottom: 10,
     borderRadius: 10,
   },
 

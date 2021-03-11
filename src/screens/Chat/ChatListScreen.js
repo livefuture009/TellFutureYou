@@ -31,7 +31,7 @@ class ChatScreen extends Component {
     this.state = {
       isLoading: false,
       channelList: [],
-      archieveList: [],
+      archiveList: [],
       currentPage: 0,
     }
   }
@@ -86,7 +86,7 @@ class ChatScreen extends Component {
   }
 
   updateChannelList(channel) {
-    const list = [{}];
+    const list = [];
     const { channelList } = this.state;    
     this.setState({channelList: list}, function() {
       var totalUnreadCount = 0;
@@ -124,7 +124,7 @@ class ChatScreen extends Component {
   }
   
   _onChannelPress=(channel, room)=> {
-    if (channel && channel._id) {
+    if (channel && channel.name) {
       this.props.navigation.navigate('Chat', {
         channel: channel, 
         room: room,
@@ -135,10 +135,7 @@ class ChatScreen extends Component {
       this.updateChannelList(channel);
     }
     else {
-      this.props.navigation.navigate('Chat', {
-        isSelfChannel: true,
-        onUpdateLastMessage: this.onUpdateLastMessage,
-      });
+      this.props.navigation.navigate('SavedMessage');
     }
   }
 
@@ -204,12 +201,55 @@ class ChatScreen extends Component {
     this.setState({currentPage: page});
   }
 
-  render() {
-    const { currentPage, channelList } = this.state;
+  _renderMessagePage() {
     var currentUser = null;
     if (sb) {
       currentUser = sb.currentUser;
     }
+    const { channelList, currentPage } = this.state;
+
+    return (
+      <View style={styles.pageView}>
+        <SwipeListView
+          style={styles.listView}
+          data={channelList}
+          keyExtractor={(item, index) => index.toString()}
+          rightOpenValue={-75}
+          renderHiddenItem={(data, index) => (
+            <View style={styles.rowBack}>
+              <TouchableOpacity style={styles.trashBtn} onPress={() => this.onRemoveChannel(data.item)}>
+                <Image source={Images.icon_red_trash} style={{width: 35, height: 35}} />
+              </TouchableOpacity>
+            </View>
+          )}
+          renderItem={({item, index}) => (
+            <ChannelCell 
+              currentUser={currentUser}
+              channel={item} 
+              isSelfChannel={(currentPage == 0 && index == 0) ? true: false}
+              onPress={this._onChannelPress}
+            />
+          )}
+        />
+      </View>
+    )
+  }
+
+  _renderArchivePage() {
+    var currentUser = null;
+    if (sb) {
+      currentUser = sb.currentUser;
+    }
+    const { archiveList, currentPage } = this.state;
+    return (
+      <View style={styles.pageView}>
+
+      </View>
+    )
+  }
+
+  render() {
+    const { currentPage } = this.state;
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: Colors.appColor}}>
         <HeaderInfoBar 
@@ -224,27 +264,16 @@ class ChatScreen extends Component {
               currentPage={currentPage} 
               onSelectPage={this.onSelectPage}
             />
-            <SwipeListView
-              style={styles.listView}
-              data={channelList}
-              keyExtractor={(item, index) => index.toString()}
-              rightOpenValue={-75}
-              renderHiddenItem={(data, index) => (
-                <View style={styles.rowBack}>
-                  <TouchableOpacity style={styles.trashBtn} onPress={() => this.onRemoveChannel(data.item)}>
-                    <Image source={Images.icon_red_trash} style={{width: 35, height: 35}} />
-                  </TouchableOpacity>
-                </View>
-              )}
-              renderItem={({item, index}) => (
-                <ChannelCell 
-                  currentUser={currentUser}
-                  channel={item} 
-                  isSelfChannel={(currentPage == 0 && index == 0) ? true: false}
-                  onPress={this._onChannelPress}
-                />
-              )}
-            />
+            {
+              (currentPage == 0) 
+              ? this._renderMessagePage()
+              : null
+            }
+            {
+              (currentPage == 1) 
+              ? this._renderArchivePage()
+              : null
+            }
           </View>
         </View>
         
@@ -280,7 +309,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
-    width: 75,
+    width: 60,
+  },
+
+  pageView: {
+    flex: 1,
+    marginTop: 10,
   },
 })
 
