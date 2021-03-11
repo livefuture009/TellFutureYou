@@ -19,7 +19,7 @@ import ImageResizer from 'react-native-image-resizer';
 import ImageView from 'react-native-image-view';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import TopNavBar from '../../components/TopNavBar'
-import ChatCell from '../../components/Cells/ChatCell'
+import SelfChatCell from '../../components/Cells/SelfChatCell'
 import CommentInput from '../../components/CommentInput';
 import RNFS from 'react-native-fs';
 import { TOAST_SHOW_TIME, Status, PULLDOWN_DISTANCE, IMAGE_COMPRESS_QUALITY, MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT } from '../../constants.js'
@@ -70,12 +70,15 @@ class SavedMessageScreen extends Component {
   }
 
   componentDidMount() {
-
-  }
-
-  componentWillUnmount() {
-    sb.removeChannelHandler('ChatView');
-    sb.removeConnectionHandler('ChatView')
+    const { currentUser } = this.props;
+    this.setState({isLoading: true}, () => {
+      this.props.dispatch({
+        type: actionTypes.GET_SELF_MESSAGE,
+        data: {
+          userId: currentUser._id
+        },
+      });
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -87,6 +90,28 @@ class SavedMessageScreen extends Component {
       } else if (this.props.uploadFileStatus == Status.FAILURE) {
         this.onFailure(this.props.errorMessage);
       }      
+    }
+
+    // Get Self Messages.
+    if (prevProps.getSelfMessagesStatus != this.props.getSelfMessagesStatus) {
+      if (this.props.getSelfMessagesStatus == Status.SUCCESS) {
+        this.setState({isLoading: false});
+      } else if (this.props.getSelfMessagesStatus == Status.FAILURE) {
+        this.onFailure(this.props.errorScheduledMessage);
+      }      
+    }
+
+    // Create Self Messages.
+    if (prevProps.createSelfMessageStatus != this.props.createSelfMessageStatus) {
+      if (this.props.createSelfMessageStatus == Status.SUCCESS) {
+        this.setState({isLoading: false});
+      } else if (this.props.createSelfMessageStatus == Status.FAILURE) {
+        this.onFailure(this.props.errorScheduledMessage);
+      }      
+    }
+
+    if (prevProps.selfMessages != this.props.selfMessages) {
+      this.setState({messages: this.props.selfMessages});
     }
   }
 
@@ -210,20 +235,25 @@ class SavedMessageScreen extends Component {
   }
 
   onSend=async()=> {
-    // message,
-    // creator,
-    // type,
-    // scheduledAt
-    if (this.text) {
-      const message = this.text.trim();
-      if (message && message.length > 0) {
-
-      }
-    }
-    
     const isConnected = await checkInternetConnectivity();
     if (isConnected) {
-        // this.resetMessageInput();
+      if (this.text) {
+        const message = this.text.trim();
+        if (message && message.length > 0) {
+          const { currentUser } = this.props;
+          this.setState({isLoading: true}, () => {
+            this.props.dispatch({
+              type: actionTypes.CREATE_SELF_MESSAGE,
+              data: {
+                message,
+                creator: currentUser._id,
+                type: 'text',
+              },
+            });
+          });
+          this.resetMessageInput();
+        }
+      }
     } 
     else {
       this.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
@@ -276,6 +306,7 @@ class SavedMessageScreen extends Component {
   }
 
   render() {
+    const { currentUser } = this.props;
     const { 
       disabled, 
       isImageViewVisible, 
@@ -283,7 +314,6 @@ class SavedMessageScreen extends Component {
       photos, 
       messages,
       currentPhotoIndex, 
-      commentHeight,
       isFirst
     } = this.state;
 
@@ -304,22 +334,18 @@ class SavedMessageScreen extends Component {
               >
                 <View style={[styles.chatContainer, {transform: [{ scaleY: -1 }]}]}>
                   <FlatList
-                    enableEmptySections={true}
-                    onEndReached={() => this._getChannelMessage(false)}
-                    onEndReachedThreshold={PULLDOWN_DISTANCE}
                     data={messages}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({item, i}) => (
-                      <ChatCell 
-                        item={item} 
-                        currentUser={currentUser}
+                      <SelfChatCell 
+                        data={item} 
                         onPressImage={this.onPressImage}
                       />
                     )}
                   />
                 </View>
                 {
-                  messages.length == 0
+                  (messages && messages.length == 0)
                   ? <TouchableWithoutFeedback 
                       onPress={() => Keyboard.dismiss()} 
                       style={{flex: 1}}
@@ -350,16 +376,12 @@ class SavedMessageScreen extends Component {
                             marginBottom: 0,
                         }),
                     }}
-                    inputStyle={{height: Math.max(30, commentHeight)}}
                     placeholder='Write a message...'
                     disabled={disabled}
                     onChangeText={this.onChangeText}
                     onPost={this.onSend}
                     onSchedule={this.onSchedule}
                     onImagePress={this._onPhoto}
-                    onContentSizeChange={(event) => this.setState({
-                        commentHeight: event.nativeEvent.contentSize.height
-                    })}
                 />
             </ChatView>
             </View>
@@ -401,7 +423,6 @@ class SavedMessageScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 10,
     backgroundColor: 'white',
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
@@ -409,7 +430,7 @@ const styles = StyleSheet.create({
   },
 
   chatContainer: {
-    flex: 10,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'stretch',
   },
@@ -429,12 +450,10 @@ function mapStateToProps(state) {
     uploadedMediaType: state.globals.uploadedMediaType,
     uploadFileStatus: state.globals.uploadFileStatus,
 
-    errorUserMessage: state.user.errorMessage,
-    selectedUser: state.user.selectedUser,
-    getUserByEmailStatus: state.user.getUserByEmailStatus,
-
     errorScheduledMessage: state.scheduledMessages.errorMessage,
-    createScheduledMessageStatus: state.scheduledMessages.createScheduledMessageStatus,
+    createSelfMessageStatus: state.scheduledMessages.createSelfMessageStatus,
+    getSelfMessagesStatus: state.scheduledMessages.getSelfMessagesStatus,
+    selfMessages: state.scheduledMessages.selfMessages,
   };  
 }
 

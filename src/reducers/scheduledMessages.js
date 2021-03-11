@@ -12,6 +12,7 @@ export const initialState = {
   deleteScheduledMessageStatus: Status.NONE,
   rescheduleMessageStatus: Status.NONE,
   sendNowScheduledMessageStatus: Status.NONE,
+  getSelfMessagesStatus: Status.NONE,
   createSelfMessageStatus: Status.NONE,
 };
 
@@ -157,6 +158,26 @@ const rescheduleMessageFailure = (state, action) => ({
 });
 
 //////////////////////////////////////////////////////////////////
+///////////////////// Get Self Messages. /////////////////////////
+//////////////////////////////////////////////////////////////////
+const getSelfMessagesRequest = (state) => ({
+  ...state,
+  getSelfMessagesStatus: Status.REQUEST,
+});
+
+const getSelfMessagesSuccess = (state, action) => ({
+  ...state,
+  selfMessages: action.payload.messages,
+  getSelfMessagesStatus: Status.SUCCESS,
+});
+
+const getSelfMessagesFailure = (state, action) => ({
+  ...state,
+  errorMessage: action.error,
+  getSelfMessagesStatus: Status.FAILURE,
+});
+
+//////////////////////////////////////////////////////////////////
 /////////////////// Create Self Message. /////////////////////////
 //////////////////////////////////////////////////////////////////
 const createSelfMessageRequest = (state) => ({
@@ -167,7 +188,7 @@ const createSelfMessageRequest = (state) => ({
 const createSelfMessageSuccess = (state, action) => {
   const { message } = action.payload;
   var messages = [...state.selfMessages];
-  messages.push(message);
+  messages.unshift(message);
   state.selfMessages = messages;
   state.createSelfMessageStatus = Status.SUCCESS;
   return {
@@ -214,6 +235,10 @@ const actionHandlers = {
   [Types.RESCHEDULE_MESSAGE_REQUEST]: rescheduleMessageRequest,
   [Types.RESCHEDULE_MESSAGE_SUCCESS]: rescheduleMessageSuccess,
   [Types.RESCHEDULE_MESSAGE_FAILURE]: rescheduleMessageFailure,
+
+  [Types.GET_SELF_MESSAGE_REQUEST]: getSelfMessagesRequest,
+  [Types.GET_SELF_MESSAGE_SUCCESS]: getSelfMessagesSuccess,
+  [Types.GET_SELF_MESSAGE_FAILURE]: getSelfMessagesFailure,
 
   [Types.CREATE_SELF_MESSAGE_REQUEST]: createSelfMessageRequest,
   [Types.CREATE_SELF_MESSAGE_SUCCESS]: createSelfMessageSuccess,

@@ -202,12 +202,14 @@ class ChatScreen extends Component {
   }
 
   _renderMessagePage() {
-    var currentUser = null;
+    var user = null;
     if (sb) {
-      currentUser = sb.currentUser;
+      user = sb.currentUser;
     }
+    const { currentUser } = this.props;
     const { channelList, currentPage } = this.state;
 
+    const lastSelfMessage = (currentUser && currentUser.lastSelfMessage) ? currentUser.lastSelfMessage : null;
     return (
       <View style={styles.pageView}>
         <SwipeListView
@@ -224,7 +226,8 @@ class ChatScreen extends Component {
           )}
           renderItem={({item, index}) => (
             <ChannelCell 
-              currentUser={currentUser}
+              currentUser={user}
+              lastSelfMessage={lastSelfMessage}
               channel={item} 
               isSelfChannel={(currentPage == 0 && index == 0) ? true: false}
               onPress={this._onChannelPress}

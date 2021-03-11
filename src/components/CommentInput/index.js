@@ -15,7 +15,6 @@ export default class CommentInput extends React.Component{
     const { 
       placeholder,
       disabled,
-      inputStyle,
       textRef,
       onBlur,
       onPost,
@@ -38,7 +37,7 @@ export default class CommentInput extends React.Component{
             }}
             placeholder={placeholder}
             ref={textRef ? textRef : () => {}}
-            style={[styles.textInput, inputStyle]}
+            style={[styles.textInput]}
             multiline
             maxLength={1000}
             onSubmitEditing={onBlur}
@@ -70,7 +69,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     zIndex: 100,
-    minHeight: 40,
   },
 
   textInput: {
@@ -78,7 +76,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: Fonts.regular,
     color: Colors.text,
-    maxHeight: 150
+    maxHeight: 150,
+    marginBottom: 6,
   },
 
   scheduleButton: {

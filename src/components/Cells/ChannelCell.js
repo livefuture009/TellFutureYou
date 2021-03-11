@@ -39,7 +39,7 @@ export default class ChannelCell extends React.PureComponent {
   }
 
   render() {
-    const { channel, currentUser, isSelfChannel } = this.props;
+    const { channel, currentUser, lastSelfMessage, isSelfChannel } = this.props;
     var room = '';
     var message = '';
     var avatar = '';
@@ -47,6 +47,8 @@ export default class ChannelCell extends React.PureComponent {
 
     if (isSelfChannel) {
       room = "Saved";
+      message = (lastSelfMessage && lastSelfMessage.message) ? lastSelfMessage.message : "";
+      time = Moment(lastSelfMessage.createdAt).fromNow(true);
     }
     else if (channel && channel.name) {
       room = this.getChannelName(currentUser, channel);
@@ -60,7 +62,7 @@ export default class ChannelCell extends React.PureComponent {
       avatar = this.getProfileImage(currentUser, channel);
       if (channel.lastMessage) {
         const createdAt = channel.lastMessage ? channel.lastMessage.createdAt : '';      
-        time = Moment(createdAt).fromNow(true) + " ago";
+        time = Moment(createdAt).fromNow(true);
       }
     }
 
@@ -78,7 +80,7 @@ export default class ChannelCell extends React.PureComponent {
             }
             <View>
               <Text style={channel.unreadMessageCount > 0 ? styles.boldTitleLabel : styles.titleLabel}>{room}</Text>
-              <Text style={styles.lastMessageText} numberOfLines={2}>{message}</Text>
+              <Text style={styles.lastMessageText} numberOfLines={2} ellipsizeMode="tail">{message}</Text>
             </View>          
           </View>
           <Text style={styles.timeText}>{time}</Text>
@@ -98,8 +100,7 @@ const styles = StyleSheet.create({
   listItem: {
     flex: 1,
     backgroundColor: 'white',
-    paddingLeft: 15,
-    paddingRight: 15,
+    paddingLeft: 10,
     paddingTop: 12,
     paddingBottom: 12,
     flexDirection: 'row',

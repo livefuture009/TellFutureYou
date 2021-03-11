@@ -1,5 +1,5 @@
-export const url = 'https://tellfutureyouapp.herokuapp.com';
-// export const url = 'http://192.168.1.15:5000';
+// export const url = 'https://tellfutureyouapp.herokuapp.com';
+export const url = 'http://localhost:5000';
 
 export const ONE_SIGNAL_APP_ID = '6c0fae7c-4fd4-4c56-b3c5-ca0fe05353e0'
 export const GOOGLE_API_KEY = 'AIzaSyCGJg6E9WkiiIbbOhAWw_A0wSMS3YKaNBs'
