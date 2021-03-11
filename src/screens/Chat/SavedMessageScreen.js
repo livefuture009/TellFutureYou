@@ -22,12 +22,11 @@ import TopNavBar from '../../components/TopNavBar'
 import SelfChatCell from '../../components/Cells/SelfChatCell'
 import CommentInput from '../../components/CommentInput';
 import RNFS from 'react-native-fs';
-import { TOAST_SHOW_TIME, Status, PULLDOWN_DISTANCE, IMAGE_COMPRESS_QUALITY, MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT } from '../../constants.js'
+import { TOAST_SHOW_TIME, Status, IMAGE_COMPRESS_QUALITY, MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT } from '../../constants.js'
 import EmptyText from '../../components/Decoration/EmptyText'
 import LoadingOverlay from '../../components/LoadingOverlay'
 import actionTypes from '../../actions/actionTypes';
 import {checkInternetConnectivity} from '../../functions'
-import moment from 'moment';
 import ScheduleDialog from '../../components/ScheduleDialog'
 import Colors from '../../theme/Colors'
 import Messages from '../../theme/Messages'
@@ -105,6 +104,7 @@ class SavedMessageScreen extends Component {
     if (prevProps.createSelfMessageStatus != this.props.createSelfMessageStatus) {
       if (this.props.createSelfMessageStatus == Status.SUCCESS) {
         this.setState({isLoading: false});
+        this.updateCurrentUser();
       } else if (this.props.createSelfMessageStatus == Status.FAILURE) {
         this.onFailure(this.props.errorScheduledMessage);
       }      
@@ -119,6 +119,17 @@ class SavedMessageScreen extends Component {
     this.setState({isLoading: false});
     this.toast.show(message, TOAST_SHOW_TIME);
   }
+
+  updateCurrentUser() {
+    const { selectedUser } = this.props;
+    if (selectedUser && selectedUser._id) {
+      this.props.dispatch({
+        type: actionTypes.SET_CURRENT_USER,
+        user: selectedUser
+      });
+    }
+  }
+
 
   filterPhotos(messages) {
     var photos = [];
@@ -306,7 +317,6 @@ class SavedMessageScreen extends Component {
   }
 
   render() {
-    const { currentUser } = this.props;
     const { 
       disabled, 
       isImageViewVisible, 
@@ -454,6 +464,7 @@ function mapStateToProps(state) {
     createSelfMessageStatus: state.scheduledMessages.createSelfMessageStatus,
     getSelfMessagesStatus: state.scheduledMessages.getSelfMessagesStatus,
     selfMessages: state.scheduledMessages.selfMessages,
+    selectedUser: state.scheduledMessages.selectedUser,
   };  
 }
 

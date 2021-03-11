@@ -5,6 +5,7 @@ import { Status } from '../constants';
 export const initialState = {
   messages: [],
   selfMessages: [],
+  selectedUser: null,
   errorMessage: '',
 
   getScheduledMessagesStatus: Status.NONE,
@@ -186,10 +187,11 @@ const createSelfMessageRequest = (state) => ({
 });
 
 const createSelfMessageSuccess = (state, action) => {
-  const { message } = action.payload;
+  const { message, user } = action.payload;
   var messages = [...state.selfMessages];
   messages.unshift(message);
   state.selfMessages = messages;
+  state.selectedUser = user;
   state.createSelfMessageStatus = Status.SUCCESS;
   return {
     ...state,
@@ -209,6 +211,7 @@ const createSelfMessageFailure = (state, action) => ({
 const resetScheduledMessages = (state, action) => {
   state.messages = [];
   state.selfMessages = [];
+  state.selectedUser = null;
   return {
     ...state,
   };
