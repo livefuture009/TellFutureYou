@@ -130,7 +130,6 @@ class SavedMessageScreen extends Component {
     }
   }
 
-
   filterPhotos(messages) {
     var photos = [];
     messages.forEach(item => {
@@ -149,7 +148,7 @@ class SavedMessageScreen extends Component {
   }
   
   selectActionSheet(index) {
-    let options = {
+    const options = {
       mediaType: 'photo',
       forceJpg:false
     };
@@ -158,14 +157,11 @@ class SavedMessageScreen extends Component {
       ImagePicker.openCamera(options).then(response => {
         this.setMediaData(response)
       });
-    } else if (index === OPEN_GALLERY) {
+    } 
+    else if (index === OPEN_GALLERY) {
       ImagePicker.openPicker(options).then(response => {
         this.setMediaData(response)
       });
-    } else {
-      if (Platform.OS === 'android'){
-        sb.enableStateChange();
-      }
     }
   }
 
@@ -220,28 +216,30 @@ class SavedMessageScreen extends Component {
     return image
   }
 
-  addMediaMessage(url, type) {
-    //   var _messages = [];
-    //   _messages.push(message);
-    //   if (this.state.lastMessage && message.createdAt - this.state.lastMessage.createdAt  > (1000 * 60 * 60)) {
-    //     _messages.push({isDate: true, createdAt: message.createdAt});
-    //   }
-
-    //   var _newMessageList = _messages.concat(this.state.messages);
-    //   this.setState({
-    //     messages: _newMessageList,
-    //     isFirst: false
-    //   });
-    //   this.filterPhotos(_newMessageList);
-    //   this.text = '';
-    //   this.commentInputRef.clear();
-    //   this.setState({disabled: true});
+  async addMediaMessage(url) {
+    const isConnected = await checkInternetConnectivity();
+    if (isConnected) {
+      const message = (this.text) ? this.text.trim() : "";
+      const { currentUser } = this.props;
+      this.setState({isLoading: true}, () => {
+        this.props.dispatch({
+          type: actionTypes.CREATE_SELF_MESSAGE,
+          data: {
+            message,
+            image: url,
+            creator: currentUser._id,
+            type: 'image',
+          },
+        });
+      });
+      this.resetMessageInput();
+    } 
+    else {
+      this.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
+    }
   }
 
   _onPhoto=()=> {
-    if (Platform.OS === 'android'){
-      sb.disableStateChange();
-    }
     this.ActionSheet.show();
   }
 
@@ -398,32 +396,32 @@ class SavedMessageScreen extends Component {
           }
         </SafeAreaInsetsContext.Consumer>
         <Toast ref={ref => (this.toast = ref)}/>
-          { this.state.isLoading
-            ? <LoadingOverlay />
-            : null
-          } 
-          <ActionSheet
-            ref={o => this.ActionSheet = o}
-            title={'Choose Media'}
-            options={['Take Media...', 'Choose Media from Gallery...', 'Cancel']}
-            cancelButtonIndex={2}
-            onPress={(index) => this.selectActionSheet(index)}
-          />
-          <ImageView
-            images={photos}
-            imageIndex={currentPhotoIndex}
-            isSwipeCloseEnabled={true}
-            isVisible={isImageViewVisible}
-            onClose={() => this.setState({isImageViewVisible: false})}
-          />    
-          <ScheduleDialog 
-            isVisible={isShowScheduleDialog}
-            value={this.scheduleTime}
-            onClose={() => this.setState({isShowScheduleDialog: false})}
-            onSelect={(date) => {
-              this.onSelectScheduleDate(date);
-            }}
-          />
+        { this.state.isLoading
+          ? <LoadingOverlay />
+          : null
+        } 
+        <ActionSheet
+          ref={o => this.ActionSheet = o}
+          title={'Choose Media'}
+          options={['Take Media...', 'Choose Media from Gallery...', 'Cancel']}
+          cancelButtonIndex={2}
+          onPress={(index) => this.selectActionSheet(index)}
+        />
+        <ImageView
+          images={photos}
+          imageIndex={currentPhotoIndex}
+          isSwipeCloseEnabled={true}
+          isVisible={isImageViewVisible}
+          onClose={() => this.setState({isImageViewVisible: false})}
+        />    
+        <ScheduleDialog 
+          isVisible={isShowScheduleDialog}
+          value={this.scheduleTime}
+          onClose={() => this.setState({isShowScheduleDialog: false})}
+          onSelect={(date) => {
+            this.onSelectScheduleDate(date);
+          }}
+        />
       </View>
     );
   }
