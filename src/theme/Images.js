@@ -46,6 +46,7 @@ const Images = {
     icon_trash: require('../../assets/images/icon_trash.png'),
     icon_white_back: require('../../assets/images/icon_white_back.png'),
     icon_self_room: require('../../assets/images/icon_self_room.png'),
+    icon_quote: require('../../assets/images/icon_quote.png'),
 };
 
 export default Images;
