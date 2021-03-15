@@ -1,26 +1,33 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Text, Image,
+  View, StyleSheet, Text, Image, TouchableOpacity,
 } from 'react-native';
 import Fonts from '../../theme/Fonts';
 import Moment from 'moment';
 import FastImage from 'react-native-fast-image'
 import Images from '../../theme/Images';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 export default class SelfChatCell extends React.PureComponent {
   render() {
-    const { data } = this.props;
+    const { data, isShowSchedule, onSelect } = this.props;
     const type = (data && data.type) ? data.type : "";
     const message = (data && data.message) ? data.message : "";
     const author = (data && data.author) ? data.author : "";
     const image = (data && data.image) ? data.image : "";
-    const time = Moment(data.createdAt).format('DD MMM YYYY, hh:mm A');
+    var time = Moment(data.createdAt).format('DD MMM YYYY, hh:mm A');
+    if (isShowSchedule) {
+      time = Moment(data.scheduledAt).format('DD MMM YYYY, hh:mm A');
+    }
 
+    const ContentView = isShowSchedule ? TouchableOpacity : View;
     return (
       <View style={{ flex: 1, marginBottom: 20, marginRight: 15 }}>
         <View style={[styles.listItem, { transform: [{ scaleY: -1 }] }]}>
-          <View style={styles.myMessageBox}>
+          <ContentView style={styles.myMessageBox} onPress={() => {
+            if (onSelect) {
+              onSelect(data)
+            }
+          }}>
             {
               (type == "text")
               ? <Text style={styles.messageText}>{message}</Text>
@@ -50,7 +57,7 @@ export default class SelfChatCell extends React.PureComponent {
               </View>
               : null
             }
-          </View>
+          </ContentView>
           <Text style={styles.myTimeText}>{time}</Text>
         </View>
       </View>
@@ -102,6 +109,7 @@ const styles = StyleSheet.create({
     height: 190,
     resizeMode: 'cover',
     backgroundColor: 'lightgray',
+    borderRadius: 10,
   },
 
   quoteView: {

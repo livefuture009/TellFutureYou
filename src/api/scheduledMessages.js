@@ -105,6 +105,16 @@ export const getSelfMessages = (data) => {
     .then((res) => res.json());
 };
 
+export const getScheduledSelfMessages = (data) => {
+    const method = 'POST';
+    const request_url = `${url}/scheduled_message/get_scheduled_my_self`
+    const headers = {
+        'Content-Type': 'application/json',
+    }
+    const body = JSON.stringify(data);
+    return fetch(request_url, { method, body, headers})
+    .then((res) => res.json());
+};
 
 //////////////////////////////////////////////////////////////////
 ////////////////////// Create Self Message. //////////////////////

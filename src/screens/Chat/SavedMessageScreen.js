@@ -14,7 +14,9 @@ import {
 
 import {connect} from 'react-redux';
 import Toast from 'react-native-easy-toast'
+import PushNotification from "react-native-push-notification"
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
+import moment from 'moment';
 import ImagePicker from 'react-native-image-crop-picker';
 import { ifIphoneX } from 'react-native-iphone-x-helper'
 import ActionSheet from 'react-native-actionsheet'
@@ -51,15 +53,19 @@ class SavedMessageScreen extends Component {
     super()
     this.scheduleTime = null;
     this.state = {
-        disabled: true,
-        messages: [],
-        commentHeight: 0,
-        isLoading: false,
-        photos: [],
-        isImageViewVisible: false,
-        isShowScheduleDialog: false,
-        currentPhotoIndex: 0,
-        isShowQuoteDialog: false,
+      disabled: true,
+      messages: [],
+      commentHeight: 0,
+      isLoading: false,
+      photos: [],
+
+      isImageViewVisible: false,
+      isShowScheduleDialog: false,
+      isShowQuoteDialog: false,
+      currentPhotoIndex: 0,
+
+      selectedImage: null,
+      selectedQuote: null,
     }
   }
 
@@ -162,12 +168,12 @@ class SavedMessageScreen extends Component {
 
     if (index === OPEN_CAMERA) {
       ImagePicker.openCamera(options).then(response => {
-        this.setMediaData(response)
+        this.setState({isShowScheduleDialog: true, selectedImage: response});
       });
     } 
     else if (index === OPEN_GALLERY) {
       ImagePicker.openPicker(options).then(response => {
-        this.setMediaData(response)
+        this.setState({isShowScheduleDialog: true, selectedImage: response});
       });
     }
   }
@@ -191,7 +197,9 @@ class SavedMessageScreen extends Component {
           uri: photo.uri
         },
       });
-    } else {
+      this.setState({selectedImage: null});
+    } 
+    else {
       this.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
     }
   }
@@ -291,8 +299,7 @@ class SavedMessageScreen extends Component {
   }
 
   onMoveSchedulePage=()=> {
-    // const { channel } = this.state; 
-    // this.props.navigation.navigate('ScheduleMessage', {channel: channel});
+    this.props.navigation.navigate('ScheduleMessage');
   }
 
   onBack() {
@@ -321,8 +328,79 @@ class SavedMessageScreen extends Component {
     this.setState({isShowScheduleDialog: true});
   }
 
+  onSelectScheduleDate(date) {
+    this.setState({isShowScheduleDialog: false});
+    
+    const { currentUser } = this.props;
+    const { selectedQuote, selectedImage } = this.state;
+    const scheduledAt = moment(date).unix() * 1000;
+    var data = {
+      scheduledAt,
+      creator: currentUser._id,
+    };
+
+    if (selectedQuote) {
+      data['message'] = selectedQuote.content;
+      data['author'] = selectedQuote.author;
+      data['type'] = 'quote';
+    }
+    else if (selectedImage) {
+      if (this.text) {
+        const message = this.text.trim();
+        data['message'] = message;
+      }      
+      data['type'] = 'image';
+    }
+    else {
+      if (!this.text) return;
+      const content = this.text.trim();
+      if (content.length === 0) return;
+
+      data['message'] = content;
+      data['type'] = 'text';
+
+      // Send Scheduled Local Notification.
+      PushNotification.localNotificationSchedule({
+        id: 'self-message', 
+        message: content,
+        date: date,
+        allowWhileIdle: false, // (optional) set notification to work while on doze, default: false
+      });
+    }
+
+    this.setState({isLoading: true, selectedQuote: null, selectedImage: null}, () => {
+      this.props.dispatch({
+        type: actionTypes.CREATE_SELF_MESSAGE,
+        data,
+      });
+    });
+
+    this.resetMessageInput();
+  }
+
+  onSendNow() {
+    const { selectedQuote, selectedImage } = this.state;
+    if (selectedQuote) {
+      this.sendQuoteMessage(selectedQuote);
+    }
+    else if (selectedImage) {
+      this.setMediaData(selectedImage);
+    }
+    else {
+      this.onSend();
+    }
+    this.setState({isShowScheduleDialog: false});
+  }
+
   onSelectQuote= async (quote)=> {
-    this.setState({isShowQuoteDialog: false});
+    this.setState({isShowQuoteDialog: false, selectedQuote: quote}, () => {
+      setTimeout(() => {
+        this.setState({isShowScheduleDialog: true});
+      }, 300);
+    });
+  }
+
+  async sendQuoteMessage(quote) {
     const isConnected = await checkInternetConnectivity();
     if (isConnected) {
       const { currentUser } = this.props;
@@ -337,7 +415,7 @@ class SavedMessageScreen extends Component {
           },
         });
       });
-      this.resetMessageInput();
+      this.setState({selectedQuote: null});
     } 
     else {
       this.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
@@ -389,6 +467,7 @@ class SavedMessageScreen extends Component {
                   <FlatList
                     data={messages}
                     keyExtractor={(item, index) => index.toString()}
+                    ListHeaderComponent={() => (<View style={{height: 20}}/>)}
                     renderItem={({item, i}) => (
                       <SelfChatCell 
                         data={item} 
@@ -465,6 +544,9 @@ class SavedMessageScreen extends Component {
           onClose={() => this.setState({isShowScheduleDialog: false})}
           onSelect={(date) => {
             this.onSelectScheduleDate(date);
+          }}
+          onSendNow={() => {
+            this.onSendNow();
           }}
         />
         <QuoteDialog 

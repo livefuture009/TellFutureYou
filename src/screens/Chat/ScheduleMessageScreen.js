@@ -4,7 +4,6 @@ import {
   StyleSheet,
   Platform,
   KeyboardAvoidingView,
-  SafeAreaView,
   FlatList,
 } from 'react-native';
 
@@ -13,7 +12,7 @@ import Toast from 'react-native-easy-toast'
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import BackgroundTimer from 'react-native-background-timer';
 import TopNavBar from '../../components/TopNavBar'
-import ScheduledChatCell from '../../components/Cells/ScheduledChatCell'
+import SelfChatCell from '../../components/Cells/SelfChatCell'
 import { TOAST_SHOW_TIME, Status} from '../../constants.js'
 import LoadingOverlay from '../../components/LoadingOverlay'
 import actionTypes from '../../actions/actionTypes';
@@ -52,11 +51,10 @@ class ScheduleMessageScreen extends Component {
         const { channel } = this.props.route.params;        
         this.setState({isLoading: true});
         this.props.dispatch({
-            type: actionTypes.GET_SCHEDULED_MESSAGES,
-            userId: currentUser._id,
-            channelId: channel.name,
+          type: actionTypes.GET_SCHEDULED_MESSAGES,
+          userId: currentUser._id,
+          channelId: channel.name,
         });
-  
         BackgroundTimer.runBackgroundTimer(() => { 
           this.props.dispatch({
             type: actionTypes.GET_SCHEDULED_MESSAGES,
@@ -65,6 +63,14 @@ class ScheduleMessageScreen extends Component {
           });
           }, 
         1000);
+      }
+      else {
+        this.props.dispatch({
+          type: actionTypes.GET_SCHEDULED_SELF_MESSAGE,
+          data: {
+            userId: currentUser._id,
+          }
+        });
       }
     }
     else {
@@ -89,6 +95,18 @@ class ScheduleMessageScreen extends Component {
         } else if (this.props.getScheduledMessagesStatus == Status.FAILURE) {
           this.onFailure(this.props.errorScheduledMessage);
         }      
+    }
+
+    if (prevProps.getScheduledSelfMessagesStatus != this.props.getScheduledSelfMessagesStatus) {
+      if (this.props.getScheduledSelfMessagesStatus == Status.SUCCESS) {
+          this.setState({
+            isLoading: false, 
+            isFirst: false,
+            messages: this.props.messages
+          });
+      } else if (this.props.getScheduledSelfMessagesStatus == Status.FAILURE) {
+        this.onFailure(this.props.errorScheduledMessage);
+      }      
     }
 
     // Delete 
@@ -192,17 +210,19 @@ class ScheduleMessageScreen extends Component {
                   >
                     <View style={[styles.chatContainer, {transform: [{ scaleY: -1 }]}]}>
                       { 
-                          <FlatList
-                              enableEmptySections={true}
-                              data={messages}
-                              keyExtractor={(item, index) => index.toString()}
-                              renderItem={({item, i}) => (
-                                  <ScheduledChatCell 
-                                    data={item} 
-                                    onSelect={this.onSelectedMessage}
-                                  />
-                              )}
-                          />
+                        <FlatList
+                          enableEmptySections={true}
+                          data={messages}
+                          ListHeaderComponent={() => <View style={{height: 20}}/> }
+                          keyExtractor={(item, index) => index.toString()}
+                          renderItem={({item, i}) => (
+                            <SelfChatCell 
+                              data={item} 
+                              isShowSchedule={true}
+                              onSelect={this.onSelectedMessage}
+                            />
+                          )}
+                        />
                       }
                     </View>
                   </ChatView>
@@ -272,6 +292,7 @@ function mapStateToProps(state) {
     messages: state.scheduledMessages.messages,
     errorScheduledMessage: state.scheduledMessages.errorMessage,
     getScheduledMessagesStatus: state.scheduledMessages.getScheduledMessagesStatus,
+    getScheduledSelfMessagesStatus: state.scheduledMessages.getScheduledSelfMessagesStatus,
     rescheduleMessageStatus: state.scheduledMessages.rescheduleMessageStatus,
     deleteScheduledMessageStatus: state.scheduledMessages.deleteScheduledMessageStatus,
     sendNowScheduledMessageStatus: state.scheduledMessages.sendNowScheduledMessageStatus,

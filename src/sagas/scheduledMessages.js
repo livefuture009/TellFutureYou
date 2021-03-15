@@ -13,6 +13,7 @@ const {
     rescheduleMessage,
 
     getSelfMessages,
+    getScheduledSelfMessages,
     createSelfMessage,
 } = api;
   
@@ -51,7 +52,7 @@ function* SendNowScheduledMessage(action) {
   try {
     const res = yield call(sendNowScheduledMessage, action.id);
     if (res.result) {
-      yield put({ type: Types.SEND_NOW_SCHEDULED_MESSAGE_SUCCESS, payload: res.data });
+      yield put({ type: Types.SEND_NOW_SCHEDULED_MESSAGE_SUCCESS, payload: res });
     } else {
       yield put({ type: Types.SEND_NOW_SCHEDULED_MESSAGE_FAILURE, error: res.error });      
     }
@@ -106,6 +107,21 @@ function* GetSelfMessage(action) {
   }
 }
 
+function* GetScheduledSelfMessages(action) {
+  yield put({ type: Types.GET_SCHEDULED_SELF_MESSAGE_REQUEST });
+  try {
+    const res = yield call(getScheduledSelfMessages, action.data);
+    if (res.result) {
+      yield put({ type: Types.GET_SCHEDULED_SELF_MESSAGE_SUCCESS, payload: res });
+    } else {
+      yield put({ type: Types.GET_SCHEDULED_SELF_MESSAGE_FAILURE, error: res.error });      
+    }
+  } catch (error) {
+    yield put({ type: Types.GET_SCHEDULED_SELF_MESSAGE_FAILURE, error: Messages.NetWorkError });
+    console.log(error);
+  }
+}
+
 function* CreateSelfMessage(action) {
   yield put({ type: Types.CREATE_SELF_MESSAGE_REQUEST });
   try {
@@ -128,5 +144,6 @@ export default [
   takeLatest(Types.DELETE_SCHEDULED_MESSAGE, DeleteScheduledMessage),
   takeLatest(Types.RESCHEDULE_MESSAGE, RescheduleMessage),
   takeLatest(Types.GET_SELF_MESSAGE, GetSelfMessage),
+  takeLatest(Types.GET_SCHEDULED_SELF_MESSAGE, GetScheduledSelfMessages),
   takeLatest(Types.CREATE_SELF_MESSAGE, CreateSelfMessage),
 ];

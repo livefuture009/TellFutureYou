@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from 'react-native-modal';
-import { StyleSheet, View, Dimensions, TouchableOpacity, Image, Text } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image, Text } from 'react-native';
 import Colors from '../theme/Colors'
 import Images from '../theme/Images';
 import Fonts from '../theme/Fonts';
@@ -9,7 +9,6 @@ import RoundButton from './RoundButton';
 import DatePicker from 'react-native-date-picker'
 import {Calendar} from 'react-native-calendars';
 import Moment from 'moment';
-import { NetInfoCellularGeneration } from '@react-native-community/netinfo';
 
 export default class ScheduleDialog extends React.Component {
     constructor() {
@@ -24,6 +23,7 @@ export default class ScheduleDialog extends React.Component {
 
     componentDidMount() {
       this.setState({scheduleDate: Moment(new Date()).format('YYYY-MM-DD')});
+      this.setState({scheduleTime: new Date()});
     }
 
     onSchedule() {
@@ -47,51 +47,57 @@ export default class ScheduleDialog extends React.Component {
 
     render() {
       const { dateError, scheduleDate, scheduleTime, dateSelected } = this.state;
-      const { value, isVisible, onClose, onSelect } = this.props;
+      const { value, isVisible, onClose, onSendNow } = this.props;
       const now = Moment(new Date()).format('YYYY-MM-DD');
       const current = scheduleDate ? scheduleDate : now;
       return (
         <Modal isVisible={isVisible}>
             <View style={styles.container}>
-            <View style={styles.body}>
-              <Calendar
-                current={current}
-                minDate={now}
-                onDayPress={(day) => 
-                  this.setState({
-                    scheduleDate: day.dateString,
-                    dateSelected: {[day.dateString]: {selected: true, selectedColor: '#466A8F'}}
-                  })
-                }
-                monthFormat={'yyyy MM'}
-                hideDayNames={true}
-                showWeekNumbers={true}
-                markedDates={dateSelected}
-              />
-              <View style={styles.timeContainer}>
-                <DatePicker
-                  value={value}
-                  date={scheduleTime ? scheduleTime : new Date()}
-                  mode="time"
-                  onDateChange={(date) => {
-                    this.setState({scheduleTime: date})
-                  }}
-                />
+              <View style={styles.header}>
+                <Text style={styles.titleText}>Choose a Date & Time</Text>
+                <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+                  <Image source={Images.close_icon} style={styles.closeIcon} />
+                </TouchableOpacity>
               </View>
-              <RoundButton 
-                  title="Schedule" 
-                  theme="blue" 
-                  onPress={() => this.onSchedule()}
-                  style={{marginTop: 20, width: '100%'}}
-              />
-              {
-                dateError && 
-                <Text style={styles.errorText}>{dateError}</Text>
-              }
-            </View>
-            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                <Image source={Images.close_icon} style={styles.closeIcon} />
-            </TouchableOpacity>
+              <View style={styles.body}>
+                <Calendar
+                  current={current}
+                  minDate={now}
+                  onDayPress={(day) => 
+                    this.setState({
+                      scheduleDate: day.dateString,
+                      dateSelected: {[day.dateString]: {selected: true, selectedColor: '#466A8F'}}
+                    })
+                  }
+                  monthFormat={'MMMM, yyyy'}
+                  hideDayNames={true}
+                  showWeekNumbers={true}
+                  markedDates={dateSelected}
+                />
+                <View style={styles.timeContainer}>
+                  <DatePicker
+                    value={value}
+                    date={scheduleTime ? scheduleTime : new Date()}
+                    mode="time"
+                    onDateChange={(date) => {
+                      this.setState({scheduleTime: date})
+                    }}
+                  />
+                </View>
+                <RoundButton 
+                    title="Schedule" 
+                    theme="blue" 
+                    onPress={() => this.onSchedule()}
+                    style={{marginTop: 20, width: '100%'}}
+                />
+                {
+                  dateError && 
+                  <Text style={styles.errorText}>{dateError}</Text>
+                }
+                <TouchableOpacity style={styles.cancelBtn} onPress={() => onSendNow()}>
+                  <Text style={styles.cancelBtnText}>Send Now</Text>
+                </TouchableOpacity>
+              </View>
           </View>
         </Modal>
       );
@@ -101,7 +107,7 @@ export default class ScheduleDialog extends React.Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     paddingBottom: 10,
     paddingTop: 0,
     borderRadius: 10,
@@ -113,13 +119,20 @@ const styles = StyleSheet.create({
   },
 
   header: {
+    position: 'relative',
+  },
 
+  titleText: {
+    fontFamily: Fonts.regular,
+    fontSize: 20,
+    textAlign: 'center',
+    paddingVertical: 12,
   },
 
   closeButton: {
     position: 'absolute',
-    top: 10,
-    right: 10,
+    top: 12,
+    right: 0,
   },
 
   closeIcon: {
@@ -156,4 +169,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
+  cancelBtn: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
+
+  cancelBtnText: {
+    textAlign: 'center',
+    fontFamily: Fonts.regular,
+    color: '#60b8c3',
+    fontSize: 18,
+  },
 });

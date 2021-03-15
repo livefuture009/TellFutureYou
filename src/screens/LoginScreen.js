@@ -12,6 +12,8 @@ import {
 
 import {connect} from 'react-redux';
 import Toast from 'react-native-easy-toast'
+import PushNotification from "react-native-push-notification"
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import SplashScreen from 'react-native-splash-screen'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import OneSignal from 'react-native-onesignal';
@@ -130,11 +132,69 @@ class LoginScreen extends Component {
   }
 
   initPush() {
+    const _SELF = this;
     OneSignal.init(ONE_SIGNAL_APP_ID);
     OneSignal.inFocusDisplaying(2);   // Controls what should happen if a notification is received while the app is open. 2 means that the notification will go directly to the device's notification center.
     OneSignal.addEventListener('received', this.onReceived);
     OneSignal.addEventListener('opened', this.onOpened);
     OneSignal.addEventListener('ids', this.onIds);
+
+    // Must be outside of any component LifeCycle (such as `componentDidMount`).
+    PushNotification.configure({
+      // (optional) Called when Token is generated (iOS and Android)
+      onRegister: function (token) {
+        console.log("TOKEN:", token);
+      },
+
+      // (required) Called when a remote is received or opened, or local notification is opened
+      onNotification: function (notification) {
+        console.log("NOTIFICATION:", notification);
+
+        // process the notification
+        // (required) Called when a remote is received or opened, or local notification is opened
+        notification.finish(PushNotificationIOS.FetchResult.NoData);
+        const { currentUser } = _SELF.props;
+        if (currentUser && currentUser._id) {
+          const {index, routes} = _SELF.props.navigation.dangerouslyGetState();
+          const currentRoute = routes[index].name;
+          if (notification.id == "self-message") {
+            if (currentRoute == "SavedMessage") {
+              _SELF.props.dispatch({
+                type: actionTypes.GET_SELF_MESSAGE,
+                data: {
+                  userId: currentUser._id
+                },
+              });
+            }
+            else {
+              _SELF.props.navigation.navigate('SavedMessage');
+            }
+          }
+        }
+      },
+
+      // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
+      onAction: function (notification) {
+        console.log("ACTION:", notification.action);
+        console.log("NOTIFICATION:", notification);
+
+        // process the action
+      },
+
+      // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
+      onRegistrationError: function(err) {
+        console.error(err.message, err);
+      },
+
+      // IOS ONLY (optional): default: all - Permissions to register.
+      permissions: {
+        alert: true,
+        badge: true,
+        sound: true,
+      },
+      popInitialNotification: true,
+      requestPermissions: true,
+    });
   }
 
   onReceived=(notification)=> {

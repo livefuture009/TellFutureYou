@@ -14,6 +14,7 @@ export const initialState = {
   rescheduleMessageStatus: Status.NONE,
   sendNowScheduledMessageStatus: Status.NONE,
   getSelfMessagesStatus: Status.NONE,
+  getScheduledSelfMessagesStatus: Status.NONE,
   createSelfMessageStatus: Status.NONE,
 };
 
@@ -104,17 +105,26 @@ const sendNowScheduledMessageRequest = (state) => ({
 
 const sendNowScheduledMessageSuccess = (state, action) => {
   state.sendNowScheduledMessageStatus = Status.SUCCESS;
-  const message_id = action.payload;
-  const messages = state.messages;
+  const { id, message } = action.payload;
+  var messages = [...state.messages];
+  var selfMessages = [...state.selfMessages]; 
+
   if (messages && messages.length > 0) {
     for (var i = 0; i < messages.length; i++) {
-      if (messages[i]._id == message_id) {
+      if (messages[i]._id == id) {
         messages.splice(i, 1);
         break;
       }
     }
   }
+
+  if (selfMessages && message && message.isSelf) {
+    selfMessages.unshift(message);
+  }
+
   state.messages = messages;
+  state.selfMessages = selfMessages;
+
   return {
     ...state,
   };
@@ -127,7 +137,7 @@ const sendNowScheduledMessageFailure = (state, action) => ({
 });
 
 //////////////////////////////////////////////////////////////////
-////////////////// Reschedule Message. //////////////////////
+///////////////////// Reschedule Message. ////////////////////////
 //////////////////////////////////////////////////////////////////
 const rescheduleMessageRequest = (state) => ({
   ...state,
@@ -178,6 +188,24 @@ const getSelfMessagesFailure = (state, action) => ({
   getSelfMessagesStatus: Status.FAILURE,
 });
 
+/* Scheduled Self Message */
+const getScheduledSelfMessagesRequest = (state) => ({
+  ...state,
+  getScheduledSelfMessagesStatus: Status.REQUEST,
+});
+
+const getScheduledSelfMessagesSuccess = (state, action) => ({
+  ...state,
+  messages: action.payload.messages,
+  getScheduledSelfMessagesStatus: Status.SUCCESS,
+});
+
+const getScheduledSelfMessagesFailure = (state, action) => ({
+  ...state,
+  errorMessage: action.error,
+  getScheduledSelfMessagesStatus: Status.FAILURE,
+});
+
 //////////////////////////////////////////////////////////////////
 /////////////////// Create Self Message. /////////////////////////
 //////////////////////////////////////////////////////////////////
@@ -189,7 +217,9 @@ const createSelfMessageRequest = (state) => ({
 const createSelfMessageSuccess = (state, action) => {
   const { message, user } = action.payload;
   var messages = [...state.selfMessages];
-  messages.unshift(message);
+  if (message.scheduledAt == null || message.scheduledAt <= 0) {
+    messages.unshift(message);
+  }  
   state.selfMessages = messages;
   state.selectedUser = user;
   state.createSelfMessageStatus = Status.SUCCESS;
@@ -242,6 +272,10 @@ const actionHandlers = {
   [Types.GET_SELF_MESSAGE_REQUEST]: getSelfMessagesRequest,
   [Types.GET_SELF_MESSAGE_SUCCESS]: getSelfMessagesSuccess,
   [Types.GET_SELF_MESSAGE_FAILURE]: getSelfMessagesFailure,
+
+  [Types.GET_SCHEDULED_SELF_MESSAGE_REQUEST]: getScheduledSelfMessagesRequest,
+  [Types.GET_SCHEDULED_SELF_MESSAGE_SUCCESS]: getScheduledSelfMessagesSuccess,
+  [Types.GET_SCHEDULED_SELF_MESSAGE_FAILURE]: getScheduledSelfMessagesFailure,
 
   [Types.CREATE_SELF_MESSAGE_REQUEST]: createSelfMessageRequest,
   [Types.CREATE_SELF_MESSAGE_SUCCESS]: createSelfMessageSuccess,
