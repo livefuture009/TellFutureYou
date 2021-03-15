@@ -3,10 +3,13 @@ import {
   View,
   StyleSheet,
   Platform,
+  Image,
+  Text,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   FlatList,
   Keyboard,
+  TouchableOpacity,
 } from 'react-native';
 
 import {connect} from 'react-redux';
@@ -28,8 +31,11 @@ import LoadingOverlay from '../../components/LoadingOverlay'
 import actionTypes from '../../actions/actionTypes';
 import {checkInternetConnectivity} from '../../functions'
 import ScheduleDialog from '../../components/ScheduleDialog'
+import QuoteDialog from '../../components/QuoteDialog/QuoteDialog'
 import Colors from '../../theme/Colors'
 import Messages from '../../theme/Messages'
+import Images from '../../theme/Images';
+import Fonts from '../../theme/Fonts';
 
 const OPEN_CAMERA=0;
 const OPEN_GALLERY=1;
@@ -53,6 +59,7 @@ class SavedMessageScreen extends Component {
         isImageViewVisible: false,
         isShowScheduleDialog: false,
         currentPhotoIndex: 0,
+        isShowQuoteDialog: false,
     }
   }
 
@@ -314,11 +321,48 @@ class SavedMessageScreen extends Component {
     this.setState({isShowScheduleDialog: true});
   }
 
+  onSelectQuote= async (quote)=> {
+    this.setState({isShowQuoteDialog: false});
+    const isConnected = await checkInternetConnectivity();
+    if (isConnected) {
+      const { currentUser } = this.props;
+      this.setState({isLoading: true}, () => {
+        this.props.dispatch({
+          type: actionTypes.CREATE_SELF_MESSAGE,
+          data: {
+            message: quote.content,
+            author: quote.author,
+            creator: currentUser._id,
+            type: 'quote',
+          },
+        });
+      });
+      this.resetMessageInput();
+    } 
+    else {
+      this.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
+    }
+  }
+
+  _renderInspiration() {
+    return (
+      <View style={styles.inspirationBar}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Image source={Images.icon_quote} style={{width: 20, height: 20, resizeMode: 'contain', marginRight: 5}}/>
+          <Text style={styles.inspirationText}>Inspirational Quotes</Text>
+        </View>
+        <TouchableOpacity onPress={() => this.setState({isShowQuoteDialog: true})}>
+          <Text style={styles.selectText}>Select</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
   render() {
     const { 
       disabled, 
       isImageViewVisible, 
       isShowScheduleDialog, 
+      isShowQuoteDialog,
       photos, 
       messages,
       currentPhotoIndex, 
@@ -340,6 +384,7 @@ class SavedMessageScreen extends Component {
                 behavior={Platform.OS === "ios" ? "padding" : null}
                 style={styles.container} 
               >
+                { this._renderInspiration()}
                 <View style={[styles.chatContainer, {transform: [{ scaleY: -1 }]}]}>
                   <FlatList
                     data={messages}
@@ -369,27 +414,27 @@ class SavedMessageScreen extends Component {
                   : null 
                 }
                 <CommentInput
-                    textRef={(ref) => {this.commentInputRef=ref}}
-                    style={{
-                        width: '100%', 
-                        paddingLeft: 15,
-                        paddingRight: 15,
-                        zIndex: 100, 
-                        paddingTop: 3, 
-                        paddingBottom: 3,
-                        backgroundColor:'white',
-                        ...ifIphoneX({
-                            marginBottom: 15,
-                        }, {
-                            marginBottom: 0,
-                        }),
-                    }}
-                    placeholder='Write a message...'
-                    disabled={disabled}
-                    onChangeText={this.onChangeText}
-                    onPost={this.onSend}
-                    onSchedule={this.onSchedule}
-                    onImagePress={this._onPhoto}
+                  textRef={(ref) => {this.commentInputRef=ref}}
+                  style={{
+                    width: '100%', 
+                    paddingLeft: 15,
+                    paddingRight: 15,
+                    zIndex: 100, 
+                    paddingTop: 3, 
+                    paddingBottom: 3,
+                    backgroundColor:'white',
+                    ...ifIphoneX({
+                        marginBottom: 15,
+                    }, {
+                        marginBottom: 0,
+                    }),
+                  }}
+                  placeholder='Write a message...'
+                  disabled={disabled}
+                  onChangeText={this.onChangeText}
+                  onPost={this.onSend}
+                  onSchedule={this.onSchedule}
+                  onImagePress={this._onPhoto}
                 />
             </ChatView>
             </View>
@@ -422,6 +467,13 @@ class SavedMessageScreen extends Component {
             this.onSelectScheduleDate(date);
           }}
         />
+        <QuoteDialog 
+          isVisible={isShowQuoteDialog}
+          onClose={() => this.setState({isShowQuoteDialog: false})}
+          onSelectQuote={(quote) => {
+            this.onSelectQuote(quote);
+          }}
+        />
       </View>
     );
   }
@@ -441,6 +493,40 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'stretch',
+  },
+
+  inspirationBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    marginTop: 10,
+    marginBottom: 5,
+    marginHorizontal: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 25,
+    shadowColor: Colors.appColor,
+		shadowOffset: {
+			width: 0,
+			height: 0,
+		},
+		shadowOpacity: 0.2,
+		shadowRadius: 5,
+		elevation: 5,
+  },
+
+  inspirationText: {
+    fontFamily: Fonts.bold,
+    color: 'black',
+    fontSize: 14,
+  },
+
+  selectText: {
+    fontFamily: Fonts.regular,
+    color: '#60b8c3',
+    fontSize: 15,
+    textTransform: 'uppercase',
   },
 })
 

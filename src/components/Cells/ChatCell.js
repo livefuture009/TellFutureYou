@@ -21,7 +21,6 @@ export default class ChatCell extends React.PureComponent {
 
   render() {
     const { item, currentUser, onPressImage } = this.props;
-    const { data } = item;
     const width = 244;
     let height = 148;
 
