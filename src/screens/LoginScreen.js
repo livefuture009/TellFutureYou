@@ -148,37 +148,15 @@ class LoginScreen extends Component {
 
       // (required) Called when a remote is received or opened, or local notification is opened
       onNotification: function (notification) {
-        console.log("NOTIFICATION:", notification);
-
-        // process the notification
-        // (required) Called when a remote is received or opened, or local notification is opened
-        notification.finish(PushNotificationIOS.FetchResult.NoData);
-        const { currentUser } = _SELF.props;
-        if (currentUser && currentUser._id) {
-          const {index, routes} = _SELF.props.navigation.dangerouslyGetState();
-          const currentRoute = routes[index].name;
-          if (notification.id == "self-message") {
-            if (currentRoute == "SavedMessage") {
-              _SELF.props.dispatch({
-                type: actionTypes.GET_SELF_MESSAGE,
-                data: {
-                  userId: currentUser._id
-                },
-              });
-            }
-            else {
-              _SELF.props.navigation.navigate('SavedMessage');
-            }
-          }
-        }
+        _SELF.processLocalNotification(notification);
       },
 
       // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
       onAction: function (notification) {
         console.log("ACTION:", notification.action);
-        console.log("NOTIFICATION:", notification);
 
         // process the action
+        _SELF.processLocalNotification(notification);
       },
 
       // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
@@ -195,6 +173,43 @@ class LoginScreen extends Component {
       popInitialNotification: true,
       requestPermissions: true,
     });
+  }
+
+  processLocalNotification(notification) {
+    console.log("notification: ", notification);
+    notification.finish(PushNotificationIOS.FetchResult.NoData);
+
+    if (notification.data && notification.data.isSelf) {
+      const { currentUser } = this.props;
+      if (currentUser && currentUser._id) {
+        const {index, routes} = this.props.navigation.dangerouslyGetState();
+        const currentRoute = routes[index].name;
+        console.log("currentRoute: ", currentRoute);
+
+        if (currentRoute == "SavedMessage") {
+          console.log("step 1");
+          this.props.dispatch({
+            type: actionTypes.GET_SELF_MESSAGE,
+            data: {
+              userId: currentUser._id
+            },
+          });
+        }
+        else if (currentRoute == "ScheduleMessage") {
+          console.log("step 2");
+          this.props.dispatch({
+            type: actionTypes.GET_SCHEDULED_SELF_MESSAGE,
+            data: {
+              userId: currentUser._id,
+            }
+          });
+        }
+        else {
+          console.log("step 3");
+          this.props.navigation.navigate('SavedMessage');
+        }
+      }
+    }
   }
 
   onReceived=(notification)=> {

@@ -48,7 +48,7 @@ export default class ChannelCell extends React.PureComponent {
     if (isSelfChannel) {
       room = "Saved";
       message = (lastSelfMessage && lastSelfMessage.message) ? lastSelfMessage.message : "";
-      time = Moment(lastSelfMessage.createdAt).fromNow(true);
+      time = (lastSelfMessage && lastSelfMessage.createdAt) ? Moment(lastSelfMessage.createdAt).fromNow(true) : "";
     }
     else if (channel && channel.name) {
       room = this.getChannelName(currentUser, channel);

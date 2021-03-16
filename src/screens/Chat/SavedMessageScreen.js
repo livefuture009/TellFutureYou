@@ -117,8 +117,9 @@ class SavedMessageScreen extends Component {
     if (prevProps.createSelfMessageStatus != this.props.createSelfMessageStatus) {
       if (this.props.createSelfMessageStatus == Status.SUCCESS) {
         this.setState({isLoading: false});
-        this.updateCurrentUser();
-      } else if (this.props.createSelfMessageStatus == Status.FAILURE) {
+        this.sentSelfMessageCompleted();
+      } 
+      else if (this.props.createSelfMessageStatus == Status.FAILURE) {
         this.onFailure(this.props.errorScheduledMessage);
       }      
     }
@@ -133,8 +134,30 @@ class SavedMessageScreen extends Component {
     this.toast.show(message, TOAST_SHOW_TIME);
   }
 
-  updateCurrentUser() {
-    const { selectedUser } = this.props;
+  sentSelfMessageCompleted() {
+    const { selectedMessage, selectedUser } = this.props;
+
+    // Send Scheduled Local Notification.
+    if (selectedMessage.isSelf) {
+      var message = "";
+      if (selectedMessage.type == "text" || selectedMessage.type == "quote") {
+        message = selectedMessage.message;
+      }
+      else {
+        message = "[Image]";
+      }
+
+      PushNotification.localNotificationSchedule({
+        id: selectedMessage._id, 
+        message: message,
+        date: moment(selectedMessage.scheduledAt).toDate(),
+        allowWhileIdle: false,
+        userInfo: {
+          isSelf: true
+        }
+      });
+    }
+
     if (selectedUser && selectedUser._id) {
       this.props.dispatch({
         type: actionTypes.SET_CURRENT_USER,
@@ -142,6 +165,7 @@ class SavedMessageScreen extends Component {
       });
     }
   }
+  
 
   filterPhotos(messages) {
     var photos = [];
@@ -358,14 +382,6 @@ class SavedMessageScreen extends Component {
 
       data['message'] = content;
       data['type'] = 'text';
-
-      // Send Scheduled Local Notification.
-      PushNotification.localNotificationSchedule({
-        id: 'self-message', 
-        message: content,
-        date: date,
-        allowWhileIdle: false, // (optional) set notification to work while on doze, default: false
-      });
     }
 
     this.setState({isLoading: true, selectedQuote: null, selectedImage: null}, () => {
@@ -588,6 +604,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 25,
+    zIndex: 2,
     shadowColor: Colors.appColor,
 		shadowOffset: {
 			width: 0,
@@ -631,6 +648,7 @@ function mapStateToProps(state) {
     getSelfMessagesStatus: state.scheduledMessages.getSelfMessagesStatus,
     selfMessages: state.scheduledMessages.selfMessages,
     selectedUser: state.scheduledMessages.selectedUser,
+    selectedMessage: state.scheduledMessages.selectedMessage,
   };  
 }
 

@@ -9,6 +9,7 @@ import {
 
 import {connect} from 'react-redux';
 import Toast from 'react-native-easy-toast'
+import PushNotification from "react-native-push-notification"
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import BackgroundTimer from 'react-native-background-timer';
 import TopNavBar from '../../components/TopNavBar'
@@ -83,7 +84,6 @@ class ScheduleMessageScreen extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-
     // Get Scheduled Messages.
     if (prevProps.getScheduledMessagesStatus != this.props.getScheduledMessagesStatus) {
         if (this.props.getScheduledMessagesStatus == Status.SUCCESS) {
@@ -188,6 +188,29 @@ class ScheduleMessageScreen extends Component {
       id: selectedMessage._id,
       scheduledAt: scheduledAt,
     });
+
+    if (selectedMessage.isSelf) {
+      PushNotification.removeDeliveredNotifications([selectedMessage._id]);
+
+      // Create Local Notification Again.
+      var message = "";
+      if (selectedMessage.type == "text" || selectedMessage.type == "quote") {
+        message = selectedMessage.message;
+      }
+      else {
+        message = "[Image]";
+      }
+
+      PushNotification.localNotificationSchedule({
+        id: selectedMessage._id, 
+        message: message,
+        date: this.scheduleTime,
+        allowWhileIdle: false,
+        userInfo: {
+          isSelf: true
+        }
+      });
+    }
   }
 
   render() {

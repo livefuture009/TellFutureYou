@@ -6,6 +6,7 @@ export const initialState = {
   messages: [],
   selfMessages: [],
   selectedUser: null,
+  selectedMessage: null,
   errorMessage: '',
 
   getScheduledMessagesStatus: Status.NONE,
@@ -222,6 +223,7 @@ const createSelfMessageSuccess = (state, action) => {
   }  
   state.selfMessages = messages;
   state.selectedUser = user;
+  state.selectedMessage = message;
   state.createSelfMessageStatus = Status.SUCCESS;
   return {
     ...state,
