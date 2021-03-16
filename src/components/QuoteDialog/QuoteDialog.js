@@ -28,37 +28,37 @@ export default class QuoteDialog extends React.Component {
 
     render() {
         const { selectedIndex } = this.state;
-        const { isVisible, onClose, onSelect } = this.props;
+        const { isVisible, onClose } = this.props;
         return (
         <Modal isVisible={isVisible}>
             <View style={styles.container}>
-                <View style={styles.header}>
-                    <Text style={styles.titleText}>Select Quotes</Text>
-                    <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                        <Image source={Images.close_icon} style={styles.closeIcon} />
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.body}>
-                    <FlatList
-                        data={QUOTE_LIST}
-                        style={[styles.listView, {height: win.height - 250}]}
-                        keyExtractor={(item, index) => index.toString()}
-                        ListFooterComponent={() => (<View style={{height: 10}}/>)}
-                        renderItem={({item, index}) => (
-                        <QuoteCell 
-                            data={item}
-                            index={index}
-                            isSelected={(index == selectedIndex) ? true: false}
-                            onSelect={(index) => this.setState({selectedIndex: index})}
-                        />
-                        )}
+              <View style={styles.header}>
+                  <Text style={styles.titleText}>Select Quotes</Text>
+                  <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+                      <Image source={Images.close_icon} style={styles.closeIcon} />
+                  </TouchableOpacity>
+              </View>
+              <View style={styles.body}>
+                <FlatList
+                    data={QUOTE_LIST}
+                    style={[styles.listView, {height: win.height - 250}]}
+                    keyExtractor={(item, index) => "QuoteCell" + index.toString()}
+                    ListFooterComponent={() => (<View style={{height: 10}}/>)}
+                    renderItem={({item, index}) => (
+                    <QuoteCell 
+                      data={item}
+                      index={index}
+                      isSelected={(index == selectedIndex) ? true: false}
+                      onSelect={(index) => this.setState({selectedIndex: index})}
                     />
-                </View>
-                <View style={styles.footer}>
-                    <TouchableOpacity onPress={() => this.onApply()}>
-                        <Text style={styles.applyText}>Apply</Text>
-                    </TouchableOpacity>
-                </View>
+                    )}
+                />
+              </View>
+              <View style={styles.footer}>
+                  <TouchableOpacity onPress={() => this.onApply()}>
+                      <Text style={styles.applyText}>Apply</Text>
+                  </TouchableOpacity>
+              </View>
             </View>
         </Modal>
         );

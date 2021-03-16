@@ -471,6 +471,7 @@ class SavedMessageScreen extends Component {
       </View>
     )
   }
+  
   render() {
     const { 
       disabled, 

@@ -8,7 +8,7 @@ export default class QuoteCell extends React.Component {
         const { data, index, isSelected, onSelect } = this.props;
         const content = data?.content;
         const author = data?.author;
-
+        
     	return (
             <TouchableOpacity onPress={() => onSelect(index)}>
                 <View style={[styles.container, isSelected ? styles.selected: {}]}>

@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, Text, TouchableOpacity, Image,
+  View, StyleSheet, Text, TouchableOpacity, Dimensions, Image,
 } from 'react-native';
-import Colors from '../../theme/Colors';
-import Fonts from '../../theme/Fonts';
 import Moment from 'moment';
+import { QUOTE_LIST } from '../../constants'
 import FastImage from 'react-native-fast-image'
+import Fonts from '../../theme/Fonts';
+import Images from '../../theme/Images';
+
+const win = Dimensions.get('window');
 
 export default class ChatCell extends React.PureComponent {
   getChannelName(currentUser, name) {
@@ -19,64 +22,94 @@ export default class ChatCell extends React.PureComponent {
     return name;
   }
 
-  render() {
-    const { item, currentUser, onPressImage } = this.props;
-    const width = 244;
-    let height = 148;
+  _renderTextCell() {
+    const { item, currentUser } = this.props;
+    const isCurrentMessage = (item._sender.userId === currentUser.userId);
+    var message = (item && item.message) ? item.message : "";
 
     return (
-      <View style={{ flex: 1 }}>
-        {
-          item && item.data == ''
-            ? (
-              <View style={[styles.listItem, { transform: [{ scaleY: -1 }] }]}>
-                {
-                  item._sender.userId === currentUser.userId
-                    ? (
-                      <View style={styles.myMessageBox}>
-                        <Text style={[styles.messageText, styles.myMessage]}>{item.message}</Text>
-                      </View>
-                    )
-                    : (
-                      <View>
-                        <Text style={styles.usernameText}>{item._sender.nickname}</Text>
-                        <View style={styles.targetMessageBox}>
-                          <Text style={[styles.messageText, styles.targetMessage]}>{item.message}</Text>
-                        </View>
-                      </View>
-                    )
-              }
-              <Text style={item._sender.userId === currentUser.userId ? styles.myTimeText : styles.otherTimeText}>{Moment(item.createdAt).format('DD MMM YYYY, hh:mm A')}</Text>
-              </View>
-            )
-            : null
-        }
+      <Text style={[styles.messageText, isCurrentMessage ? {color: 'white'} : {color: 'black'}]}>{message}</Text>
+    )
+  }
 
+  _renderQuoteCell() {
+    const { item, currentUser } = this.props;
+    const isCurrentMessage = (item._sender.userId === currentUser.userId);
+    var message = (item && item.message) ? item.message : "";
+    var selectedQuote = null;
+    QUOTE_LIST.forEach(q => {
+      if (q.content == message) {
+        selectedQuote = q;
+        return;
+      }
+    });
+    
+    return (
+      <View style={styles.quoteView}>
+        <Image source={Images.icon_quote_start} style={styles.quoteIcon} />
+        <Text style={[styles.quoteText, isCurrentMessage ? {color: 'white'} : {color: 'black'}]}>{selectedQuote.content}</Text>
+        <Text style={[styles.authorText, isCurrentMessage ? {color: 'white'} : {color: 'gray'} ]}>{selectedQuote.author}</Text>
+        <View style={{alignItems: 'flex-end'}}>
+          <Image source={Images.icon_quote_end} style={styles.quoteIcon} />
+        </View>
+      </View>
+    )
+  }
+
+  _renderImageCell() {
+    const { item, currentUser } = this.props;
+    const isCurrentMessage = (item._sender.userId === currentUser.userId);
+    var message = (item && item.message) ? item.message : "";
+    var imageUrl = null;
+
+    const array = message.split("\r\n");
+    if (array && array.length > 0) {
+      imageUrl = array[0];
+      message = "";
+
+      if (array.length > 1) {
+        message = array[1];
+      }
+    }
+
+    return (
+      <View>
         {
-          item && item.data == 'image'
-            ? (
-              <View style={[styles.listItem, { transform: [{ scaleY: -1 }] }]}>
-                {
-                  item._sender.userId == currentUser.userId
-                    ? (
-                      <TouchableOpacity style={styles.myMessageBox} onPress={() => onPressImage(item)}>
-                        <FastImage style={[styles.imageBox, { width, height }]} key={item.message} source={{ uri: item.message }} />
-                      </TouchableOpacity>
-                    )
-                    : (
-                      <View>
-                        <Text style={styles.usernameText}>{item._sender.nickname}</Text>
-                        <TouchableOpacity style={styles.targetMessageBox} onPress={() => onPressImage(item)}>
-                          <FastImage style={[styles.imageBox, { width, height }]} key={item.message} source={{ uri: item.message }} />
-                        </TouchableOpacity>
-                      </View>
-                    )
-                }
-                <Text style={item._sender.userId === currentUser.userId ? styles.myTimeText : styles.otherTimeText}>{Moment(item.createdAt).format('DD MMM YYYY, hh:mm A')}</Text>
-              </View>
-            )
-            : null
+          imageUrl
+          ? <FastImage style={styles.imageBox} key={imageUrl} source={{ uri: imageUrl }} />
+          : null
         }
+        {
+          (message && message.length > 0)
+          ? <Text style={[styles.messageText, isCurrentMessage ? {color: 'white'} : {color: 'black'}]}>{message}</Text>
+          : null
+        }
+      </View>
+    )
+  }
+
+  render() {
+    const { item, currentUser, onPressImage } = this.props;
+    var message = (item && item.message) ? item.message : "";
+    const type = (item && item.data) ? item.data : "";
+    const otherUsername = (item && item._sender && item._sender.nickname) ? item._sender.nickname : "";
+    const time = (item && item.createdAt) ? Moment(item.createdAt).format('DD MMM YYYY, hh:mm A') : "";
+    const isCurrentMessage = (item._sender.userId === currentUser.userId);
+    const MessageView = (type == 'image') ? TouchableOpacity : View;
+
+    return (
+      <View style={{ flex: 1, marginBottom: 15 }}>
+        <View style={[styles.listItem, { transform: [{ scaleY: -1 }]}, isCurrentMessage ? {alignItems: 'flex-end'} : {alignItems: 'flex-start'}]}>
+          { !isCurrentMessage && <Text style={styles.usernameText}>{otherUsername}</Text> }
+          <MessageView style={[styles.messageBox, isCurrentMessage ? styles.myMessageBox : styles.targetMessageBox]} onPress={() => onPressImage(item)}>
+            { (type == "image") && this._renderImageCell() }
+            { (type == "quote") && this._renderQuoteCell() }
+            { (type == null || type == "") && this._renderTextCell() }
+          </MessageView>
+          <Text style={[styles.timeText, isCurrentMessage ? {textAlign: 'right'} : {textAlign: 'left'}]}>
+            {time}
+          </Text>
+        </View>
       </View>
     );
   }
@@ -97,17 +130,26 @@ const styles = StyleSheet.create({
     color: '#8D8D8D',
   },
 
+  messageBox: {
+    maxWidth: '80%',
+    borderRadius: 10,
+    shadowColor: 'black',
+		shadowOffset: {
+			width: 0,
+			height: 0,
+		},
+		shadowOpacity: 0.1,
+		shadowRadius: 5,
+		elevation: 5,
+  },
+
   targetMessageBox: {
-    flex: 1,
-    flexDirection: 'row',
-    overflow: 'hidden',
+    backgroundColor: 'white',
   },
 
   myMessageBox: {
-    flex: 1,
-    flexDirection: 'row',
-    overflow: 'hidden',
     justifyContent: 'flex-end',
+    backgroundColor: '#35b4ef',
   },
 
   usernameText: {
@@ -119,51 +161,51 @@ const styles = StyleSheet.create({
 
   messageText: {
     fontFamily: Fonts.regular,
-    color: 'black',
     fontSize: 15,
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingLeft: 15,
-    paddingRight: 15,
-    borderRadius: 20,
-    overflow: 'hidden',
-  },
-
-  myMessage: {
-    backgroundColor: '#35b4ef',
-    color: 'white',
-    maxWidth: '80%',
-  },
-
-  targetMessage: {
-    borderWidth: 1,
-    borderColor: '#D3D3D3',
-    textAlign: 'left',
-    maxWidth: '80%',
+    paddingHorizontal : 15,
+    paddingVertical: 10,
   },
 
   imageBox: {
     resizeMode: 'cover',
-    overflow: 'hidden',
     borderRadius: 10,
+    borderTopLeftRadius: 10,
     backgroundColor: 'rgb(150,150,150)',
+    height: 190,
+    width: win.width * 0.8 - 15,
   },
   
-  myTimeText: {
+  timeText: {
     fontFamily: Fonts.regular,
     color: 'gray',
-    textAlign: 'right',
     fontSize: 12,
-    marginVertical: 3,
     marginRight: 3,
+    marginTop: 4,
   },
 
-  otherTimeText: {
+  quoteView: {
+    padding: 10,
+  },
+
+  quoteIcon: {
+    width: 25,
+    height: 18,
+    resizeMode: 'contain',
+  },
+
+  quoteText: {
     fontFamily: Fonts.regular,
-    color: 'gray',
-    textAlign: 'left',
-    fontSize: 12,
-    marginVertical: 3,
-    marginLeft: 3,
+    fontSize: 18,
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+  },
+
+  authorText: {
+    fontFamily: Fonts.light,
+    fontSize: 13,
+    fontStyle: 'italic',
+    textAlign: 'right',
+    marginRight: 10,
+    marginBottom: 10,
   },
 });

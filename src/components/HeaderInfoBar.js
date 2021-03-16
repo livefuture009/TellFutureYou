@@ -1,9 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import Colors from '../theme/Colors';
 import Images from '../theme/Images';
 import Fonts from '../theme/Fonts';
-import FastImage from 'react-native-fast-image'
 
 export default class HeaderInfoBar extends React.Component {
   render() {

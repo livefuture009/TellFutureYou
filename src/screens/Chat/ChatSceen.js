@@ -3,6 +3,9 @@ import {
   View,
   StyleSheet,
   Platform,
+  Image,
+  Text,
+  TouchableOpacity,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   FlatList,
@@ -30,8 +33,11 @@ import actionTypes from '../../actions/actionTypes';
 import {checkInternetConnectivity} from '../../functions'
 import moment from 'moment';
 import ScheduleDialog from '../../components/ScheduleDialog'
+import QuoteDialog from '../../components/QuoteDialog/QuoteDialog'
 import Colors from '../../theme/Colors'
 import Messages from '../../theme/Messages'
+import Fonts from '../../theme/Fonts'
+import Images from '../../theme/Images'
 
 const OPEN_CAMERA=0;
 const OPEN_GALLERY=1;
@@ -64,7 +70,10 @@ class ChatScreen extends Component {
       isImageViewVisible: false,
       isShowScheduleDialog: false,
       currentPhotoIndex: 0,
-      isSelfChannel: false,
+
+      selectedImage: null,
+      selectedQuote: null,
+      selectedScheduleData: null,
     }
   }
 
@@ -81,7 +90,7 @@ class ChatScreen extends Component {
   }
 
   async componentDidMount() {
-    const { channel, user, contact, isSelfChannel } = this.props.route.params;
+    const { channel, user, contact } = this.props.route.params;
 
     // Check connection.
     const isConnected = await checkInternetConnectivity();
@@ -100,10 +109,6 @@ class ChatScreen extends Component {
           type: actionTypes.GET_USER_BY_EMAIL,
           email: contact.email,
         });
-      }
-
-      if (isSelfChannel) {
-        this.setState({isSelfChannel});
       }
     } else {
       this.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
@@ -390,25 +395,15 @@ class ChatScreen extends Component {
   }
 
   addMediaMessage(url, type) {
-    this.state.channel.sendUserMessage(url, type, (message, error)=> {
+    const _SELF = this;
+    const message = (this.text) ? this.text.trim() : "";
+    var content = url;
+    if (message && message.length > 0) {
+      content += "\r\n" + message;
+    }
+    this.state.channel.sendUserMessage(content, type, (message, error)=> {
       if (error) return;
-
-      var _messages = [];
-      _messages.push(message);
-      if (this.state.lastMessage && message.createdAt - this.state.lastMessage.createdAt  > (1000 * 60 * 60)) {
-        _messages.push({isDate: true, createdAt: message.createdAt});
-      }
-
-      var _newMessageList = _messages.concat(this.state.messages);
-      this.setState({
-        messages: _newMessageList,
-        isFirst: false
-      });
-      this.filterPhotos(_newMessageList);
-      this.state.lastMessage = message;
-      this.text = '';
-      this.commentInputRef.clear();
-      this.setState({disabled: true});
+      _SELF.addNewMessage(message);
     });
   }
 
@@ -494,6 +489,9 @@ class ChatScreen extends Component {
     this.setState({currentPhotoIndex: currentPhotoIndex, isImageViewVisible: true});    
   }
 
+  ///////////////////////////////////////////////////////////////////////////
+  ///////////////////////// Schedule Message ////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////
   onSchedule=()=> {
     if (this.state.disabled) return;
     Keyboard.dismiss();
@@ -535,23 +533,160 @@ class ChatScreen extends Component {
   }
 
   onSelectScheduleDate(date) {
-    this.scheduleTime = date;
     this.setState({isShowScheduleDialog: false});
-    this.sendScheduledMessage();
+    
+    const { currentUser } = this.props;
+    const { selectedQuote, selectedImage } = this.state;
+    const scheduledAt = moment(date).unix() * 1000;
+    var data = {
+      scheduledAt,
+      creator: currentUser._id,
+    };
+
+    if (selectedQuote) {
+      data['message'] = selectedQuote.content;
+      data['author'] = selectedQuote.author;
+      data['type'] = 'quote';
+    }
+    else if (selectedImage) {
+      if (this.text) {
+        const message = this.text.trim();
+        data['message'] = message;
+      }      
+      data['type'] = 'image';
+      this.setState({selectedScheduleData: data}, () => {
+        this.setMediaData(selectedImage);
+      });
+      return;
+    }
+    else {
+      if (!this.text) return;
+      const content = this.text.trim();
+      if (content.length === 0) return;
+
+      data['message'] = content;
+      data['type'] = 'text';
+    }
+
+    this.setState({isLoading: true, selectedQuote: null, selectedImage: null}, () => {
+      this.props.dispatch({
+        type: actionTypes.CREATE_SELF_MESSAGE,
+        data,
+      });
+    });
+
+    this.resetMessageInput();
+    // this.scheduleTime = date;
+    // this.setState({isShowScheduleDialog: false});
+    // this.sendScheduledMessage();
+  }
+
+  resetMessageInput() {
+    this.scheduleTime = null;
+    this.text = '';
+    this.setState({
+      disabled: true, 
+      commentHeight: 45, 
+      selectedImage: null,
+      selectedQuote: null,
+      selectedScheduleData: null,
+    });        
+    this.commentInputRef.clear();
+  }
+
+  ///////////////////////////////////////////////////////////////////////////
+  //////////////////////// Inspiration Quote ////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////
+  onSendNow() {
+    const { selectedQuote, selectedImage } = this.state;
+    if (selectedQuote) {
+      this.sendQuoteMessage(selectedQuote);
+    }
+    else if (selectedImage) {
+      this.setMediaData(selectedImage);
+    }
+    else {
+      this.onSend();
+    }
+    this.setState({isShowScheduleDialog: false});
+  }
+
+  onSelectQuote= async (quote)=> {
+    this.setState({isShowQuoteDialog: false, selectedQuote: quote}, () => {
+      setTimeout(() => {
+        this.setState({isShowScheduleDialog: true});
+      }, 500);
+    });
+  }
+
+  async sendQuoteMessage(quote) {
+    console.log("sendQuoteMessage: ", quote);
+    const isConnected = await checkInternetConnectivity();
+    if (isConnected) {
+      const { channel } = this.state;
+      const _SELF = this;
+      channel.sendUserMessage(quote.content, 'quote', (message, error)=> {
+        console.log("error: ", error);
+        console.log("message: ", message);
+        if (error) return;
+        _SELF.addNewMessage(message);
+      });
+      this.setState({selectedQuote: null});
+    } 
+    else {
+      this.toast.show(Messages.NetWorkError, TOAST_SHOW_TIME);
+    }
+  }
+
+  addNewMessage(message) {
+    const { messages, lastMessage } = this.state;
+    var _messages = [];
+    _messages.push(message);
+
+    if (lastMessage && message.createdAt - lastMessage.createdAt  > (1000 * 60 * 60)) {
+      _messages.push({isDate: true, createdAt: message.createdAt});
+    }
+
+    var _newMessageList = _messages.concat(messages);
+    this.setState({
+      messages: _newMessageList,
+      lastMessage: message,
+      isFirst: false
+    });
+
+    this.filterPhotos(_newMessageList);
+    this.resetMessageInput();   
+  }
+
+  ///////////////////////////////////////////////////////////////////////////
+  ///////////////////////////// Render //////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////
+  _renderInspiration() {
+    return (
+      <View style={styles.inspirationBar}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Image source={Images.icon_quote} style={{width: 20, height: 20, resizeMode: 'contain', marginRight: 5}}/>
+          <Text style={styles.inspirationText}>Inspirational Quotes</Text>
+        </View>
+        <TouchableOpacity onPress={() => this.setState({isShowQuoteDialog: true})}>
+          <Text style={styles.selectText}>Select</Text>
+        </TouchableOpacity>
+      </View>
+    )
   }
 
   render() {
     const { 
       disabled, 
       isImageViewVisible, 
-      isShowScheduleDialog, 
       photos, 
       channel,
       messages,
       currentPhotoIndex, 
       commentHeight,
-      isSelfChannel,
-      isFirst
+      isFirst,
+      isShowScheduleDialog, 
+      isShowQuoteDialog
     } = this.state;
 
     // Get Page Title.
@@ -562,8 +697,6 @@ class ChatScreen extends Component {
       pageTitle = user.firstName + " " + user.lastName;
     } else if (contact) {
       pageTitle = contact.firstName + " " + contact.lastName;
-    } else if (isSelfChannel) {
-      pageTitle = "Saved Messages";
     } else {
       pageTitle = room;
     }
@@ -583,6 +716,7 @@ class ChatScreen extends Component {
                 behavior={Platform.OS === "ios" ? "padding" : null}
                 style={styles.container} 
               >
+                { this._renderInspiration()}
                 <View style={[styles.chatContainer, {transform: [{ scaleY: -1 }]}]}>
                   <FlatList
                     enableEmptySections={true}
@@ -677,6 +811,16 @@ class ChatScreen extends Component {
             onSelect={(date) => {
               this.onSelectScheduleDate(date);
             }}
+            onSendNow={() => {
+              this.onSendNow();
+            }}
+          />
+          <QuoteDialog 
+            isVisible={isShowQuoteDialog}
+            onClose={() => this.setState({isShowQuoteDialog: false})}
+            onSelectQuote={(quote) => {
+              this.onSelectQuote(quote);
+            }}
           />
       </View>
     );
@@ -698,6 +842,41 @@ const styles = StyleSheet.create({
     flex: 10,
     justifyContent: 'center',
     alignItems: 'stretch',
+  },
+
+  inspirationBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    marginTop: 10,
+    marginBottom: 5,
+    marginHorizontal: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 25,
+    zIndex: 2,
+    shadowColor: Colors.appColor,
+		shadowOffset: {
+			width: 0,
+			height: 0,
+		},
+		shadowOpacity: 0.2,
+		shadowRadius: 5,
+		elevation: 5,
+  },
+
+  inspirationText: {
+    fontFamily: Fonts.bold,
+    color: 'black',
+    fontSize: 14,
+  },
+
+  selectText: {
+    fontFamily: Fonts.regular,
+    color: '#60b8c3',
+    fontSize: 15,
+    textTransform: 'uppercase',
   },
 })
 

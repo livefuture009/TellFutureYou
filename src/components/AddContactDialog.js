@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from 'react-native-modal';
-import { StyleSheet, View, Dimensions, TouchableOpacity, Image, Text } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image } from 'react-native';
 import Colors from '../theme/Colors'
 import Images from '../theme/Images';
 import Fonts from '../theme/Fonts';
