@@ -48,12 +48,15 @@ export default class ChannelCell extends React.PureComponent {
     if (isSelfChannel) {
       room = "Saved";
       message = (lastSelfMessage && lastSelfMessage.message) ? lastSelfMessage.message : "";
+      if (lastSelfMessage && lastSelfMessage.type && lastSelfMessage.type == "image") {
+        message = "[Image]";
+      }
       time = (lastSelfMessage && lastSelfMessage.createdAt) ? Moment(lastSelfMessage.createdAt).fromNow(true) : "";
     }
     else if (channel && channel.name) {
       room = this.getChannelName(currentUser, channel);
       const messageType = channel.lastMessage ? channel.lastMessage.data : '';
-      if (messageType == 'image' || messageType == 'audio') {
+      if (messageType == 'image') {
         message = '[' + messageType + ']';
       } else {
         message = channel.lastMessage ? channel.lastMessage.message : '';

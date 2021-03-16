@@ -66,6 +66,7 @@ class SavedMessageScreen extends Component {
 
       selectedImage: null,
       selectedQuote: null,
+      selectedScheduleData: null,
     }
   }
 
@@ -258,17 +259,26 @@ class SavedMessageScreen extends Component {
   async addMediaMessage(url) {
     const isConnected = await checkInternetConnectivity();
     if (isConnected) {
-      const message = (this.text) ? this.text.trim() : "";
-      const { currentUser } = this.props;
+      const { selectedScheduleData } = this.state;
+      var data = {};
+      if (selectedScheduleData) {
+        data = selectedScheduleData;
+        data['image'] = url;
+      }
+      else {
+        const message = (this.text) ? this.text.trim() : "";
+        const { currentUser } = this.props;
+        data = {
+          message,
+          image: url,
+          creator: currentUser._id,
+          type: 'image',
+        };
+      }
       this.setState({isLoading: true}, () => {
         this.props.dispatch({
           type: actionTypes.CREATE_SELF_MESSAGE,
-          data: {
-            message,
-            image: url,
-            creator: currentUser._id,
-            type: 'image',
-          },
+          data
         });
       });
       this.resetMessageInput();
@@ -311,7 +321,13 @@ class SavedMessageScreen extends Component {
   resetMessageInput() {
     this.scheduleTime = null;
     this.text = '';
-    this.setState({disabled: true, commentHeight: 45});        
+    this.setState({
+      disabled: true, 
+      commentHeight: 45, 
+      selectedImage: null,
+      selectedQuote: null,
+      selectedScheduleData: null,
+    });        
     this.commentInputRef.clear();
   }
 
@@ -374,6 +390,10 @@ class SavedMessageScreen extends Component {
         data['message'] = message;
       }      
       data['type'] = 'image';
+      this.setState({selectedScheduleData: data}, () => {
+        this.setMediaData(selectedImage);
+      });
+      return;
     }
     else {
       if (!this.text) return;
