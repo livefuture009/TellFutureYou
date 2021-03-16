@@ -158,6 +158,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.regular,
     fontSize: 12,
     color: 'gray',
-    marginRight: 10,
+    marginRight: 20,
   },
 });

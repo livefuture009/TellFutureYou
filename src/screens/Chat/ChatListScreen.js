@@ -13,7 +13,6 @@ import Toast from 'react-native-easy-toast'
 import { SwipeListView } from 'react-native-swipe-list-view';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import HeaderInfoBar from '../../components/HeaderInfoBar'
-import TopTabBar from '../../components/TopTabBar'
 import LoadingOverlay from '../../components/LoadingOverlay'
 import ChannelCell from '../../components/Cells/ChannelCell'
 import { TOAST_SHOW_TIME, Status } from '../../constants.js'
@@ -31,8 +30,6 @@ class ChatScreen extends Component {
     this.state = {
       isLoading: false,
       channelList: [],
-      archiveList: [],
-      currentPage: 0,
     }
   }
 
@@ -197,17 +194,13 @@ class ChatScreen extends Component {
 
   }
 
-  onSelectPage=(page)=> {
-    this.setState({currentPage: page});
-  }
-
   _renderMessagePage() {
     var user = null;
     if (sb) {
       user = sb.currentUser;
     }
     const { currentUser } = this.props;
-    const { channelList, currentPage } = this.state;
+    const { channelList } = this.state;
 
     const lastSelfMessage = (currentUser && currentUser.lastSelfMessage) ? currentUser.lastSelfMessage : null;
     return (
@@ -216,20 +209,26 @@ class ChatScreen extends Component {
           style={styles.listView}
           data={channelList}
           keyExtractor={(item, index) => index.toString()}
-          rightOpenValue={-75}
-          renderHiddenItem={(data, index) => (
-            <View style={styles.rowBack}>
-              <TouchableOpacity style={styles.trashBtn} onPress={() => this.onRemoveChannel(data.item)}>
-                <Image source={Images.icon_red_trash} style={{width: 35, height: 35}} />
-              </TouchableOpacity>
-            </View>
-          )}
+          rightOpenValue={-50}
+          renderHiddenItem={(data, rowMap) => {
+            return (
+              <View style={styles.rowBack}>
+              {
+                (data.index != 0)
+                ? <TouchableOpacity style={styles.trashBtn} onPress={() => this.onRemoveChannel(data.item)}>
+                    <Image source={Images.icon_red_trash} style={{width: 25, height: 25}} />
+                  </TouchableOpacity>
+                : null
+              }
+              </View>
+            )
+          }}
           renderItem={({item, index}) => (
             <ChannelCell 
               currentUser={user}
               lastSelfMessage={lastSelfMessage}
               channel={item} 
-              isSelfChannel={(currentPage == 0 && index == 0) ? true: false}
+              isSelfChannel={(index == 0) ? true: false}
               onPress={this._onChannelPress}
             />
           )}
@@ -238,45 +237,17 @@ class ChatScreen extends Component {
     )
   }
 
-  _renderArchivePage() {
-    var currentUser = null;
-    if (sb) {
-      currentUser = sb.currentUser;
-    }
-    const { archiveList, currentPage } = this.state;
-    return (
-      <View style={styles.pageView}>
-
-      </View>
-    )
-  }
-
   render() {
-    const { currentPage } = this.state;
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: Colors.appColor}}>
         <HeaderInfoBar 
           title="MESSANGER" 
-          rightButton="plus"
-          onRight={this.onAddMessage}
+          // rightButton="plus"
+          // onRight={this.onAddMessage}
         />
         <View style={styles.container}>
           <View style={styles.contentView}>
-            <TopTabBar
-              titles={["My Messages", "Archive"]}
-              currentPage={currentPage} 
-              onSelectPage={this.onSelectPage}
-            />
-            {
-              (currentPage == 0) 
-              ? this._renderMessagePage()
-              : null
-            }
-            {
-              (currentPage == 1) 
-              ? this._renderArchivePage()
-              : null
-            }
+            {this._renderMessagePage()}
           </View>
         </View>
         
@@ -312,7 +283,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
-    width: 60,
+    width: 50,
+    marginRight: 15,
+    paddingBottom: 10,
   },
 
   pageView: {

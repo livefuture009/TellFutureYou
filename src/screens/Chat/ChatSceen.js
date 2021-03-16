@@ -297,6 +297,7 @@ class ChatScreen extends Component {
 
         var _newMessageList = _SELF.state.messages.concat(_messages.reverse());
         _SELF.filterPhotos(_newMessageList);
+
         _SELF.setState({
           messages: _newMessageList,
           isFirst: false,
@@ -330,11 +331,11 @@ class ChatScreen extends Component {
 
     if (index === OPEN_CAMERA) {
       ImagePicker.openCamera(options).then(response => {
-        this.setMediaData(response)
+        this.setState({isShowScheduleDialog: true, selectedImage: response});
       });
     } else if (index === OPEN_GALLERY) {
       ImagePicker.openPicker(options).then(response => {
-        this.setMediaData(response)
+        this.setState({isShowScheduleDialog: true, selectedImage: response});
       });
     } else {
       if (Platform.OS === 'android'){
@@ -395,16 +396,29 @@ class ChatScreen extends Component {
   }
 
   addMediaMessage(url, type) {
+    var { selectedScheduleData, channel } = this.state;
     const _SELF = this;
     const message = (this.text) ? this.text.trim() : "";
     var content = url;
     if (message && message.length > 0) {
       content += "\r\n" + message;
     }
-    this.state.channel.sendUserMessage(content, type, (message, error)=> {
-      if (error) return;
-      _SELF.addNewMessage(message);
-    });
+
+    if (selectedScheduleData) {
+      selectedScheduleData['image'] = url;
+      selectedScheduleData['message'] = message;
+      this.setState({isLoading: true});
+      this.props.dispatch({
+        type: actionTypes.CREATE_SCHEDULED_MESSAGE,
+        data: selectedScheduleData,
+      });
+    }
+    else {
+      channel.sendUserMessage(content, type, (message, error)=> {
+        if (error) return;
+        _SELF.addNewMessage(message);
+      });
+    }
   }
 
   _onPhoto=()=> {
@@ -427,20 +441,7 @@ class ChatScreen extends Component {
           this.onFailure(error.message);
           return;
         }
-  
-        var _messages = [];
-        _messages.push(message);
-        if (this.state.lastMessage && message.createdAt - this.state.lastMessage.createdAt  > (1000 * 60 * 60)) {
-          _messages.push({isDate: true, createdAt: message.createdAt});
-        }
-  
-        var _newMessageList = _messages.concat(this.state.messages);
-        this.setState({
-          messages: _newMessageList,
-          isFirst: false
-        });
-        this.state.lastMessage = message;
-        this.resetMessageInput();
+        this.addNewMessage(message);
       });
     } else {
       Keyboard.dismiss();
@@ -474,19 +475,19 @@ class ChatScreen extends Component {
   }
 
   onPressImage =(item)=> {
-    const { photos } = this.state;
-    const image = item.message;
-    var index = 0;
-    var currentPhotoIndex = 0;
+    // const { photos } = this.state;
+    // const image = item.message;
+    // var index = 0;
+    // var currentPhotoIndex = 0;
 
-    photos.forEach(photo => {
-      if (image === photo.source.uri) {
-        currentPhotoIndex = index;
-        return;
-      }
-      index ++;
-    });
-    this.setState({currentPhotoIndex: currentPhotoIndex, isImageViewVisible: true});    
+    // photos.forEach(photo => {
+    //   if (image === photo.source.uri) {
+    //     currentPhotoIndex = index;
+    //     return;
+    //   }
+    //   index ++;
+    // });
+    // this.setState({currentPhotoIndex: currentPhotoIndex, isImageViewVisible: true});    
   }
 
   ///////////////////////////////////////////////////////////////////////////
@@ -498,35 +499,6 @@ class ChatScreen extends Component {
     this.setState({isShowScheduleDialog: true});
   }
 
-  sendScheduledMessage=()=> {
-    const { currentUser } = this.props;
-    const { channel } = this.state;
-
-    if (!this.text) return;
-    const content = this.text.trim();
-    if (content.length === 0) return;
-
-    const creator = currentUser._id;
-    const channelId = channel.name;
-    const channelURL = channel.url;
-    const message = content;
-    const type = "text";
-    const scheduledAt = moment(this.scheduleTime).unix() * 1000;
-
-    this.setState({isLoading: true});
-    this.props.dispatch({
-      type: actionTypes.CREATE_SCHEDULED_MESSAGE,
-      data: {
-        creator,
-        channelId,
-        channelURL,
-        message,
-        type,
-        scheduledAt,
-      },
-    });
-  }
-
   onMoveSchedulePage=()=> {
     const { channel } = this.state; 
     this.props.navigation.navigate('ScheduleMessage', {channel: channel});
@@ -536,9 +508,11 @@ class ChatScreen extends Component {
     this.setState({isShowScheduleDialog: false});
     
     const { currentUser } = this.props;
-    const { selectedQuote, selectedImage } = this.state;
+    const { channel, selectedQuote, selectedImage } = this.state;
     const scheduledAt = moment(date).unix() * 1000;
     var data = {
+      channelId: channel.name,
+      channelURL: channel.url,
       scheduledAt,
       creator: currentUser._id,
     };
@@ -569,16 +543,13 @@ class ChatScreen extends Component {
     }
 
     this.setState({isLoading: true, selectedQuote: null, selectedImage: null}, () => {
+      this.setState({isLoading: true});
       this.props.dispatch({
-        type: actionTypes.CREATE_SELF_MESSAGE,
+        type: actionTypes.CREATE_SCHEDULED_MESSAGE,
         data,
       });
     });
-
     this.resetMessageInput();
-    // this.scheduleTime = date;
-    // this.setState({isShowScheduleDialog: false});
-    // this.sendScheduledMessage();
   }
 
   resetMessageInput() {

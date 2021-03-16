@@ -90,7 +90,6 @@ export default class ChatCell extends React.PureComponent {
 
   render() {
     const { item, currentUser, onPressImage } = this.props;
-    var message = (item && item.message) ? item.message : "";
     const type = (item && item.data) ? item.data : "";
     const otherUsername = (item && item._sender && item._sender.nickname) ? item._sender.nickname : "";
     const time = (item && item.createdAt) ? Moment(item.createdAt).format('DD MMM YYYY, hh:mm A') : "";
