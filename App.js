@@ -28,7 +28,7 @@ class Root extends Component {
 
   componentDidMount() {
     LogBox.ignoreAllLogs();
-    moment.locale('en', {
+    moment.updateLocale('en', {
       relativeTime : {
         future: "in %s",
         past: "%s ",

@@ -3,7 +3,6 @@ import { StyleSheet, View, Text, Image, TouchableOpacity, Dimensions } from 'rea
 import Colors from '../theme/Colors';
 import Images from '../theme/Images';
 import Fonts from '../theme/Fonts';
-import { ifIphoneX } from 'react-native-iphone-x-helper'
 
 const screenWidth = Dimensions.get('window').width;
 

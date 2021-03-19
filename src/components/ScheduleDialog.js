@@ -8,6 +8,7 @@ import Messages from '../theme/Messages';
 import RoundButton from './RoundButton';
 import DatePicker from 'react-native-date-picker'
 import {Calendar} from 'react-native-calendars';
+import { ifIphoneX } from 'react-native-iphone-x-helper'
 import Moment from 'moment';
 
 export default class ScheduleDialog extends React.Component {
@@ -22,14 +23,15 @@ export default class ScheduleDialog extends React.Component {
     }
 
     componentDidMount() {
-      this.setState({scheduleDate: Moment(new Date()).format('YYYY-MM-DD')});
-      this.setState({scheduleTime: new Date()});
+      // this.setState({scheduleDate: Moment(new Date()).format('YYYY-MM-DD')});
+      // this.setState({scheduleTime: new Date()});
     }
 
     onSchedule() {
       const { scheduleDate, scheduleTime } = this.state;
       const { onSelect } = this.props;
       const today = new Date();
+
       if (scheduleDate && scheduleTime) {
         const dateString = scheduleDate + " " + Moment(scheduleTime).format("hh:mm a");
         const selectedDate = Moment(dateString, "YYYY-MM-DD hh:mm a");
@@ -49,7 +51,7 @@ export default class ScheduleDialog extends React.Component {
       const { dateError, scheduleDate, scheduleTime, dateSelected } = this.state;
       const { value, isVisible, onClose, onSendNow } = this.props;
       const now = Moment(new Date()).format('YYYY-MM-DD');
-      const current = scheduleDate ? scheduleDate : now;
+      const current = scheduleDate ? scheduleDate : null;
       return (
         <Modal isVisible={isVisible}>
             <View style={styles.container}>
@@ -77,7 +79,7 @@ export default class ScheduleDialog extends React.Component {
                 <View style={styles.timeContainer}>
                   <DatePicker
                     value={value}
-                    date={scheduleTime ? scheduleTime : new Date()}
+                    date={scheduleTime}
                     mode="time"
                     onDateChange={(date) => {
                       this.setState({scheduleTime: date})
@@ -88,7 +90,7 @@ export default class ScheduleDialog extends React.Component {
                     title="Schedule" 
                     theme="blue" 
                     onPress={() => this.onSchedule()}
-                    style={{marginTop: 20, width: '100%'}}
+                    style={{width: '100%'}}
                 />
                 {
                   dateError && 
@@ -114,7 +116,6 @@ const styles = StyleSheet.create({
   },
 
   timeContainer: {
-    marginTop: 10,
     alignItems: 'center',
   },
 
@@ -124,21 +125,34 @@ const styles = StyleSheet.create({
 
   titleText: {
     fontFamily: Fonts.regular,
-    fontSize: 20,
     textAlign: 'center',
-    paddingVertical: 12,
+    paddingTop: 12,
+    ...ifIphoneX({
+      fontSize: 20,
+    }, {
+      fontSize: 17,
+    }),
   },
 
   closeButton: {
     position: 'absolute',
-    top: 12,
     right: 0,
+    ...ifIphoneX({
+      top: 12,
+    }, {
+      top: 10,
+    }),
   },
 
   closeIcon: {
-    width: 30,
-    height: 30,
     resizeMode: 'contain',
+    ...ifIphoneX({
+      width: 30,
+      height: 30,
+    }, {
+      width: 25,
+      height: 25,
+    }),
   },
 
   body: {
@@ -171,13 +185,21 @@ const styles = StyleSheet.create({
 
   cancelBtn: {
     marginTop: 10,
-    marginBottom: 10,
+    ...ifIphoneX({
+      marginBottom: 10,
+    }, {
+      marginBottom: 5,
+    }),
   },
 
   cancelBtnText: {
     textAlign: 'center',
     fontFamily: Fonts.regular,
     color: '#60b8c3',
-    fontSize: 18,
+    ...ifIphoneX({
+      fontSize: 18,
+    }, {
+      fontSize: 16,
+    }),
   },
 });

@@ -3,6 +3,7 @@ import {
   View,
   StyleSheet,
   Image,
+  Text,
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
@@ -10,7 +11,7 @@ import {
 import {connect} from 'react-redux';
 import SendBird from 'sendbird';
 import Toast from 'react-native-easy-toast'
-import { SwipeListView } from 'react-native-swipe-list-view';
+import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 import HeaderInfoBar from '../../components/HeaderInfoBar'
 import LoadingOverlay from '../../components/LoadingOverlay'
@@ -208,30 +209,35 @@ class ChatScreen extends Component {
         <SwipeListView
           style={styles.listView}
           data={channelList}
-          keyExtractor={(item, index) => index.toString()}
-          rightOpenValue={-50}
-          renderHiddenItem={(data, rowMap) => {
+          renderItem={ (rowData, rowMap) => {
             return (
-              <View style={styles.rowBack}>
-              {
-                (data.index != 0)
-                ? <TouchableOpacity style={styles.trashBtn} onPress={() => this.onRemoveChannel(data.item)}>
-                    <Image source={Images.icon_red_trash} style={{width: 25, height: 25}} />
-                  </TouchableOpacity>
-                : null
-              }
-              </View>
+              <SwipeRow
+                disableRightSwipe={true}
+                disableLeftSwipe={parseInt(rowData.index) == 0 ? true: false}
+                rightOpenValue={-50}
+              >
+                <View style={styles.rowBack}>
+                {
+                  (rowData.index != 0)
+                  ? <TouchableOpacity style={styles.trashBtn} onPress={() => this.onRemoveChannel(rowData.item)}>
+                      <Image source={Images.icon_red_trash} style={{width: 25, height: 25}} />
+                    </TouchableOpacity>
+                  : null
+                }
+                </View>
+                <View style={styles.rowFront}>
+                  <ChannelCell 
+                    currentUser={user}
+                    lastSelfMessage={lastSelfMessage}
+                    channel={rowData.item} 
+                    isSelfChannel={parseInt(rowData.index) == 0 ? true: false}
+                    onPress={this._onChannelPress}
+                  />
+                </View>
+              </SwipeRow>
             )
-          }}
-          renderItem={({item, index}) => (
-            <ChannelCell 
-              currentUser={user}
-              lastSelfMessage={lastSelfMessage}
-              channel={item} 
-              isSelfChannel={(index == 0) ? true: false}
-              onPress={this._onChannelPress}
-            />
-          )}
+          }
+          }
         />
       </View>
     )

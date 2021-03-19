@@ -432,7 +432,7 @@ class SavedMessageScreen extends Component {
     this.setState({isShowQuoteDialog: false, selectedQuote: quote}, () => {
       setTimeout(() => {
         this.setState({isShowScheduleDialog: true});
-      }, 300);
+      }, 1000);
     });
   }
 
