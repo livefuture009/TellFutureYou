@@ -12,7 +12,7 @@ export default class QuoteDialog extends React.Component {
     constructor() {
         super()
         this.state = {
-            selectedIndex: -1,
+          selectedIndex: -1,
         }
     }
 
@@ -21,8 +21,9 @@ export default class QuoteDialog extends React.Component {
         const { selectedIndex } = this.state;
 
         if (selectedIndex >= 0) {
-            const quote = QUOTE_LIST[selectedIndex];
-            onSelectQuote(quote);
+          const quote = QUOTE_LIST[selectedIndex];
+          onSelectQuote(quote);
+          this.setState({selectedIndex: -1});
         }
     }
 

@@ -24,7 +24,7 @@ export default class ChatCell extends React.PureComponent {
 
   _renderTextCell() {
     const { item, currentUser } = this.props;
-    const isCurrentMessage = (item._sender.userId === currentUser.userId);
+    const isCurrentMessage = (item._sender && item._sender.userId === currentUser.userId);
     var message = (item && item.message) ? item.message : "";
 
     return (
@@ -34,7 +34,7 @@ export default class ChatCell extends React.PureComponent {
 
   _renderQuoteCell() {
     const { item, currentUser } = this.props;
-    const isCurrentMessage = (item._sender.userId === currentUser.userId);
+    const isCurrentMessage = (item._sender && item._sender.userId === currentUser.userId);
     var message = (item && item.message) ? item.message : "";
     var selectedQuote = null;
     QUOTE_LIST.forEach(q => {
@@ -58,7 +58,7 @@ export default class ChatCell extends React.PureComponent {
 
   _renderImageCell() {
     const { item, currentUser } = this.props;
-    const isCurrentMessage = (item._sender.userId === currentUser.userId);
+    const isCurrentMessage = (item._sender && item._sender.userId === currentUser.userId);
     var message = (item && item.message) ? item.message : "";
     var imageUrl = null;
 
@@ -93,7 +93,7 @@ export default class ChatCell extends React.PureComponent {
     const type = (item && item.data) ? item.data : "";
     const otherUsername = (item && item._sender && item._sender.nickname) ? item._sender.nickname : "";
     const time = (item && item.createdAt) ? Moment(item.createdAt).format('DD MMM YYYY, hh:mm A') : "";
-    const isCurrentMessage = (item._sender.userId === currentUser.userId);
+    const isCurrentMessage = (item._sender && item._sender.userId === currentUser.userId);
     const MessageView = (type == 'image') ? TouchableOpacity : View;
 
     return (

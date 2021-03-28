@@ -23,8 +23,7 @@ export default class ScheduleDialog extends React.Component {
     }
 
     componentDidMount() {
-      // this.setState({scheduleDate: Moment(new Date()).format('YYYY-MM-DD')});
-      // this.setState({scheduleTime: new Date()});
+      this.setState({scheduleTime: new Date()});
     }
 
     onSchedule() {
@@ -39,6 +38,7 @@ export default class ScheduleDialog extends React.Component {
           this.setState({dateError: Messages.InvalidScheduleTime});
           return;
         }
+        this.setState({dateError: null, dateSelected: '', scheduleDate: null, scheduleTime: new Date()});
         onSelect(selectedDate);
       } 
       else {
