@@ -139,9 +139,7 @@ class LoginScreen extends Component {
     OneSignal.addEventListener('opened', this.onOpened);
     OneSignal.addEventListener('ids', this.onIds);
 
-    // Must be outside of any component LifeCycle (such as `componentDidMount`).
     PushNotification.configure({
-      // (optional) Called when Token is generated (iOS and Android)
       onRegister: function (token) {
         console.log("TOKEN:", token);
       },
@@ -171,7 +169,7 @@ class LoginScreen extends Component {
         sound: true,
       },
       popInitialNotification: true,
-      requestPermissions: true,
+      requestPermissions: Platform.OS === 'ios',
     });
   }
 
