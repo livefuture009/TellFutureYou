@@ -34,10 +34,19 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
+
+         <!-- Branch URI Scheme -->
+        <intent-filter>
+            <data android:scheme="tellfutureyou" />
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+        </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
       <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
       <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCGJg6E9WkiiIbbOhAWw_A0wSMS3YKaNBs"/>
+      <meta-data android:name="io.branch.sdk.BranchKey" android:value="key_live_gk8mIG2QTKruXP7RAIEA1eeotsi8NeHE"/>
       <uses-library android:name="org.apache.http.legacy" android:required="false"/>
     </application>
 
