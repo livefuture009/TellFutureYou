@@ -38,7 +38,19 @@
 				<string>com.googleusercontent.apps.389020544990-8uohd3jvl00dvo5c9rao5g9cmvcekocs</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>tellfutureyou</string>
+			</array>
+		</dict>
 	</array>
+  <key>branch_key</key>
+  <string>key_live_gk8mIG2QTKruXP7RAIEA1eeotsi8NeHE</string>
+  <key>branch_app_domain</key>
+  <string>tellfutureyou.app.link</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FacebookAdvertiserIDCollectionEnabled</key>
