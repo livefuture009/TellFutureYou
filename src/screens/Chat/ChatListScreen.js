@@ -247,7 +247,7 @@ class ChatScreen extends Component {
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: Colors.appColor}}>
         <HeaderInfoBar 
-          title="MESSANGER" 
+          title="MESSAGES" 
           // rightButton="plus"
           // onRight={this.onAddMessage}
         />
