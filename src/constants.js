@@ -10,8 +10,8 @@ export const SENDBIRD_APP_ID = '83A1D87C-EAA9-460A-AAF9-6D224B27E793';
 export const APP_LINK = "https://tellfutureyou.com";
 export const IOS_APP_LINK = "https://apps.apple.com/us/app/tellfutureyou/id1535738320";
 export const GOOGLE_APP_LINK = "https://tellfutureyou.com";
-export const TERMS_LINK = "http://dukeheartaudrey.gadaiweb.com/terms-and-conditions.html";
-export const PRIVACY_LINK = "http://dukeheartaudrey.gadaiweb.com/privacy-policy.html";
+export const TERMS_LINK = "https://dukeheartaudrey.gadaiweb.com/terms-and-conditions.html";
+export const PRIVACY_LINK = "https://dukeheartaudrey.gadaiweb.com/privacy-policy.html";
 
 export const SUBSCRIPTION_STANDARD = "gad.tellfutureyou.org.standard";
 export const SUBSCRIPTION_PREMIUM = "gad.tellfutureyou.premium";
