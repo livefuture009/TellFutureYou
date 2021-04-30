@@ -45,8 +45,13 @@ class SubscriptionScreen extends Component {
     this.state = {
       isLoading: false,
       isRequestSubscription: false,
-      products: [],
       selectedIndex: -1,
+      products: [{
+        productId: SUBSCRIPTION_STANDARD,
+      },
+      {
+        productId: SUBSCRIPTION_PREMIUM,
+      }],
     }    
   }
 
@@ -109,7 +114,10 @@ class SubscriptionScreen extends Component {
     try {
         _SELF.setState({isLoading: true});
         const products = await RNIap.getSubscriptions(itemSubs);
-        _SELF.setState({products: products, isLoading: false});
+        _SELF.setState({isLoading: false}); 
+        if (products && products.length > 0) {
+          _SELF.setState({products});  
+        }
         _SELF.initIAPListener();
     } 
     catch (err) {

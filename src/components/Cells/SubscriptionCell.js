@@ -10,14 +10,21 @@ export default class SubscriptionCell extends React.Component {
   	render() {
         const { data, index, selectedIndex, onSelect } = this.props;
         const productId = data.productId;
-        var title = "Standard";
-        var subTitle = "Allow add up to 10 Friends";
+        var title = "";
+        var subTitle = "";
+        var price = "";
 
-        if (productId == SUBSCRIPTION_PREMIUM) {
+        if (productId == SUBSCRIPTION_STANDARD) {
+            title = "Standard";
+            subTitle = "Allow add up to 10 Friends";
+            price = data.localizedPrice ? data.localizedPrice : "$0.99";
+        }
+        else if (productId == SUBSCRIPTION_PREMIUM) {
             title = "Premium";
             subTitle = "Allow add up to 20 Friends";
+            price = data.localizedPrice ? data.localizedPrice : "$9.99";
         }
-        const price = data.localizedPrice;
+        
     	return (
             <TouchableOpacity onPress={() => onSelect(index)}>
                 <View style={[styles.container, selectedIndex == index ? {borderColor: Colors.appColor, borderWidth: 2} : {}]}>
