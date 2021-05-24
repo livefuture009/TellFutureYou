@@ -8,11 +8,11 @@ function TabBarItem({unreadMessages, unreadNumber, icon, page}) {
         <View>
             <Image source={icon} style={{width: 40, height: 40 }} />
             {
-                (page === 'ChatStack' && unreadMessages > 0) &&
+                (page === 'ChatList' && unreadMessages > 0) &&
                 <Text style={styles.badgeText}>{unreadMessages}</Text>
             }
             {
-                (page === 'NotificationStack' && unreadNumber > 0) &&
+                (page === 'Notification' && unreadNumber > 0) &&
                 <Text style={styles.badgeText}>{unreadNumber}</Text>
             }
         </View>

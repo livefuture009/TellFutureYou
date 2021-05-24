@@ -13,47 +13,6 @@ import NotificationScreen from '../screens/NotificationScreen'
 import TabBarItem from './TabBarItem';
 
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
-
-function ChatStack() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="ChatList" component={ChatListScreen} options={{ headerShown: false, gestureEnabled: false }}/>
-    </Stack.Navigator>
-  );
-}
-
-function ContactStack() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="ContactList" component={ContactListScreen} options={{ headerShown: false, gestureEnabled: false }}/>
-    </Stack.Navigator>
-  );
-}
-
-function FriendStack() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Friend" component={FriendScreen} options={{ headerShown: false, gestureEnabled: false }}/>
-    </Stack.Navigator>
-  );
-}
-
-function NotificationStack() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Notification" component={NotificationScreen} options={{ headerShown: false, gestureEnabled: false }}/>
-    </Stack.Navigator>
-  );
-}
-
-function MyAccountStack() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="MyAccount" component={MyAccountScreen} options={{ headerShown: false, gestureEnabled: false }}/>
-    </Stack.Navigator>
-  );
-}
 
 class CustomerTab extends React.Component {
   render() {
@@ -62,19 +21,19 @@ class CustomerTab extends React.Component {
               screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, color, size }) => {
                   var iconImage;
-                  if (route.name === 'ChatStack') {
+                  if (route.name === 'ChatList') {
                     iconImage = focused ? Images.tab_message_selected : Images.tab_message;
                   }
-                  else if (route.name === 'FriendStack') {
+                  else if (route.name === 'Friend') {
                     iconImage = focused ? Images.tab_friend_selected : Images.tab_friend;
                   } 
-                  else if (route.name === 'ContactStack') {
+                  else if (route.name === 'ContactList') {
                     iconImage = focused ? Images.tab_contact_selected : Images.tab_contact;
                   } 
-                  else if (route.name === 'NotificationStack') {
+                  else if (route.name === 'Notification') {
                     iconImage = focused ? Images.tab_notification_selected : Images.tab_notification;
                   } 
-                  else if (route.name === 'MyAccountStack') {
+                  else if (route.name === 'MyAccount') {
                     iconImage = focused ? Images.tab_settings_selected : Images.tab_settings;
                   }
                   return <TabBarItem icon={iconImage} page={route.name} />;
@@ -84,11 +43,11 @@ class CustomerTab extends React.Component {
                 showLabel: false,
               }}
             >
-              <Tab.Screen name="ChatStack" component={ChatStack} />
-              <Tab.Screen name="FriendStack" component={FriendStack} />
-              <Tab.Screen name="ContactStack" component={ContactStack} />
-              <Tab.Screen name="NotificationStack" component={NotificationStack} />
-              <Tab.Screen name="MyAccountStack" component={MyAccountStack} />
+              <Tab.Screen name="ChatList" component={ChatListScreen} />
+              <Tab.Screen name="Friend" component={FriendScreen} />
+              <Tab.Screen name="ContactList" component={ContactListScreen} />
+              <Tab.Screen name="Notification" component={NotificationScreen} />
+              <Tab.Screen name="MyAccount" component={MyAccountScreen} />
             </Tab.Navigator>
       );      
   }

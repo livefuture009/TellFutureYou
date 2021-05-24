@@ -9,7 +9,7 @@ import Images from '../../theme/Images';
 
 export default class SelfChatCell extends React.PureComponent {
   render() {
-    const { data, isShowSchedule, onSelect } = this.props;
+    const { data, isShowSchedule, onSelect, onPressImage } = this.props;
     const type = (data && data.type) ? data.type : "";
     const message = (data && data.message) ? data.message : "";
     const author = (data && data.author) ? data.author : "";
@@ -35,14 +35,14 @@ export default class SelfChatCell extends React.PureComponent {
             }
             {
               (type == "image")
-              ? <View style={{width: '100%'}}>
+              ? <TouchableOpacity style={{width: '100%'}} onPress={() => onPressImage(data)}>
                 <FastImage source={{uri: image}} style={styles.photo}/>
                 {
                   (message && message.length > 0)
                   ? <Text style={styles.messageText}>{message}</Text>
                   : null
                 }
-              </View>
+              </TouchableOpacity>
               : null
             }
             {

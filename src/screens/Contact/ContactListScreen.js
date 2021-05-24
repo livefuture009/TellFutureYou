@@ -248,20 +248,27 @@ class ContactListScreen extends Component {
   }
 
   onSendInvite=(data)=> {
-    var options = [];
-    if (data.email && data.email.length > 0) {
-      options.push('Via Email');
+    if (Platform.OS == "android") {
+      this.setState({selectedContact: data}, () => {
+        this.sendEmail();
+      });      
     }
-
-    if (data.phone && data.phone.length > 0) {
-      options.push('Via SMS');
-    }
-
-    if (options.length > 0) {
-      options.push('Cancel');
-      this.setState({selectedContact: data, inviteOptions: options}, () => {
-        this.ActionSheet.show();
-      });
+    else {
+      var options = [];
+      if (data.email && data.email.length > 0) {
+        options.push('Via Email');
+      }
+  
+      if (data.phone && data.phone.length > 0) {
+        options.push('Via SMS');
+      }
+  
+      if (options.length > 0) {
+        options.push('Cancel');
+        this.setState({selectedContact: data, inviteOptions: options}, () => {
+          this.ActionSheet.show();
+        });
+      }
     }
 
     /*

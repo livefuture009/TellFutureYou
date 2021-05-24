@@ -12,7 +12,6 @@ import Toast from 'react-native-easy-toast'
 import Swiper from 'react-native-swiper'
 import HeaderInfoBar from '../../components/HeaderInfoBar'
 import TopTabBar from '../../components/TopTabBar'
-import SearchBox from '../../components/SearchBox'
 import LoadingOverlay from '../../components/LoadingOverlay'
 import FriendCell from '../../components/Cells/FriendCell'
 import actionTypes from '../../actions/actionTypes';
@@ -38,6 +37,11 @@ class FriendScreen extends Component {
   }
 
   componentDidMount() {
+    if (this.props.route.params && this.props.route.params.page) {
+      const { page } = this.props.route.params;  
+      this.setState({currentPage: page});
+    }
+
     this.setState({isLoading: true}, () => {
       this.fetchFriends();
     });
@@ -118,14 +122,6 @@ class FriendScreen extends Component {
       }      
     }
 
-    // Change Active Page.
-    if (prevProps.changeActiveFriendPageStatus != this.props.changeActiveFriendPageStatus) {
-      if (this.props.changeActiveFriendPageStatus == Status.SUCCESS) {
-        const { activePage } = this.props;
-        this.onSelectPage(activePage);
-      } 
-    } 
-    
     // Get Friend Count
     if (prevProps.getFriendCountStatus != this.props.getFriendCountStatus) {
       if (this.props.getFriendCountStatus == Status.SUCCESS) {
@@ -136,6 +132,14 @@ class FriendScreen extends Component {
         this.onFailure();
       }      
     }
+
+    // Change Active Page.
+    if (prevProps.changeActiveFriendPageStatus != this.props.changeActiveFriendPageStatus) {
+      if (this.props.changeActiveFriendPageStatus == Status.SUCCESS) {
+        const { activePage } = this.props;
+        this.onSelectPage(activePage);
+      } 
+    } 
   }
 
   filterFriends() {
@@ -236,8 +240,7 @@ class FriendScreen extends Component {
 
   // Change Timeline and Restaurant Tab.
   onSelectPage=(page)=> {
-    const change = page - this.state.currentPage;
-    if (change) return this.swiper.scrollBy(change, true);
+    this.setState({currentPage: page});
   }
 
   onSwipeIndexChanged=(index)=> {
@@ -279,9 +282,6 @@ class FriendScreen extends Component {
     const { selectedFriend } = this.state;
     const { currentUser } = this.props;
     const limitCount = getFriendCountByLevel(currentUser.level);
-
-    console.log("friendCount: ", friendCount);
-    console.log("limitCount: ", limitCount);
 
     if (friendCount >= limitCount ) {
       Alert.alert(
@@ -424,17 +424,9 @@ class FriendScreen extends Component {
                     currentPage={currentPage} 
                     onSelectPage={this.onSelectPage}
                 />
-                <Swiper 
-                  style={styles.wrapper} 
-                  ref={ref => (this.swiper = ref)}
-                  showsPagination={false} 
-                  loop={false}
-                  onIndexChanged={this.onSwipeIndexChanged}
-                >
-                  { this._renderFriends() }
-                  { this._renderRequests() }
-                  { this._renderSent() }
-                </Swiper>
+                { currentPage == 0 ? this._renderFriends() : null }
+                { currentPage == 1 ? this._renderRequests() : null }
+                { currentPage == 2 ? this._renderSent() : null }
             </View>
           </View>
         </View>

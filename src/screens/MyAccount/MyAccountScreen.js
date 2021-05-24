@@ -61,7 +61,8 @@ class MyAccountScreen extends Component {
     const avatar = (currentUser && currentUser.avatar)  ? currentUser.avatar : '';
     const firstName = (currentUser && currentUser.firstName)  ? currentUser.firstName : '';
     const lastName = (currentUser && currentUser.lastName)  ? currentUser.lastName : '';
-    const email = (currentUser && currentUser.email)  ? currentUser.email : '';
+    const socialType = (currentUser && currentUser.socialType)  ? currentUser.socialType : '';
+
     var level = "Free Member";
     if (currentUser.level == USER_LEVEL.STANDARD) {
       level = "Standard Member";
@@ -95,12 +96,16 @@ class MyAccountScreen extends Component {
                   icon={Images.icon_profile}
                   onPress={() => this.onMoveEditProfile()}
                 />
-                <SettingsInfoCell 
-                  label="Change Password" 
-                  type="submenu" 
-                  icon={Images.icon_password}
-                  onPress={() => this.onMoveChangePassword()}
-                />
+                {
+                  (socialType == null || socialType == "") 
+                  ? <SettingsInfoCell 
+                      label="Change Password" 
+                      type="submenu" 
+                      icon={Images.icon_password}
+                      onPress={() => this.onMoveChangePassword()}
+                    />
+                  : null
+                }
                 <SettingsInfoCell 
                   label="My Subscription" 
                   type="submenu" 

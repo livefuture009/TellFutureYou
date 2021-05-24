@@ -15,14 +15,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "389020544990-b1r7128kqjjffg3536d91cbrg2q345cq.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.tellfutureyou.org",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
-          }
-        },
-        {
           "client_id": "389020544990-6k4d1915sqdgh9tm8lum6vna21l7q9tp.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -31,11 +23,27 @@
           }
         },
         {
+          "client_id": "389020544990-b1r7128kqjjffg3536d91cbrg2q345cq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tellfutureyou.org",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
           "client_id": "389020544990-p8aou2gg6f5te8j7n9hbrq5bevs21ont.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.tellfutureyou.org",
             "certificate_hash": "903052f63a5b711b128c410841697e4c387f1b95"
+          }
+        },
+        {
+          "client_id": "389020544990-ug7jkk07hmcpi8vsqf5744l0si8li0nf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tellfutureyou.org",
+            "certificate_hash": "51e5d6976d712c8602145c899326c5526420b3e7"
           }
         },
         {

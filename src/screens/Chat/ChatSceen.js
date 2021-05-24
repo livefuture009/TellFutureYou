@@ -310,13 +310,17 @@ class ChatScreen extends Component {
     var photos = [];
     messages.forEach(item => {
       if (item.data === 'image') {
-        photos.push(
-          {
-            source: {
-                uri: item.message,
+        var message = item.message;
+        var array1 = message.split("\r\n");
+        if (array1 && array1.length > 0) {
+          photos.push(
+            {
+              source: {
+                uri: array1[0],
+              },
             },
-          },
-      );
+          );
+        }
       }
     });
 
@@ -475,19 +479,23 @@ class ChatScreen extends Component {
   }
 
   onPressImage =(item)=> {
-    // const { photos } = this.state;
-    // const image = item.message;
-    // var index = 0;
-    // var currentPhotoIndex = 0;
+    const { photos } = this.state;
+    var message = item.message;
+    var array1 = message.split("\r\n");
+    if (array1 && array1.length > 0) {
+      const image = array1[0];  
+      var index = 0;
+      var currentPhotoIndex = 0;
 
-    // photos.forEach(photo => {
-    //   if (image === photo.source.uri) {
-    //     currentPhotoIndex = index;
-    //     return;
-    //   }
-    //   index ++;
-    // });
-    // this.setState({currentPhotoIndex: currentPhotoIndex, isImageViewVisible: true});    
+      photos.forEach(photo => {
+        if (image === photo.source.uri) {
+          currentPhotoIndex = index;
+          return;
+        }
+        index ++;
+      });
+      this.setState({currentPhotoIndex: currentPhotoIndex, isImageViewVisible: true});    
+    }
   }
 
   ///////////////////////////////////////////////////////////////////////////

@@ -707,6 +707,15 @@ class LoginScreen extends Component {
                 </View>
 
                 <View style={styles.socialView}>
+                  {
+                    Platform.OS === 'ios' && 
+                    <TouchableOpacity style={styles.socialButton} onPress={() => this.onApple()}>
+                      <Image 
+                        style={styles.socialIcon}
+                        source={Images.btn_apple_signin}
+                      />
+                    </TouchableOpacity>
+                  }
                   <TouchableOpacity style={styles.socialButton} onPress={() => this.onGoogle()}>
                     <Image 
                       style={styles.socialIcon}
@@ -722,19 +731,6 @@ class LoginScreen extends Component {
                   </TouchableOpacity>
                 </View>
               </View>
-              {
-                  Platform.OS === 'ios' && 
-                    <AppleButton
-                      buttonStyle={AppleButton.Style.BLACK}
-                      buttonType={AppleButton.Type.SIGN_IN}
-                      style={{
-                        marginTop: 25,
-                        width: '70%',
-                        height: 45,
-                      }}
-                      onPress={() => this.onApple()}
-                    />
-              }
             </View>
             <View style={styles.bottomView}>
               <Label title="New User?"></Label>

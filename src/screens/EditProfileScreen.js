@@ -255,6 +255,13 @@ class EditProfile extends Component {
   }
 
   render() {
+    const { currentUser } = this.props;
+    const socialType = (currentUser && currentUser.socialType) ? currentUser.socialType : '';
+    var editable = true;
+    if (socialType && socialType.length > 0) {
+      editable = false;
+    }
+
     return (
       <View style={{flex: 1, backgroundColor: Colors.appColor}}>
         <SafeAreaInsetsContext.Consumer>
@@ -300,7 +307,7 @@ class EditProfile extends Component {
                         <LabelFormInput
                           label="Email" 
                           type="email"
-                          editable={true}
+                          editable={editable}
                           placeholderTextColor={Colors.placeholderTextColor}
                           value={this.state.email} 
                           errorMessage={this.state.emailError}

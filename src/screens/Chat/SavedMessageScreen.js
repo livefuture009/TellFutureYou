@@ -127,6 +127,7 @@ class SavedMessageScreen extends Component {
 
     if (prevProps.selfMessages != this.props.selfMessages) {
       this.setState({messages: this.props.selfMessages});
+      this.filterPhotos(this.props.selfMessages);
     }
   }
 
@@ -171,11 +172,11 @@ class SavedMessageScreen extends Component {
   filterPhotos(messages) {
     var photos = [];
     messages.forEach(item => {
-      if (item.data === 'image') {
+      if (item.type === 'image') {
         photos.push(
           {
             source: {
-                uri: item.message,
+                uri: item.image,
             },
           },
       );
@@ -348,7 +349,7 @@ class SavedMessageScreen extends Component {
 
   onPressImage =(item)=> {
     const { photos } = this.state;
-    const image = item.message;
+    const image = item.image;
     var index = 0;
     var currentPhotoIndex = 0;
 
@@ -359,6 +360,7 @@ class SavedMessageScreen extends Component {
       }
       index ++;
     });
+
     this.setState({currentPhotoIndex: currentPhotoIndex, isImageViewVisible: true});    
   }
 

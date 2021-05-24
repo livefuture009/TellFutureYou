@@ -103,7 +103,7 @@ export default class ChatCell extends React.PureComponent {
           <MessageView style={[styles.messageBox, isCurrentMessage ? styles.myMessageBox : styles.targetMessageBox]} onPress={() => onPressImage(item)}>
             { (type == "image") && this._renderImageCell() }
             { (type == "quote") && this._renderQuoteCell() }
-            { (type == null || type == "") && this._renderTextCell() }
+            { (type == null || type == "" || type == "text") && this._renderTextCell() }
           </MessageView>
           <Text style={[styles.timeText, isCurrentMessage ? {textAlign: 'right'} : {textAlign: 'left'}]}>
             {time}

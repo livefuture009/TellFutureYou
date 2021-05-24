@@ -2,6 +2,7 @@ const Images = {
     logo01: require('../../assets/images/logo01.png'),
     btn_google_plus: require('../../assets/images/btn_google_plus.png'),
     btn_facebook: require('../../assets/images/btn_facebook.png'),
+    btn_apple_signin: require('../../assets/images/btn_apple_signin.png'),
     email_icon: require('../../assets/images/email_icon.png'),
     password_icon: require('../../assets/images/password_icon.png'),
     checkbox_selected: require('../../assets/images/checkbox_selected.png'),

@@ -18,12 +18,19 @@ export default class ScheduleDialog extends React.Component {
           scheduleDate: null,
           scheduleTime: null,
           dateError: null,
-          dateSelected: '',
+          dateSelected: null,
         }        
     }
 
     componentDidMount() {
-      this.setState({scheduleTime: new Date()});
+      this.resetDialog();  
+    }
+
+    resetDialog() {
+      const today = new Date();
+      const dateString = Moment(today).format('YYYY-MM-DD');
+      var dateSelected = {[dateString]: {selected: true, selectedColor: '#466A8F'}};
+      this.setState({scheduleDate: dateString, scheduleTime: today, dateSelected, dateError: null});
     }
 
     onSchedule() {
@@ -34,11 +41,11 @@ export default class ScheduleDialog extends React.Component {
       if (scheduleDate && scheduleTime) {
         const dateString = scheduleDate + " " + Moment(scheduleTime).format("hh:mm a");
         const selectedDate = Moment(dateString, "YYYY-MM-DD hh:mm a");
-        if (selectedDate == null || selectedDate <= today) {
+        if (selectedDate == null || selectedDate < today) {
           this.setState({dateError: Messages.InvalidScheduleTime});
           return;
         }
-        this.setState({dateError: null, dateSelected: '', scheduleDate: null, scheduleTime: new Date()});
+        this.resetDialog();
         onSelect(selectedDate);
       } 
       else {
@@ -65,12 +72,12 @@ export default class ScheduleDialog extends React.Component {
                 <Calendar
                   current={current}
                   minDate={now}
-                  onDayPress={(day) => 
+                  onDayPress={(day) => {
                     this.setState({
                       scheduleDate: day.dateString,
                       dateSelected: {[day.dateString]: {selected: true, selectedColor: '#466A8F'}}
                     })
-                  }
+                  }}
                   monthFormat={'MMMM, yyyy'}
                   hideDayNames={true}
                   showWeekNumbers={true}

@@ -47,10 +47,6 @@
 			</array>
 		</dict>
 	</array>
-  <key>branch_key</key>
-  <string>key_live_gk8mIG2QTKruXP7RAIEA1eeotsi8NeHE</string>
-  <key>branch_app_domain</key>
-  <string>tellfutureyou.app.link</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FacebookAdvertiserIDCollectionEnabled</key>
@@ -123,5 +119,9 @@
 	<string>Light</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>branch_app_domain</key>
+	<string>tellfutureyou.app.link</string>
+	<key>branch_key</key>
+	<string>key_live_gk8mIG2QTKruXP7RAIEA1eeotsi8NeHE</string>
 </dict>
 </plist>

@@ -6,15 +6,15 @@ import {
 } from 'react-native';
 
 import {connect} from 'react-redux';
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
+import Toast from 'react-native-easy-toast'
 import HeaderInfoBar from '../components/HeaderInfoBar'
 import NotificationCell from '../components/NotificationCell'
 import LoadingOverlay from '../components/LoadingOverlay'
 import EmptyView from '../components/EmptyView'
-import Toast from 'react-native-easy-toast'
 import { TOAST_SHOW_TIME, NOTIFICATION_TYPE, Status, JOB_STATUS } from '../constants.js'
 import actionTypes from '../actions/actionTypes';
 import Colors from '../theme/Colors'
-import { SafeAreaConsumer } from 'react-native-safe-area-context';
 
 class NotificationScreen extends Component {
   constructor() {
@@ -89,14 +89,14 @@ class NotificationScreen extends Component {
     });
     
     if (n.type == NOTIFICATION_TYPE.SENT_FRIEND_REQUEST) {
-      this.props.navigation.navigate("FriendStack");
+      this.props.navigation.navigate('Friend', {page: 1});
       this.props.dispatch({
         type: actionTypes.CHANGE_FRIEND_ACTIVE_PAGE,
         page: 1,
       }); 
     }
     else if (n.type == NOTIFICATION_TYPE.ACCEPT_FRIEND_REQUEST) {
-      this.props.navigation.navigate("FriendStack");
+      this.props.navigation.navigate('Friend', {page: 0});
       this.props.dispatch({
         type: actionTypes.CHANGE_FRIEND_ACTIVE_PAGE,
         page: 0,
@@ -144,7 +144,7 @@ class NotificationScreen extends Component {
     const { notifications, isFirst, isLoading } = this.state;
     return (
       <View style={{flex: 1, backgroundColor: Colors.appColor}}>
-        <SafeAreaConsumer>
+        <SafeAreaInsetsContext.Consumer>
           {
             insets => 
               <View style={{flex: 1, paddingTop: insets.top }} >
@@ -175,7 +175,7 @@ class NotificationScreen extends Component {
                     </View>
                   </View>
           }
-          </SafeAreaConsumer>
+          </SafeAreaInsetsContext.Consumer>
           <Toast ref={ref => (this.toast = ref)}/>
           { isLoading && <LoadingOverlay /> }
         </View>
