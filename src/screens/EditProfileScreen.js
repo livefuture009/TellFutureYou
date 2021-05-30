@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import {
   View,
   Alert,
-  SafeAreaView,
-  Text,
+  Platform,
+  PermissionsAndroid,
   StyleSheet,
   Keyboard
 } from 'react-native';
@@ -185,41 +185,68 @@ class EditProfile extends Component {
     this.ActionSheet.show();
   }
 
-  onSelectMedia(index) {
-    console.log("index: ", index);
+  async onSelectMedia(index) {
+    try {
+      if (Platform.OS == "android") {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+          {
+            title: "App Camera Permission",
+            message:"App needs access to your camera ",
+            buttonNeutral: "Ask Me Later",
+            buttonNegative: "Cancel",
+            buttonPositive: "OK"
+          }
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          this.openImagePicker(index);
+        } 
+        else {
+          console.log("Camera permission denied");
+        }
+      }
+      else {
+        this.openImagePicker(index);
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  }
+
+  openImagePicker(index) {
     const options = {
 			mediaType: 'photo',
 		};
+		
+		if (index == 0) {
+			launchCamera(options, (response) => {
+				if (response.didCancel) {
+				  console.log('User cancelled image picker');
+				} else if (response.error) {
+				  console.log('ImagePicker Error: ', response.error);
+				} else {
+					this.addPhoto(response);
+				}
+			});
+		}
+		else if (index == 1) {
+			launchImageLibrary(options, (response) => {
+				if (response.didCancel) {
+				  console.log('User cancelled image picker');
+				} else if (response.error) {
+				  console.log('ImagePicker Error: ', response.error);
+				} else {
+					this.addPhoto(response);
+				}
+			});
+		}
+  }
 
-    if (index == 0) {
-      launchCamera(options, (response) => {
-				if (response.didCancel) {
-				console.log('User cancelled image picker');
-				} else if (response.error) {
-				console.log('ImagePicker Error: ', response.error);
-				} else {
-          console.log("response: ", response);
-          this.setState({
-            avatar: response.uri,
-            avatarFile: response
-          });
-				}
-			});
-    }
-    else if(index == 1){
-      launchImageLibrary(options, (response) => {
-				if (response.didCancel) {
-				console.log('User cancelled image picker');
-				} else if (response.error) {
-				console.log('ImagePicker Error: ', response.error);
-				} else {
-					this.setState({
-            avatar: response.uri,
-            avatarFile: response
-          });
-				}
-			});
-    }
+  addPhoto(response) {
+    this.setState({
+      avatar: response.uri,
+      avatarFile: response
+    });
   }
 
   filterData(data) {
@@ -308,6 +335,7 @@ class EditProfile extends Component {
                           label="Email" 
                           type="email"
                           editable={editable}
+                          autoCapitalize={false}
                           placeholderTextColor={Colors.placeholderTextColor}
                           value={this.state.email} 
                           errorMessage={this.state.emailError}

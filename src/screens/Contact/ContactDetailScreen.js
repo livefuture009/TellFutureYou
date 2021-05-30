@@ -3,6 +3,8 @@ import {
   View,
   Alert,
   StyleSheet,
+  Platform,
+  PermissionsAndroid,
   Keyboard
 } from 'react-native';
 
@@ -16,12 +18,12 @@ import TopNavBar from '../../components/TopNavBar'
 import RoundButton from '../../components/RoundButton'
 import LabelFormInput from '../../components/LabelFormInput'
 import EditAvatar from '../../components/EditAvatar'
-import Colors from '../../theme/Colors'
 import LoadingOverlay from '../../components/LoadingOverlay'
-import Messages from '../../theme/Messages'
 import { TOAST_SHOW_TIME, Status } from '../../constants.js'
 import actionTypes from '../../actions/actionTypes';
 import {validateEmail, getOnlyAlphabetLetters} from '../../functions'
+import Colors from '../../theme/Colors'
+import Messages from '../../theme/Messages'
 
 class ContactDetailScreen extends Component {
   constructor() {
@@ -216,46 +218,72 @@ class ContactDetailScreen extends Component {
   }
 
   onTakePicture() {
-    const { isDisabled } = this.state;
-    if (isDisabled) return;
-    
     this.ActionSheet.show();
   }
 
-  onSelectMedia(index) {
-		const options = {
+  async onSelectMedia(index) {
+    try {
+      if (Platform.OS == "android") {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+          {
+            title: "App Camera Permission",
+            message:"App needs access to your camera ",
+            buttonNeutral: "Ask Me Later",
+            buttonNegative: "Cancel",
+            buttonPositive: "OK"
+          }
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          this.openImagePicker(index);
+        } 
+        else {
+          console.log("Camera permission denied");
+        }
+      }
+      else {
+        this.openImagePicker(index);
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  }
+
+  openImagePicker(index) {
+    const options = {
 			mediaType: 'photo',
 		};
 		
 		if (index == 0) {
 			launchCamera(options, (response) => {
 				if (response.didCancel) {
-				console.log('User cancelled image picker');
+				  console.log('User cancelled image picker');
 				} else if (response.error) {
-				console.log('ImagePicker Error: ', response.error);
+				  console.log('ImagePicker Error: ', response.error);
 				} else {
-					this.setState({
-            avatar: response.uri,
-            avatarFile: response
-          });
+					this.addPhoto(response);
 				}
 			});
 		}
 		else if (index == 1) {
 			launchImageLibrary(options, (response) => {
 				if (response.didCancel) {
-				console.log('User cancelled image picker');
+				  console.log('User cancelled image picker');
 				} else if (response.error) {
-				console.log('ImagePicker Error: ', response.error);
+				  console.log('ImagePicker Error: ', response.error);
 				} else {
-					this.setState({
-            avatar: response.uri,
-            avatarFile: response
-          });
+					this.addPhoto(response);
 				}
 			});
 		}
-	}
+  }
+
+  addPhoto(response) {
+    this.setState({
+      avatar: response.uri,
+      avatarFile: response
+    });
+  }
 
   onChangeFirstName =(text)=> {
     const name = getOnlyAlphabetLetters(text);
@@ -340,6 +368,7 @@ class ContactDetailScreen extends Component {
                     placeholderTextColor={Colors.placeholderColor}
                     editable={!isDisabled}
                     value={this.state.email} 
+                    autoCapitalize={false}
                     errorMessage={this.state.emailError}
                     returnKeyType="next"                                       
                     onRefInput={(input) => { this.emailInput = input }}

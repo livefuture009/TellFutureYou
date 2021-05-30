@@ -46,6 +46,7 @@ class SubscriptionScreen extends Component {
       isLoading: false,
       isRequestSubscription: false,
       selectedIndex: -1,
+      hasLevelAlready: false,
       products: [{
         productId: SUBSCRIPTION_STANDARD,
       },
@@ -58,9 +59,9 @@ class SubscriptionScreen extends Component {
   componentDidMount() {
     const { currentUser } = this.props;
     if (currentUser.level == USER_LEVEL.STANDARD) {
-      this.setState({selectedIndex: 0});
+      this.setState({selectedIndex: 0, hasLevelAlready: true});
     } else if (currentUser.level == USER_LEVEL.PREMIUM) {
-      this.setState({selectedIndex: 1});
+      this.setState({selectedIndex: 1, hasLevelAlready: true});
     }
     this.initIAP();
   }
@@ -131,7 +132,13 @@ class SubscriptionScreen extends Component {
     if (prevProps.changeSubscriptionStatus != this.props.changeSubscriptionStatus) {
       if (this.props.changeSubscriptionStatus == Status.SUCCESS) {
         this.setState({isLoading: false});
-        this.showMessage(Messages.SubscriptionCompleted, true);
+        const { hasLevelAlready } = this.state;
+        if (hasLevelAlready) {
+          this.showMessage(Messages.SuccessChangeMembership, true);
+        }
+        else {
+          this.showMessage(Messages.SubscriptionCompleted, true);
+        }        
       } 
       else if (this.props.changeSubscriptionStatus == Status.FAILURE) {
         this.setState({isLoading: false});
@@ -185,8 +192,38 @@ class SubscriptionScreen extends Component {
     if (isConnected) {
       const {selectedIndex, products} = this.state; 
       if (products && products.length > 0 && selectedIndex >= 0) {
-        this.requestSubscription(products[selectedIndex].productId);
-      } else {
+        const { currentUser } = this.props;
+        const level = currentUser.level;
+        if (level == USER_LEVEL.FREE) {
+          this.requestSubscription(products[selectedIndex].productId);
+        }
+        else {
+          var message = null;
+          if (level == USER_LEVEL.STANDARD && selectedIndex == 1) {
+            message = Messages.ConfirmStandardToPremium;
+          } 
+          else if (level == USER_LEVEL.PREMIUM && selectedIndex == 0) {
+            message = Messages.ConfirmPremiumToStandard;
+          }
+          if (message == null) {
+            this.requestSubscription(products[selectedIndex].productId);
+          }
+          else {
+            Alert.alert(
+              message,
+              '',
+              [
+                {text: 'Yes', onPress: () => {
+                  this.requestSubscription(products[selectedIndex].productId);              
+                }},
+                {text: 'No', onPress: () => {}},
+              ],
+              {cancelable: false},
+            ); 
+          }
+        }
+      } 
+      else {
         this.setState({subscriptionError: Messages.InvalidSubscription});
       }
     }

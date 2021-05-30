@@ -13,16 +13,19 @@ export default class SubscriptionCell extends React.Component {
         var title = "";
         var subTitle = "";
         var price = "";
+        var duration = "";
 
         if (productId == SUBSCRIPTION_STANDARD) {
             title = "Standard";
-            subTitle = "Allow add up to 10 Friends";
+            subTitle = "Add up to 10 Friends";
             price = data.localizedPrice ? data.localizedPrice : "$0.99";
+            duration = "Monthly";
         }
         else if (productId == SUBSCRIPTION_PREMIUM) {
             title = "Premium";
-            subTitle = "Allow add up to 20 Friends";
+            subTitle = "Add up to 20 Friends";
             price = data.localizedPrice ? data.localizedPrice : "$9.99";
+            duration = "Yearly";
         }
         
     	return (
@@ -41,7 +44,7 @@ export default class SubscriptionCell extends React.Component {
                     </View>
                     <View style={styles.rightView}>
                         <Text style={styles.priceText}>{price}</Text>
-                        <Text style={styles.durationText}>Monthly</Text>
+                        <Text style={styles.durationText}>${duration}</Text>
                     </View>
                 </View>
             </TouchableOpacity>

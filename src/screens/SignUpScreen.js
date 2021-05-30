@@ -315,9 +315,10 @@ class SignUpScreen extends Component {
 
                 <FormInput
                   label="Your Email"
-                  placeholder="David@email.com" 
+                  placeholder="david@email.com" 
                   type="email"
                   editable={editable}
+                  autoCapitalize={false}
                   value={email} 
                   errorMessage={emailError}
                   returnKeyType="next"          

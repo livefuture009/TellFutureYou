@@ -12,7 +12,8 @@ export const TERMS_LINK = "https://dukeheartaudrey.gadaiweb.com/terms-and-condit
 export const PRIVACY_LINK = "https://dukeheartaudrey.gadaiweb.com/privacy-policy.html";
 
 export const SUBSCRIPTION_STANDARD = "gad.tellfutureyou.org.standard";
-export const SUBSCRIPTION_PREMIUM = "gad.tellfutureyou.premium";
+export const SUBSCRIPTION_PREMIUM = "gad.tellfutureyou.premium1";
+
 export const USER_LEVEL = {
   FREE: 0,
   STANDARD: 1,

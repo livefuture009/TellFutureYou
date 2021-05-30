@@ -203,11 +203,14 @@ export const filterName = (firstName, lastName) => {
 
 export const getInviteMessage = (receiver, sender, type) => {
   var separator = "\r\n\r\n";
+  var content = '';
   if (type == "email") {
     separator = "<br/><br/>";
+    content = `Hello, ${separator}${sender} invited you to use TellFutureYou app. Please download the app using the link below.${separator}<a href="${APP_LINK}">${APP_LINK}</a>`;
   }
-  var content = `Hello, ${separator}${sender} invited you to use TellFutureYou app. Please download the app using the link below.${separator}${APP_LINK}`;
-
+  else {
+    content = `Hello, ${separator}${sender} invited you to use TellFutureYou app. Please download the app using the link below.${separator}${APP_LINK}`;
+  }
   return content;
 }
 
